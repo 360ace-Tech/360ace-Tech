@@ -1,0 +1,44 @@
+import { FadeIn } from '@/components/motion/fade-in';
+import { process as processSteps } from '@/lib/site-content';
+import { cn } from '@/lib/utils';
+
+export function ProcessSection({ variant = 'v1' }: { variant?: 'v1' | 'v2' | 'v3' }) {
+  return (
+    <section id="process" className={cn('relative overflow-hidden py-24', variant === 'v3' ? 'bg-slate-50 text-slate-900' : 'bg-background/20')}>
+      <div className="container-edge space-y-12">
+        <FadeIn>
+          <div className="max-w-2xl space-y-4">
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">Delivery rhythm</p>
+            <h2 className="text-3xl font-semibold sm:text-4xl">How we partner with your teams</h2>
+            <p className="text-sm text-muted-foreground">
+              Inspired by our original PLAN → DESIGN → BUILD → DEPLOY journey, we now layer research gates, ADRs, and continuous learning loops that keep outcomes front and centre.
+            </p>
+          </div>
+        </FadeIn>
+        <div className="grid gap-6 md:grid-cols-2">
+          {processSteps.map((step, index) => (
+            <FadeIn key={step.id} delay={index * 0.05}>
+              <div
+                className={cn(
+                  'flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg backdrop-blur-xl',
+                  variant === 'v3' && 'border-slate-200 bg-white shadow-2xl',
+                )}
+              >
+                <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                  <span className="text-lg text-gradient-primary">{step.id}</span>
+                  {step.title}
+                </div>
+                <h3 className="mt-4 text-2xl font-semibold">{step.heading}</h3>
+                <p className="mt-4 text-sm text-muted-foreground">{step.description}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-60">
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-1/4 h-40 w-40 rounded-full bg-secondary/20 blur-3xl" />
+      </div>
+    </section>
+  );
+}

@@ -8,7 +8,7 @@ This document translates the PRD (docs/PRD.md) into a concrete, step‑by‑step
 - Styling/UI: Tailwind CSS + shadcn/ui (Radix primitives)
 - Animation: Framer Motion
 - 3D: React Three Fiber (R3F) + @react-three/drei (graceful fallbacks)
-- Content: MDX + Contentlayer (typed) using existing `blogs/` migrated to `content/`
+- Content: MDX + Contentlayer2 (typed) using existing `blogs/` migrated to `content/`
 - Search: FlexSearch (client) with adapter to Algolia/Typesense
 - SEO: Next metadata + JSON‑LD helpers; optional `next-seo`
 - Images: `next/image` + `sharp`; OG via `@vercel/og`
@@ -81,7 +81,7 @@ Phase 1 — Styling + UI Kit
 3) Theme tokens + reduced‑motion defaults.
 
 Phase 2 — Content Pipeline
-1) Install Contentlayer; add schemas for `Post`, `Service`, `CaseStudy`.
+1) Install Contentlayer2; add schemas for `Post`, `Service`, `CaseStudy`.
 2) MDX pipeline: remark‑gfm, rehype‑pretty‑code (Shiki), image handling.
 3) Migrate `blogs/` → `content/blog/`; add shortcodes.
 4) Blog index with filters/search; post page with ToC, prev/next.
@@ -168,7 +168,7 @@ scripts/
 # next + core libs
 npm i next@15.5.4 framer-motion three @react-three/fiber @react-three/drei \
   tailwindcss postcss autoprefixer class-variance-authority clsx tailwind-merge \
-  lucide-react contentlayer next-contentlayer remark-gfm rehype-pretty-code \
+  lucide-react contentlayer2 next-contentlayer2 remark-gfm rehype-pretty-code \
   react-hook-form zod @hookform/resolvers flexsearch --save
 
 # shadcn/ui
@@ -176,7 +176,7 @@ npx shadcn@latest init
 npx shadcn@latest add button input dialog sheet tabs accordion tooltip toast
 
 # contentlayer (dev)
-npm i -D contentlayer next-contentlayer
+npm i -D contentlayer2 next-contentlayer2
 
 # run variants locally (visit /v1, /v2, /v3)
 npm run dev

@@ -1,28 +1,20 @@
-import Starfield from "../components/Starfield";
-import TiltCard from "../components/TiltCard";
+import VariantOnePage from '@/app/(core)/(variants)/v1/page';
+import VariantThreePage from '@/app/(core)/(variants)/v3/page';
+import VariantTwoPage from '@/app/(core)/(variants)/v2/page';
 
-export default function Page() {
-  return (
-    <main className="uc-wrap">
-      <Starfield count={450} />
-      <section className="uc-content">
-        <span className="logo-badge">360ace.Tech</span>
-        <h1 className="title3d">Site Under Construction</h1>
-        <p className="subtitle">
-          We’re rebuilding with Next.js, modern 3D UX, and blazing performance.
-        </p>
+const DEFAULT_VARIANT = 'v2' as const;
 
-        <TiltCard>
-          <div>
-            <strong>Revamp in progress</strong>
-            <div style={{ opacity: 0.8 }}>Launching soon — stay tuned.</div>
-          </div>
-        </TiltCard>
+type VariantKey = 'v1' | 'v2' | 'v3';
 
-        <a className="cta" href="mailto:contact@360ace.tech">
-          Contact us
-        </a>
-      </section>
-    </main>
-  );
+const variantMap: Record<VariantKey, () => JSX.Element> = {
+  v1: () => <VariantOnePage />,
+  v2: () => <VariantTwoPage />,
+  v3: () => <VariantThreePage />,
+};
+
+export default function RootPage() {
+  const envVariant = (process.env.SITE_VARIANT as VariantKey | undefined)?.toLowerCase() as VariantKey | undefined;
+  const variant: VariantKey = envVariant && envVariant in variantMap ? envVariant : DEFAULT_VARIANT;
+
+  return variantMap[variant]();
 }

@@ -60,7 +60,7 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 - Criteria: a11y, design velocity, bundle size, theming, long‑term maintainability.
 
 3) Content Pipeline
-- Options: Contentlayer + MDX, or next‑mdx‑remote, or custom remark/rehype pipeline.
+- Options: Contentlayer2 + MDX, or next‑mdx‑remote, or custom remark/rehype pipeline.
 - Criteria: DX, type safety, hot reload, image handling, code highlighting.
 
 4) 3D/Immersive
@@ -117,7 +117,7 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
   - Blog post MDX template (frontmatter + components for callouts, code blocks, galleries).
   - Case study/portfolio template (hero, metrics, quotes, process steps).
   - Services page template (feature blocks, FAQs, CTAs).
-- MD/MDX lives in `content/` (or migrated from `blogs/`); pages generated via file‑based routing and Contentlayer.
+- MD/MDX lives in `content/` (or migrated from `blogs/`); pages generated via file‑based routing and Contentlayer2.
 - Allow partials/slots for hero, sidebar, and CTA sections for flexibility.
 
 7) Variant Routing Strategy
@@ -139,7 +139,7 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 - Framework: Next.js 15.5.4 (App Router) with TypeScript.
 - Rendering: Mix of SSG/ISR for blogs and marketing pages; use SSR/edge routes only where needed.
 - Styling: Tailwind CSS + shadcn/ui (Radix) for accessible primitives; consider migrating existing SCSS selectively.
-- Content: MDX + Contentlayer for typed content; images migrated under `public/` and rendered via `next/image`.
+- Content: MDX + Contentlayer2 for typed content; images migrated under `public/` and rendered via `next/image`.
 - 3D: React Three Fiber + drei, dynamic imports, device capability checks, motion reduction support.
 - Animations: Framer Motion for route/page transitions and micro‑interactions.
 - Data Fetching: RSC + `fetch` with caching; SWR for client hydration when needed.
@@ -159,7 +159,7 @@ app/
   api/contact/route.ts // serverless form handler
 components/
 content/
-  blog/            // Contentlayer‑scanned MDX from `blogs/`
+  blog/            // Contentlayer2‑scanned MDX from `blogs/`
 lib/
 public/
 styles/
@@ -276,4 +276,4 @@ draft: false
 ---
 
 ## References
-- Next.js App Router docs, Contentlayer, React Three Fiber, Framer Motion, Radix UI, shadcn/ui, Plausible, Sentry.
+- Next.js App Router docs, Contentlayer2, React Three Fiber, Framer Motion, Radix UI, shadcn/ui, Plausible, Sentry.

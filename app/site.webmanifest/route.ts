@@ -1,10 +1,9 @@
-import { NextRequest } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 
 export const runtime = 'nodejs';
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   const filePath = path.join(process.cwd(), 'assets', 'favicon', 'site.webmanifest');
   try {
     const text = await fs.readFile(filePath, 'utf8');

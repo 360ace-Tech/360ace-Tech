@@ -1,0 +1,15 @@
+.variant-theme-v1 {
+  --background: 221 33% 12%;
+  --foreground: 210 20% 97%;
+  --primary: 220 90% 70%;
+  --secondary: 275 75% 70%;
+  --accent: 190 95% 70%;
+  --card: 221 33% 14%;
+  --muted: 222 30% 20%;
+  --grid-overlay: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+}
+
+.variant-theme-v1 .hero-bg {
+  background: radial-gradient(circle at top left, rgba(59,130,246,0.25), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(16,185,129,0.2), transparent 50%);
+}
