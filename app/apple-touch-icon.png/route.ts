@@ -7,11 +7,10 @@ export const runtime = 'nodejs';
 export async function GET(_req: NextRequest) {
   const filePath = path.join(process.cwd(), 'assets', 'favicon', 'apple-touch-icon.png');
   const buf = await fs.readFile(filePath);
-  return new Response(buf, {
+  return new Response(new Uint8Array(buf), {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',
     },
   });
 }
-

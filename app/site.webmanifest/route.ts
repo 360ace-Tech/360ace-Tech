@@ -7,8 +7,8 @@ export const runtime = 'nodejs';
 export async function GET(_req: NextRequest) {
   const filePath = path.join(process.cwd(), 'assets', 'favicon', 'site.webmanifest');
   try {
-    const buf = await fs.readFile(filePath);
-    return new Response(buf, {
+    const text = await fs.readFile(filePath, 'utf8');
+    return new Response(text, {
       headers: {
         'Content-Type': 'application/manifest+json; charset=utf-8',
         'Cache-Control': 'public, max-age=31536000, immutable',
@@ -34,4 +34,3 @@ export async function GET(_req: NextRequest) {
     });
   }
 }
-
