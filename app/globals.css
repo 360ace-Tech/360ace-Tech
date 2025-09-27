@@ -1,0 +1,102 @@
+/* CSS reset (minimal) */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  color: #E6E6F0;
+  background: radial-gradient(1200px 800px at 10% 10%, #0f172a, #020617 50%),
+              radial-gradient(800px 600px at 90% 90%, rgba(30,58,138,0.5), rgba(2,6,23,0));
+  background-color: #020617;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+:root {
+  --accent: #60a5fa; /* sky-400 */
+  --accent-2: #c084fc; /* violet-400 */
+  --shadow: rgba(0,0,0,0.35);
+}
+
+.uc-wrap {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+canvas.starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.1));
+}
+
+.uc-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem;
+}
+
+.logo-badge {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(96,165,250,0.15), rgba(192,132,252,0.15));
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(4px);
+}
+
+.title3d {
+  margin: 1.25rem 0 0.5rem;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-shadow: 0 10px 30px var(--shadow);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: #A3A3B2;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+.tilt-card {
+  --rx: 0;
+  --ry: 0;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  margin-top: 2rem;
+}
+
+.tilt-inner {
+  display: inline-block;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(17,24,39,0.6), rgba(2,6,23,0.6));
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 60px -20px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  will-change: transform;
+}
+
+.cta {
+  margin-top: 2rem;
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #E6E6F0;
+  text-decoration: none;
+  background: linear-gradient(90deg, rgba(96,165,250,0.15), rgba(192,132,252,0.15));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-inner { transform: none !important; }
+}
+
