@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+    <!--=============== FAVICON ===============-->
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+
+    <!--=============== FONT AWESOME ===============-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+
+    <!--=============== REMIX ICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!--=============== BOXICONS ===============-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+    <!--=============== SWIPER CSS ===============-->
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css">
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!--=============== MAIN JS ===============-->
+    <script src="assets/js/main.js" defer></script>
+
+    <!--=============== SWEET ALERT ===============-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <title>360ace Tech</title>
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loading-container">
+            <div class="circle"></div>
+            <div class="loading-text preloader__logo-img"></div>
+        </div>
+    </div>
+    <!--==================== HEADER ====================-->
+    <header class="header fade-in" id="header">
+        <nav class="nav container">
+            <a href="#" class="nav__logo">
+                <span class="nav__logo-img"></span>
+                <i class="nav__logo-icon"></i> 360ace.
+            </a>
+
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#home" class="nav__link active-link">Home</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#about" class="nav__link">Who we are</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#whatwedo" class="nav__link">What we do</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contact" class="nav__link">Contact Us</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="https://blog.360ace.net" target="_blank" class="nav__link">Blog</a>
+                    </li>
+                </ul>
+
+                <!-- <div class="nav__social">
+                    <i class="bx bxl-linkedin"></i>
+                </div> -->
+
+                <div class="nav__close" id="nav-close">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+
+            <div class="nav__btns">
+                <!-- Theme change button -->
+                <i class="ri-moon-line change-theme" id="theme-button"></i>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class="bx bx-grid-alt"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main reveal-from-top fade-in">
+        <!--==================== HOME ====================-->
+        <section class="home container" id="home">
+            <div class="swiper home-swiper">
+                <div class="swiper-wrapper">
+                    <!-- HOME SLIDER 1 -->
+                    <section class="swiper-slide">
+                        <div class="home__content grid">
+                            <div class="home__group">
+                                <img src="assets/img/dev-2.gif" alt="" class="home__img">
+                                <div class="home__indicator"></div>
+
+                                <div class="home__details-img">
+                                    <h4 class="home__details-title">We answer “The What ?”</h4>
+                                    <span class="home__details-subtitle">LET'S PLAN THE PROCESS</span>
+                                </div>
+                            </div>
+
+                            <div class="home__data">
+                                <h3 class="home__subtitle">#1 First interaction - PLAN</h3>
+                                <h1 class="home__title">WE START <br> BY KNOWING <br> YOU!!</h1>
+                                <p class="home__description">First impressions last long, so on your digital journey, we
+                                    want to know how we can be there...
+                                </p>
+
+                                <div class="home__buttons">
+                                    <a href="#whatwedo" class="button">Learn More</a>
+                                    <!-- <a href="#" class="button--link button--flex">Track Record <i class='bx bx-right-arrow-alt button__icon'></i></a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- HOME SLIDER 2 -->
+                    <section class="swiper-slide">
+                        <div class="home__content grid">
+                            <div class="home__group">
+                                <img src="assets/img/dev-design.gif" alt="" class="home__img">
+                                <div class="home__indicator"></div>
+
+                                <div class="home__details-img">
+                                    <h4 class="home__details-title">We look into "The who ?" </h4>
+                                    <span class="home__details-subtitle">LET'S CREATE A BLUEPRINT</span>
+                                </div>
+                            </div>
+
+                            <div class="home__data">
+                                <h3 class="home__subtitle">#2 Next we visualize - DESIGN</h3>
+                                <h1 class="home__title">NEXT... <br> YOU GET <br> TO KNOW US</h1>
+                                <p class="home__description">We take you a journey through transformation by visualizing
+                                    what the journey will look like the cloud native way
+                                </p>
+
+                                <div class="home__buttons">
+                                    <a href="#whatwedo" class="button">Learn More</a>
+                                    <!-- <a href="#" class="button--link button--flex">Track Record <i class='bx bx-right-arrow-alt button__icon'></i></a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- HOME SLIDER 3 -->
+                    <section class="swiper-slide">
+                        <div class="home__content grid">
+                            <div class="home__group">
+                                <img src="assets/img/dev-build.gif" alt="" class="home__img">
+                                <div class="home__indicator"></div>
+
+                                <div class="home__details-img">
+                                    <h4 class="home__details-title">We work "The next how ?"</h4>
+                                    <span class="home__details-subtitle">LETS GET IT ROLLING</span>
+                                </div>
+                            </div>
+
+                            <div class="home__data">
+                                <h3 class="home__subtitle">#3 It's time to collaborate - BUILD</h3>
+                                <h1 class="home__title">CRAFT THE<br> MAIN <br> PRODUCT</h1>
+                                <p class="home__description">Working hand in hand and using industry standard we
+                                    continously integrate (CI) with collaborative tools (GIT), methods (AGILE) and
+                                    platforms... we help drive and improve as we go through this journey
+                                </p>
+
+                                <div class="home__buttons">
+                                    <a href="#whatwedo" class="button">Learn More</a>
+                                    <!-- <a href="#" class="button--link button--flex">Track Record <i class='bx bx-right-arrow-alt button__icon'></i></a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- HOME SLIDER 4 -->
+                    <section class="swiper-slide">
+                        <div class="home__content grid">
+                            <div class="home__group">
+                                <img src="assets/img/dev-deploy.gif" alt="" class="home__img">
+                                <div class="home__indicator"></div>
+
+                                <div class="home__details-img">
+                                    <h4 class="home__details-title">We deliver “The when ?”</h4>
+                                    <span class="home__details-subtitle">MVP TO PRODUCTION</span>
+                                </div>
+                            </div>
+
+                            <div class="home__data">
+                                <h3 class="home__subtitle">#4 AUTOMATE AS MUCH - DEPLOY</h3>
+                                <h1 class="home__title">GET YOUR <br> DIGITAL <br> FOOTPRINT</h1>
+                                <p class="home__description">Setting up and improving the CI/CD of your PRODUCT accross
+                                    the digital space leveraging on automation to create and infrastructure and industry
+                                    cloud framework for delivery
+                                </p>
+
+                                <div class="home__buttons">
+                                    <a href="#whatwedo" class="button">Learn More</a>
+                                    <!-- <a href="#" class="button--link button--flex">Track Record <i class='bx bx-right-arrow-alt button__icon'></i></a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- HOME SLIDER 5 -->
+                    <section class="swiper-slide">
+                        <div class="home__content grid">
+                            <div class="home__group">
+                                <img src="assets/img/dev-monitor.gif" alt="" class="home__img">
+                                <div class="home__indicator"></div>
+
+                                <div class="home__details-img">
+                                    <h4 class="home__details-title">And... “How reliable ?”</h4>
+                                    <span class="home__details-subtitle">HOW DO THE USERS SEE US...</span>
+                                </div>
+                            </div>
+
+                            <div class="home__data">
+                                <h3 class="home__subtitle">#5 DevOps + SRE - MONITOR</h3>
+                                <h1 class="home__title">"HA + DR" <br> WITH <br> METRICS</h1>
+                                <p class="home__description">We do not leave you right there, we get you setup for the
+                                    day 1 and 2 operations ensuring business continuity.
+                                </p>
+
+                                <div class="home__buttons">
+                                    <a href="#whatwedo" class="button">Learn More</a>
+                                    <!-- <a href="#" class="button--link button--flex">Track Record <i class='bx bx-right-arrow-alt button__icon'></i></a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- HOME SLIDER 6 -->
+                    <section class="swiper-slide">
+                        <div class="home__content grid">
+                            <div class="home__group">
+                                <img src="assets/img/dev-monitor.gif" alt="" class="home__img">
+                                <div class="home__indicator"></div>
+
+                                <div class="home__details-img">
+                                    <h4 class="home__details-title">And... “Importantly Assure”</h4>
+                                    <span class="home__details-subtitle">HOW SECURE ARE WE...</span>
+                                </div>
+                            </div>
+
+                            <div class="home__data">
+                                <h3 class="home__subtitle">#6 SECURITY</h3>
+                                <h1 class="home__title">"INFRA, DEV, APP" + <br> SECOPS</h1>
+                                <p class="home__description">We assure, confidentiality, reliability and sustainability of the process and the platform(s)
+                                </p>
+
+                                <div class="home__buttons">
+                                    <a href="#whatwedo" class="button">Learn More</a>
+                                    <!-- <a href="#" class="button--link button--flex">Track Record <i class='bx bx-right-arrow-alt button__icon'></i></a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+        <!--==================== ABOUT ====================-->
+        <section class="about section container" id="about">
+            <div class="about__container grid">
+                <img src="assets/img/cloud-compute.gif" alt="" class="about__img">
+
+                <div class="about__data">
+                    <h2 class="section__title about__title">
+                        Who we really are & <br> why we are unique
+                    </h2>
+
+                    <p class="about__description">
+                        We are in the business of delivering your infrastructure and deploy your applications the cloud
+                        native way.
+                    </p>
+
+                    <div class="about__details">
+                        <p class="about__details-description">
+                            <i class="ri-checkbox-fill about__details-icon"></i> We leverage on the cloud provider's
+                            framework.
+                        </p>
+                        <p class="about__details-description">
+                            <i class="ri-checkbox-fill about__details-icon"></i> We are cloud native with HA and DR.
+                        </p>
+                        <p class="about__details-description">
+                            <i class="ri-checkbox-fill about__details-icon"></i> We automate as much as possible.
+                        </p>
+                        <p class="about__details-description">
+                            <i class="ri-checkbox-fill about__details-icon"></i> DevOps principled with a dab of SRE.
+                        </p>
+                        <p class="about__details-description">
+                            <i class="ri-checkbox-fill about__details-icon"></i> Vast array of infrastructure technology
+                            stack.
+                        </p>
+                    </div>
+
+                    <a href="#whatwedo" class="button--link button--flex">
+                        Find out more <i class="ri-arrow-right-down-line button__icon"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="marquee">
+                <ul class="marquee-content">
+                    <li><i class="fab fa-aws"></i></li>
+                    <li><i class="iconify" data-icon="cib:google-cloud" data-tooltip="google cloud"></i></li>
+                    <li><i class="iconify" data-icon="codicon:azure"></i></li>
+                    <li><i class="fab fa-git"></i></li>
+                    <li><i class="iconify" data-icon="bi:github"></i></li>
+                    <li><i class="iconify" data-icon="cib:gitlab"></i></li>
+                    <li><i class="iconify" data-icon="cib:gitea"></i></li>
+                    <li><i class="iconify" data-icon="cib:bitbucket"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:buildkite"></i></li>
+                    <li><i class="iconify" data-icon="logos:github-actions"></i></li>
+                    <li><i class="iconify" data-icon="cib:bamboo"></i></li>
+                    <li><i class="iconify" data-icon="cib:circleci"></i></li>
+                    <li><i class="iconify" data-icon="cib:travisci"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:azuredevops"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:spinnaker"></i></li>
+                    <li><i class="iconify" data-icon="logos:buildkite"></i></li>
+                    <li><i class="iconify" data-icon="logos:argo-icon"></i></li>
+                    <li><i class="iconify" data-icon="cib:jenkins"></i></li>
+                    <li><i class="iconify" data-icon="cib:kubernetes"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:istio"></i></li>
+                    <li><i class="fab fa-dev"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:k6"></i></li>
+                    <li><i class="iconify" data-icon="mdi:api"></i></li>
+                    <li><i class="iconify" data-icon="clarity:command-line"></i></li>
+                    <li><i class="iconify" data-icon="entypo:network"></i></li>
+                    <li><i class="iconify" data-icon="bi:server"></i></li>
+                    <li><i class="iconify" data-icon="ant-design:cloud-server-outlined"></i></li>
+                    <li><i class="iconify" data-icon="ic:round-security"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:prometheus"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:splunk"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:datadog"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:newrelic"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:elasticsearch"></i></li>
+                    <li><i class="iconify" data-icon="cib:grafana"></i></li>
+                    <li><i class="iconify" data-icon="material-symbols:monitoring"></i></li>
+                    <li><i class="iconify" data-icon="cib:php"></i></li>
+                    <li><i class="iconify" data-icon="cib:ansible"></i></li>
+                    <li><i class="iconify" data-icon="cib:terraform"></i></li>
+                    <li><i class="iconify" data-icon="logos:crossplane-icon"></i></li>
+                     <li><i class="iconify" data-icon="simple-icons:pulumi"></i></li>
+                    <li><i class="iconify" data-icon="cib:nginx"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:puppet"></i></li>
+                    <li><i class="iconify" data-icon="cib:apache"></i></li>
+                    <li><i class="iconify" data-icon="carbon:load-balancer-vpc"></i></li>
+                    <li><i class="fab fa-node"></i></li>
+                    <li><i class="fab fa-java"></i></li>
+                    <li><i class="fab fa-docker"></i></li>
+                    <li><i class="iconify" data-icon="fa:linux"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:dotnet"></i></li>
+                    <li><i class="bx bxl-python"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:macos"></i></li>
+                    <li><i class="iconify" data-icon="cib:redhat"></i></li>
+                    <li><i class="iconify" data-icon="cib:ubuntu"></i></li>
+                    <li><i class="bx bxl-postgresql"></i></li>
+                    <li><i class="iconify" data-icon="cib:mysql"></i></li>
+                    <li><i class="iconify" data-icon="cib:cassandra"></i></li>
+                    <li><i class="bx bxl-mongodb"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:gnubash"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:rancher"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:dell"></i></li>
+                    <li><i class="iconify" data-icon="logos:ibm"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:huawei"></i></li>
+                    <li><i class="iconify" data-icon="simple-icons:raspberrypi"></i></li>
+                    <li><i class="iconify" data-icon="cib:cisco"></i></li>
+                    <li><i class="iconify" data-icon="cib:windows"></i></li>
+                    <li><i class="iconify" data-icon="cib:hp"></i></li>
+                </ul>
+            </div>
+        </section>
+        <!--==================== whatwedo ====================-->
+        <section class="whatwedo section" id="whatwedo">
+            <h2 class="section__title-center whatwedo__title container">
+                What we do...
+            </h2>
+
+            <div class="whatwedo__container container grid">
+                <div class="whatwedo__group">
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                IT Infrastructure
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                We assist in designing and implementing the foundation of all IT systems;
+                                typically physical and virtual components, also involving the software and network
+                                components.
+                                We are focused on getting your infrastructure
+                                architecture to best practice(s). </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Infrastructure As Code
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                Specializing in the automation of infrastructure components by creating templates inform
+                                of codes;
+                                with physical and virtual components specialized in declarative formats and stored with
+                                idempotence.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Continous Deployment
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                Emphasis on focusing on getting application delivery to the required environments with
+                                least resistance
+                                and speed leveraging on the cloud-native solution and best deployment and delivery tools
+                                available.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                DevOps & SRE
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                Covering the entire product and application lifecycle and making it continuous;
+                                Leveraging on AGILE methodologies
+                                With SRE to ensure measurements and metrics are designed around the infrastructure and
+                                application to ensure a highly
+                                available product.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Configuration Management
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                Ensure maintenance of infrastructure leveraging on a templatize and automated
+                                configuration(s) to ensure consistency
+                                across multiple systems with respect to its desired state and changes made over time.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Networking
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                We assist in providing the design and implement the network communication requirements
+                                for your Infrastructure.
+                                Ranging from IP Address planning, routing, switching, VPN, cloud networking and hybrid
+                                connectivity
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="whatwedo__group">
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Cloud Architecture
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                Engage in consultation, pulling information gathered to design and implement the
+                                resource components of the Cloud.
+                                This is all in the drive towards digital transformation and meeting business
+                                requirements whilst leveraging on best practice framework
+                                and minimizing OPEX.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                IT Infrastructure Security
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                Putting into perspective the requirements for protecting the infrastructure by
+                                implementing multiple layers of security.
+                                Also looking at various security frameworks to help foster a complete assessment and
+                                implement remediation needed to protect the infrastructure.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Training and Consultation
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                We will provide guidance towards digital transformation and bring in experts to meet
+                                varying requirements for training the team.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Development Planning
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                Planning out the continuous deployment and delivery, is our intent to ensure that your
+                                development process ends in the integration
+                                of deployment process to the required environments.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Infrastructure Monitoring
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                The process of collecting and analyzing data from IT Infrastructure, systems and process
+                                is required in achieving the desired state of the
+                                infrastructure as its designed to meet the demands it is intended for. With this we will
+                                help in facilitating the process required for meeting the monitoring demands.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="whatwedo__item">
+                        <header class="whatwedo__header">
+                            <i class="ri-add-line whatwedo__icon"></i>
+                            <h3 class="whatwedo__item-title">
+                                Continuous Integration
+                            </h3>
+                        </header>
+
+                        <div class="whatwedo__content">
+                            <p class="whatwedo__description">
+                                One of the DevOps process requires automating the integration of code changes from
+                                multiple contributors into a single software project. This process can be tedious and
+                                requires careful
+                                planning and implementation to ensure its automated seamlessly.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--==================== CONTACT ====================-->
+        <section class="contact section container" id="contact">
+            <div class="contact__container grid">
+                <div class="contact__box">
+                    <h2 class="section__title">
+                        You can reach out <br> For more information <br> about us
+                    </h2>
+
+                    <div class="contact__data">
+                        <div class="contact__information">
+                            <h3 class="contact__subtitle">Feel free to leave us a message</h3>
+                            <span class="contact__description">
+                                <a class="contact__subtitle">
+                                    And we will get back to you</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <form action="" class="contact__form">
+                    <div class="contact__inputs">
+                        <div class="contact__content">
+                            <input type="email" name="email" placeholder=" " class="contact__input">
+                            <label class="contact__label">Email</label>
+                        </div>
+
+                        <div class="contact__content">
+                            <input type="text" name="subject" placeholder=" " class="contact__input">
+                            <label class="contact__label">Subject</label>
+                        </div>
+
+                        <div class="contact__content contact__area">
+                            <textarea name="message" placeholder=" " class="contact__input"></textarea>
+                            <label class="contact__label">Message</label>
+                        </div>
+                        <div class="privacy-checkbox whatwedo__item-title">
+                            <input type="checkbox">
+                               I have read and agree to the <span class="privacy__card">privacy policy
+                              <div class="privacy__card__data">
+                                   <p>
+                                     We collect and use email addresses and information provided through our contact form solely for responding to inquiries. 
+                                     Your information is not shared with third parties.<br>
+                                     By using our form, you consent to this policy. We may update it, and the latest version will be posted on our website.
+                                   </p>
+                             </div>
+                             </span>
+                        </div>
+                    </div>
+                    <div id="recaptcha" class="g-recaptcha" data-sitekey="6LdGLLsfAAAAAJ1JAW1R3xY035CugsvzVKP5uE-O"></div>
+                    <button class="button button--flex" type="submit">
+                        Send Message
+                        <i class="ri-arrow-right-up-line button__icon"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!--==================== FOOTER ====================-->
+    <footer class="footer section">
+        <div class="footer__container container grid">
+            <div class="footer__content">
+                <a href="#" class="footer__logo">
+                    <span class="footer__logo-img"></span> 360ace.
+                </a>
+
+            </div>
+
+            <div class="footer__content">
+                <h3 class="footer__title">About</h3>
+
+                <ul class="footer__links">
+                    <li>
+                        <a href="#about" class="footer__link">Who we are</a>
+                    </li>
+                    <li>
+                        <a href="#whatwedo" class="footer__link">More about us</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer__content">
+                <h3 class="footer__title">Our Services</h3>
+
+                <ul class="footer__links">
+                    <li>
+                        <a href="#whatwedo" class="footer__link">What We Do</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer__content">
+                <h3 class="footer__title">Our Company</h3>
+
+                <ul class="footer__links">
+                    <li>
+                        <a href="#about" class="footer__link">Get to know us</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.360ace.net" target="_blank" class="footer__link">Blogs & Articles</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <span class="footer__copy">&#169; 360ace. All rigths reserved</span>
+        </div>
+
+
+    </footer>
+    <!--=============== SCROLL UP ===============-->
+    <a href="#" class="scrollup" id="scroll-up">
+        <i class="ri-arrow-up-fill scrollup__icon"></i>
+    </a>
+    <!-- Place this script at the end of your HTML, just before the closing </body> tag -->
+    <script>
+        // Wait for the window to load
+        window.addEventListener('load', () => {
+            // Add a 5-second (5000 milliseconds) delay before showing the content
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.style.display = 'none';
+            }, 500);
+        });
+    </script>
+    <script src="assets/js/contact.js" ></script>
+    <!--=============== CAPTCHA ===============-->
+
+    <!--=============== SCROLL REVEAL ===============-->
+    <script src="assets/js/scrollreveal.min.js"></script>
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+
+    <!--=============== SWIPER JS ===============-->
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+
+    <!--=============== SWEET ALERT ===============-->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YL349263YB"></script>
+   <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+   
+     gtag('config', 'G-YL349263YB');
+   </script>
+</body>
+
+</html>
