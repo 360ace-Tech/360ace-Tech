@@ -4,7 +4,7 @@
 360ace.Tech Website Revamp — Next.js, Modern 3D UX, and Content Platform
 
 ## Objective
-Rebuild the current static site into a performant, accessible, and scalable web app on the latest stable Next.js (App Router). Deliver a polished brand experience with subtle, high‑quality 3D/immersive elements, robust blog publishing, excellent Core Web Vitals, and a professional CI/CD workflow.
+Rebuild the current static site into a performant, accessible, and scalable web app on Next.js 15.5.4 (App Router). Deliver a polished brand experience with subtle, high‑quality 3D/immersive elements, robust blog publishing, excellent Core Web Vitals, and a professional CI/CD workflow.
 
 ## Background & Context
 - Current site is a static HTML/CSS/JS build in this repo (`index.html`, `assets/`, `blogs/`).
@@ -17,6 +17,29 @@ Rebuild the current static site into a performant, accessible, and scalable web 
 - Tasteful 3D/immersive elements that enhance, not distract; graceful fallbacks.
 - Excellent performance (LCP, CLS, TBT), accessibility, and SEO.
 - Professional delivery: CI/CD, previews, observability, and documentation.
+
+## Variations (3 Concepts to Prototype)
+Produce three distinct, high‑fidelity variations of the revamp to evaluate direction before committing to a final build. Each variant ships as a deployable preview with metrics.
+
+- Variant A — Minimal Performance‑First
+  - Style: Clean, typographic, low motion. Focus on clarity and speed.
+  - Tech emphasis: Tailwind + shadcn/ui, subtle Framer Motion; Canvas/CSS effects (no heavy 3D).
+  - Goal: Highest Core Web Vitals and readability; quickest content authoring.
+
+- Variant B — Immersive 3D Hero
+  - Style: Polished 3D hero (R3F + drei), tasteful micro‑interactions.
+  - Tech emphasis: React Three Fiber, dynamic import, motion toggle, GPU‑frugal techniques.
+  - Goal: “Wow” factor on modern devices with graceful fallbacks.
+
+- Variant C — Editorial/Brand Story
+  - Style: Magazine‑like layouts, rich MDX components, narrative case studies.
+  - Tech emphasis: MDX template richness, callouts/steps/galleries; strong SEO.
+  - Goal: Content credibility and conversion, flexible templates.
+
+Variant selection process
+- Deliverables per variant: preview URL, Lighthouse/Axe report, size report, short design rationale.
+- Stakeholder review checklist: brand fit, clarity of value, performance, accessibility, maintainability.
+- Choose one primary direction; optionally merge strengths from others.
 
 ## Non‑Goals
 - Building a custom headless CMS in phase 1.
@@ -62,6 +85,9 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 10) Upgrades
 - Use Renovate/Dependabot; pin ranges; monthly “tech radar” review to keep current.
 
+11) Agent & Automation Workflow
+- Create small focused “agents” (human or AI‑assisted) for: UI polish, UX review, SEO, content improvement, and animation/3D. Each agent proposes changes via PRs referencing relevant ADRs and measurements (e.g., Lighthouse, Axe, size snapshots).
+
 ---
 
 ## Functional Requirements
@@ -86,6 +112,18 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 5) Content Admin Flow (Phase 1)
 - Blog posts created via Git in `blogs/` with PR review and preview deployments.
 
+6) Templates & Content Model
+- Provide reusable content templates to accelerate updates and keep consistency:
+  - Blog post MDX template (frontmatter + components for callouts, code blocks, galleries).
+  - Case study/portfolio template (hero, metrics, quotes, process steps).
+  - Services page template (feature blocks, FAQs, CTAs).
+- MD/MDX lives in `content/` (or migrated from `blogs/`); pages generated via file‑based routing and Contentlayer.
+- Allow partials/slots for hero, sidebar, and CTA sections for flexibility.
+
+7) Variant Routing Strategy
+- Expose prototypes under `/v1`, `/v2`, `/v3` route groups. Production root `/` maps to the selected variant via environment config.
+- Ensure shared content/models so variants reuse the same MDX data and differ mainly in presentation.
+
 ---
 
 ## Non‑Functional Requirements
@@ -98,7 +136,7 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 ---
 
 ## Technical Architecture
-- Framework: Next.js (latest stable ≥14 App Router) with TypeScript.
+- Framework: Next.js 15.5.4 (App Router) with TypeScript.
 - Rendering: Mix of SSG/ISR for blogs and marketing pages; use SSR/edge routes only where needed.
 - Styling: Tailwind CSS + shadcn/ui (Radix) for accessible primitives; consider migrating existing SCSS selectively.
 - Content: MDX + Contentlayer for typed content; images migrated under `public/` and rendered via `next/image`.
@@ -135,6 +173,7 @@ docs/adr/
 - Add frontmatter fields where missing; build a script to normalize metadata (date, slug, tags).
 - Implement redirects if URL structure changes; preserve existing backlinks.
 - Generate RSS/Atom feed and sitemap.
+ - Introduce MDX templates and shortcodes for common patterns (notes, asides, tabs, callouts, image grids) to keep content edits simple.
 
 Frontmatter example
 ```
@@ -174,7 +213,7 @@ draft: false
 
 ## CI/CD & Environments
 - GitHub/GitLab with Vercel integration for preview deployments on PRs.
-- Branching: `main` (production), `develop` (staging). PR checks: lint, typecheck, unit, E2E smoke, Lighthouse CI.
+- Branching: `main` (production), `develop` (staging), `revamp` (feature branch for this program). All work merges into `revamp` via PRs; promotion to `develop` after QA; release to `main` after UAT. PR checks: lint, typecheck, unit, E2E smoke, Lighthouse CI.
 - Secrets managed via Vercel envs; no secrets in repo.
 
 ---
@@ -190,6 +229,7 @@ draft: false
 - CI/CD: automated checks passing; preview links for all PRs.
 - Analytics/Monitoring: privacy‑friendly analytics enabled; Sentry connected (DSN through env).
 - Documentation: README with dev setup, scripts, and deployment; migration guide.
+ - Variants: Three deployed previews (`/v1`, `/v2`, `/v3`) with reports and a documented selection decision.
 
 ---
 
@@ -208,10 +248,10 @@ draft: false
 ---
 
 ## Timeline (Indicative)
-- Week 1: Discovery gates, project scaffolding, base pages, styling system.
-- Week 2: Contentlayer/MDX pipeline, blog index/post, search, initial SEO.
-- Week 3: 3D components, motion, accessibility hardening, contact form API.
-- Week 4: Perf tuning, structured data, analytics/monitoring, CI/CD polish, redirects, launch.
+- Week 1: Discovery gates, scaffolding, shared content pipeline and templates.
+- Week 2: Build three variants (V1/V2/V3) on shared content; deploy previews + collect metrics.
+- Week 3: Select/merge direction; harden accessibility, performance; implement contact API.
+- Week 4: Finalize SEO, analytics/monitoring, CI/CD polish, redirects, launch.
 
 ---
 
