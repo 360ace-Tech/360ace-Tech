@@ -1,190 +1,506 @@
-# Implementation Plan — 360ace.Tech Revamp (Next.js 15.5.4)
 
-This document translates the PRD (docs/PRD.md) into a concrete, step‑by‑step plan. It adds a variants strategy to deliver three distinct concepts (V1/V2/V3) before finalizing the direction.
+# IMPLEMENTATION.md — Revamp Plan (Codex‑Driven)
 
-## Targets
-- Framework: Next.js 15.5.4 (App Router, RSC)
-- TypeScript: strict
-- Styling/UI: Tailwind CSS + shadcn/ui (Radix primitives)
-- Animation: Framer Motion
-- 3D: React Three Fiber (R3F) + @react-three/drei (graceful fallbacks)
-- Content: MDX + Contentlayer (typed) using existing `blogs/` migrated to `content/`
-- Search: FlexSearch (client) with adapter to Algolia/Typesense
-- SEO: Next metadata + JSON‑LD helpers; optional `next-seo`
-- Images: `next/image` + `sharp`; OG via `@vercel/og`
-- Forms: Route Handlers + Zod validation with anti‑spam
-- QA: ESLint, Prettier, Vitest/Jest + Testing Library, Playwright E2E, Lighthouse CI
-- Delivery: Vercel (previews), Renovate/Dependabot
+> **Purpose**: End‑to‑end implementation plan to deliver the PRD with **research‑first gates**, **error‑proof workflows**, **automated verification**, and **self‑healing fixes** — orchestrated via a coding agent (e.g., *Codex*). This file is designed to be executed step‑by‑step by a capable code agent and human maintainers.
 
-## Branch Strategy
-- Long‑lived feature branch: `revamp` (no direct commits to `main`).
-- Flow: feature/* → PR → `revamp` → QA → `develop` → UAT → `main`.
-- Optional variant sub‑branches: `variant/minimal`, `variant/immersive`, `variant/editorial` merged into `revamp`.
+---
 
-## Variants Strategy (V1/V2/V3)
-- Goals: ship three deployable previews that share the same content/model but differ in presentation.
-- Routing:
-  - Create route groups: `app/(variants)/v1`, `app/(variants)/v2`, `app/(variants)/v3`.
-  - Keep a shared core under `app/(core)` for layouts, head/metadata, and MDX providers.
-  - Root selection: production "/" uses env `SITE_VARIANT` (`v1|v2|v3`). During review, prototypes live at `/v1`, `/v2`, `/v3`.
-- Content reuse: single Contentlayer schema; all variants import the same typed data.
-- Theming:
-  - Define theme tokens (CSS variables, Tailwind theme extension) per variant under `styles/themes/{v1,v2,v3}.css`.
-  - shadcn/ui components read tokens; minimal overrides per variant.
-- Motion & 3D per variant:
-  - V1: minimal motion (Framer), CSS/Canvas effects only.
-  - V2: R3F hero (dynamic import + motion toggle + reduced‑motion support).
-  - V3: rich MDX components (callouts/steps/galleries) with light motion.
-- Measurement deliverables for each variant:
-  - Lighthouse (Perf/A11y/SEO/Best) + size snapshot, Axe, FPS notes for V2.
-  - Short rationale doc in `docs/variants/{v1,v2,v3}.md`.
+## 0) Operating Principles
 
-## Templates & Content Model
-- Canonical content root: `content/` (migrate `blogs/` → `content/blog/`).
-- MDX frontmatter: `title`, `date`, `author`, `tags`, `summary`, `hero`, `draft`, `canonical`.
-- MDX shortcodes: Callout, Steps/Step, ImageGrid, Video, Note, Quote.
-- Contentlayer schemas: `Post`, `Service`, `CaseStudy` with computed fields (slug, reading time, canonical).
+- **Research before build**: Every major choice is preceded by a short ADR (`docs/adr/*.md`). Re‑evaluate once before build freeze.
+- **Fail‑safe by default**: CI blocks merges on type/lint/test/visual baselines, Lighthouse CI budgets, a11y checks, and E2E smoke.
+- **No regressions**: Golden screenshots, content diffs, and redirects validation are mandatory gates.
+- **Graceful UX**: Motion/3D feature‑detect with fallbacks and `prefers-reduced-motion` respected throughout.
+- **Documentation as code**: All runbooks, prompts, and scripts live in the repo.
 
-## Information Architecture
-- Marketing: Home, Services, About, Contact.
-- Blog: `/blog` index with tags/search; `/blog/[slug]` with ToC, prev/next.
-- API: `/api/contact` route handler with spam protection.
+---
 
-## 3D & Motion
-- V2 R3F hero: low‑poly scene, dynamic import, GPU budget targets; graceful fallbacks on reduced‑motion/low capability.
-- Framer Motion transitions: route/page transitions, hover/focus microinteractions.
+## 1) Repo Preparation & Branching
 
-## SEO & Analytics
-- Route metadata + JSON‑LD (`Organization`, `BreadcrumbList`, `BlogPosting`).
-- Dynamic OG images via `@vercel/og`.
-- Analytics: Vercel or Plausible; Sentry for error tracking.
+```bash
+# Initial branches
+git checkout -b revamp
+git push -u origin revamp
 
-## Security, Privacy, Accessibility
-- Validate API inputs via Zod; set security headers (CSP, Permissions‑Policy, Referrer‑Policy, X‑Frame‑Options).
-- Prefer cookie‑less analytics; GDPR‑friendly.
-- Accessibility: keyboard nav, visible focus, reduced‑motion; Axe checks in CI.
-
-## CI/CD
-- Vercel previews for every PR; labels to build all variants.
-- Required checks: lint, typecheck, unit, E2E smoke, Lighthouse CI budgets.
-- Renovate/Dependabot for controlled upgrades.
-
-## Step‑By‑Step Plan
-
-Phase 0 — Branch + Baseline
-1) Create `revamp`; protect `main`. Add ESLint/Prettier/Husky + lint‑staged.
-2) Upgrade to Next 15.5.4 in `package.json` (within `revamp`).
-
-Phase 1 — Styling + UI Kit
-1) Tailwind (`tailwind.config.ts`, `postcss.config.js`, `app/globals.css`).
-2) Initialize shadcn/ui; generate Button, Input, Dialog, Sheet, Tabs, Accordion, Tooltip, Toast.
-3) Theme tokens + reduced‑motion defaults.
-
-Phase 2 — Content Pipeline
-1) Install Contentlayer; add schemas for `Post`, `Service`, `CaseStudy`.
-2) MDX pipeline: remark‑gfm, rehype‑pretty‑code (Shiki), image handling.
-3) Migrate `blogs/` → `content/blog/`; add shortcodes.
-4) Blog index with filters/search; post page with ToC, prev/next.
-
-Phase 3 — Variants (V1/V2/V3)
-1) Layout base in `app/(core)` + MDX provider and shared components.
-2) Create `app/(variants)/v1` (minimal), `v2` (immersive 3D), `v3` (editorial) with dedicated theme tokens.
-3) Wire env `SITE_VARIANT` and `/v1|/v2|/v3` routes; root `/` resolves to selected variant.
-4) Measure each variant (Lighthouse/Axe/FPS); write `docs/variants/*.md` rationales.
-
-Phase 4 — Selection + Merge
-1) Stakeholder review; choose primary direction; optionally merge best elements.
-2) Consolidate selected variant into production layout; keep `/v1|/v2|/v3` for reference until launch.
-
-Phase 5 — SEO/Perf/Analytics
-1) Metadata, JSON‑LD, OG; tune to hit LCP/CLS/TBT budgets.
-2) Enable analytics; connect Sentry.
-
-Phase 6 — QA + Launch
-1) Playwright smoke + accessibility checks.
-2) Final content migration; redirects; sitemap/robots.
-3) Promote `revamp` → `develop` → `main` after UAT.
-
-## Agents & Research Tasks
-- UI Agent: spacing/typography/polish; PRs with screenshots.
-- UX Agent: IA, nav labels, form flow; PRs with rationale.
-- SEO Agent: meta/schema/sitemap/internal links; PRs with Lighthouse/validator results.
-- Motion/3D Agent: timing, performance, fallbacks; PRs with FPS/bundle diffs.
-- Content Agent: improve wording/CTAs; PRs with style notes.
-- Each agent documents notable decisions with ADRs in `docs/adr/*`.
-
-## Scripts to Add
-- `scripts/migrate-blogs.ts`: normalize frontmatter, update image paths.
-- `scripts/generate-rss.ts`: generate RSS/Atom to `public/`.
-- `scripts/verify-links.ts`: check internal links.
-- `scripts/collect-metrics.mjs`: run Lighthouse (CI) for `/v1|/v2|/v3` and store reports.
-
-## Directory Layout (target)
-```
-app/
-  (core)/               # shared layout/providers/seo
-  (variants)/
-    v1/                 # minimal performance-first
-      page.tsx
-    v2/                 # immersive 3D hero
-      page.tsx
-    v3/                 # editorial/brand story
-      page.tsx
-  blog/
-    page.tsx
-    [slug]/page.tsx
-  api/contact/route.ts
-components/
-  ui/           # shadcn/ui exports
-  mdx/          # MDX shortcodes
-  3d/           # R3F scenes
-content/
-  blog/
-  services/
-  case-studies/
-lib/
-public/
-styles/
-  themes/
-    v1.css
-    v2.css
-    v3.css
-docs/
-  adr/
-  variants/
-scripts/
+# Protect branches in Git hosting (UI): main, develop
+# Default working branch for this program: revamp
 ```
 
-## Acceptance Gates
-- Performance: LCP < 2.5s, CLS < 0.1, TBT < 200ms on target profiles.
-- Accessibility: Axe ≥ 95; keyboard nav; reduced‑motion honored.
-- SEO: Metadata complete; JSON‑LD valid; OG images render; Lighthouse SEO ≥ 95.
-- Content: Legacy blogs migrated; templates functioning; redirects in place.
-- CI/CD: All checks green; previews for each variant.
-- Variants: Three deployed previews with reports and a documented selection decision.
+**Branch model**
+- `revamp` → feature integration branch for the program
+- `develop` → staging (auto deploy previews)
+- `main` → production
 
-## Command Cheatsheet (revamp)
+---
+
+## 2) Discovery & Research Gates (ADR‑Driven)
+
+Create a minimal ADR template under `docs/adr/000-template.md`:
+
+```md
+# {Title}
+- **Date**: YYYY-MM-DD
+- **Status**: Proposed | Accepted | Rejected | Superseded by ADR-XXX
+- **Context / Problem**
+- **Options Considered**
+- **Decision**
+- **Consequences**
+- **Verification Plan** (how we’ll prove this was right)
 ```
-# next + core libs
-npm i next@15.5.4 framer-motion three @react-three/fiber @react-three/drei \
-  tailwindcss postcss autoprefixer class-variance-authority clsx tailwind-merge \
-  lucide-react contentlayer next-contentlayer remark-gfm rehype-pretty-code \
-  react-hook-form zod @hookform/resolvers flexsearch --save
 
-# shadcn/ui
-npx shadcn@latest init
-npx shadcn@latest add button input dialog sheet tabs accordion tooltip toast
+### Gate A — Framework & Runtime
+**Options**: Next.js (App Router, RSC), SvelteKit, Remix.  
+**Default**: Next.js (per PRD).  
+**Verify**: RSC + Route Handlers work; ISR/SSG for blog; Edge runtime optional; Turbopack viability.
 
-# contentlayer (dev)
-npm i -D contentlayer next-contentlayer
+### Gate B — Styling & UI
+**Options**: Tailwind + `@tailwindcss/typography` + shadcn/ui (Radix) vs CSS Modules/SCSS.  
+**Criteria**: a11y, design velocity, theming, bundle size, maintainability.
 
-# run variants locally (visit /v1, /v2, /v3)
-npm run dev
-# or choose default variant for root
-SITE_VARIANT=v2 npm run dev
+### Gate C — Content Pipeline
+**Options**: Contentlayer + MDX vs `next-mdx-remote` vs custom remark/rehype.  
+**Default**: Contentlayer + MDX for typed content and hot reload.  
+**Verify**: Correct frontmatter typing, image handling via `next/image`, code highlight with Shiki/`rehype-pretty-code`.
+
+### Gate D — 3D/Immersive
+**Options**: React Three Fiber + drei + postprocessing vs lightweight CSS/canvas effects.  
+**Verify**: FPS ≥ 55 on mid-tier laptop; motion toggle; dynamic import; bundle split confirmed.
+
+### Gate E — Search
+**Default**: Client-side FlexSearch; adapter layer for Algolia/Typesense if needed.  
+**Verify**: Index size & FCP unaffected; hydration cost acceptable.
+
+Each gate gets an ADR: `docs/adr/00X-*.md` with a one‑pager and quick PoC if needed.
+
+---
+
+## 3) Scaffold & Tooling (Automated)
+
+> Target stack per PRD: **Next.js 15.x (App Router, TS)**, Tailwind, shadcn/ui, Contentlayer, MDX, Framer Motion, R3F, FlexSearch, Playwright, Vitest/Jest, ESLint/Prettier, Husky, lint-staged, Changesets, next-seo/SERP helpers, Sentry (errors), Plausible or Vercel Analytics.
+
+```bash
+# Pre-reqs
+corepack enable
+pnpm -v || npm i -g pnpm
+
+# Create app
+pnpm create next-app@latest app-revamp --ts --eslint --tailwind --src-dir --app --import-alias "@/*"
+cd app-revamp
+
+# Add dependencies
+pnpm add contentlayer next-contentlayer gray-matter remark rehype rehype-pretty-code shiki
+pnpm add next-seo reading-time zod react-hook-form swr class-variance-authority clsx
+pnpm add framer-motion
+pnpm add @react-three/fiber three @react-three/drei
+pnpm add flexsearch
+pnpm add sharp # for next/image local optimization
+
+# Dev tools
+pnpm add -D @types/node @types/react @types/react-dom typescript
+pnpm add -D eslint prettier eslint-config-next eslint-config-prettier stylelint stylelint-config-standard
+pnpm add -D husky lint-staged @commitlint/cli @commitlint/config-conventional
+pnpm add -D vitest @vitest/coverage-v8 jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
+pnpm add -D playwright @playwright/test @axe-core/playwright
+pnpm add -D lighthouse lhci
+pnpm add -D changesets @changesets/cli
+
+# Initialize tools
+pnpm dlx husky init
+pnpm dlx @changesets/cli init
+```
+
+**Husky hooks** (`.husky/pre-commit`):
+```bash
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+pnpm lint-staged
+```
+
+**lint-staged** (`package.json` excerpt):
+```json
+{
+  "lint-staged": {
+    "*.{ts,tsx,js}": ["eslint --fix", "prettier --write"],
+    "*.md": ["prettier --write"],
+    "*.{css,scss}": ["stylelint --fix"]
+  }
+}
+```
+
+**Commitlint** (`commitlint.config.cjs`):
+```js
+export default { extends: ['@commitlint/config-conventional'] };
 ```
 
 ---
 
-For scope and quality bars, see `docs/PRD.md`.
+## 4) Directory Structure (Aligned to PRD)
 
+```
+app/
+  (marketing)/
+  blog/
+    page.tsx              # index, tags, search
+    [slug]/page.tsx
+  api/contact/route.ts    # serverless form handler (Zod-validated)
+components/
+content/
+  blog/                   # Contentlayer‑scanned MDX (from legacy blogs/)
+lib/
+public/
+styles/
+docs/adr/
+```
+
+---
+
+## 5) Content Migration Plan (Automated & Verifiable)
+
+### 5.1 Map & Normalize
+- Convert `blogs/*.md` → MDX with stable frontmatter:
+  - `title`, `date`, `author`, `tags[]`, `summary`, `hero`, `draft`
+- Move referenced images to `public/` and update links to absolute `/` paths.
+
+**Frontmatter example**:
+```md
+---
+title: Why Kubernetes?
+date: 2023-03-20
+author: 360ace
+tags: [kubernetes, devops]
+summary: A practical perspective on Kubernetes adoption.
+hero: /blogs/img/why-k8s.png
+draft: false
+---
+```
+
+### 5.2 Migration Script (with Dry‑Run)
+Add `scripts/migrate-content.ts`:
+
+```ts
+/**
+ * Migrates legacy ./blogs/*.md to ./content/blog/*.mdx
+ * - Validates/repairs frontmatter
+ * - Rewrites image paths to /
+ * - Reports redirect map if slugs change
+ * Run: pnpm migrate:content --dry-run | --write
+ */
+```
+
+**package.json**:
+```json
+{
+  "scripts": {
+    "migrate:content": "ts-node --transpile-only scripts/migrate-content.ts",
+    "migrate:content:check": "pnpm migrate:content --dry-run && git diff --exit-code"
+  }
+}
+```
+
+### 5.3 Redirects & Backlinks
+- Produce `redirects.csv` from the migration script:
+  - `from_url, to_url, http_status`
+- Implement redirects in Next.js (`next.config.mjs`) or hosting platform config.
+- Validate with Playwright: old URLs → `to` with 301/308; capture report.
+
+### 5.4 Feeds & Sitemaps
+- `app/rss.xml/route.ts`, `app/atom.xml/route.ts`, `app/sitemap.xml/route.ts`
+- Validate with XML schema linters and a crawler in CI.
+
+---
+
+## 6) Blog UX & Rendering
+
+- **Index**: tag filters, search (FlexSearch), pagination.
+- **Post**: ToC, code highlight (Shiki/rehype-pretty-code), reading time, next/prev, canonical URLs, social cards.
+- **MDX shortcodes**: callouts, steps, tabs, image grids (`components/mdx/*`).
+
+---
+
+## 7) 3D / Immersive (R3F) with Fallbacks
+
+- Lazy load hero scene via `dynamic(() => import('./Hero3D'), { ssr: false })`.
+- Feature‑detect WebGL, reduce motion:
+  - If `prefers-reduced-motion` or insufficient GPU, render static hero image.
+- Cap frame loop for CPU restraint; test FPS on mid‑tier laptop in CI (Playwright + FPS probe).
+
+---
+
+## 8) Forms & Serverless API
+
+- Contact form: React Hook Form + Zod schema; server validation in `api/contact/route.ts`.
+- Anti‑spam: honeypot field + rate limiting (IP hash, short window). Optional captcha toggle.
+- Email notify: integrate provider (e.g., Resend/alternative) via env var; log to server if disabled in dev.
+
+---
+
+## 9) SEO & Social
+
+- Titles, meta, canonicals; JSON‑LD (`Organization`, `BreadcrumbList`, `BlogPosting`).
+- `robots.txt` and `sitemap.xml` routes.
+- Dynamic OG images via `@vercel/og` or alternative image generation route.
+
+---
+
+## 10) Accessibility & Performance Budgets
+
+- **Budgets**: LCP < 2.5s, CLS < 0.1, TBT < 200ms on fast 3G / low‑end desktop (75th pctl).
+- **Checks**:
+  - `@axe-core/playwright` for a11y violations in smoke pages.
+  - Lighthouse CI with JSON budgets; block PR if exceeded.
+  - Bundle analyzer optional for regressions.
+
+---
+
+## 11) Observability
+
+- Sentry for error capture; Plausible or Vercel Analytics (opt‑in, cookie‑less).
+- Server logs for `api/contact` success/failure (redact PII).
+
+---
+
+## 12) CI/CD (GitHub Actions)
+
+Create `.github/workflows/ci.yml`:
+
+```yaml
+name: CI
+
+on:
+  pull_request:
+    branches: [revamp, develop, main]
+  push:
+    branches: [revamp]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck || (echo 'Typecheck failed' && exit 1)
+      - run: pnpm lint
+      - run: pnpm test -- --coverage
+      - name: Playwright install
+        run: pnpm dlx playwright install --with-deps
+      - name: E2E smoke
+        run: pnpm e2e:smoke
+      - name: Lighthouse
+        run: pnpm lhci autorun
+      - name: Content migration dry-run
+        run: pnpm migrate:content:check
+```
+
+Add `.github/workflows/preview.yml` for deploy previews (Vercel or other).
+
+---
+
+## 13) Verification Gates (What Blocks a Merge)
+
+1. **Static checks**: ESLint, Prettier, Stylelint, Typecheck.
+2. **Unit**: Vitest coverage ≥ threshold.
+3. **E2E**: Playwright smoke of key pages (Home, Blog Index, Blog Post, Contact).
+4. **A11y**: No serious violations (`@axe-core/playwright`).
+5. **Perf**: LHCI budgets green on Home/Blog Post.
+6. **Content**: Migration dry‑run yields zero unknowns; redirects validated.
+7. **SEO**: sitemap/robots present; canonical/noindex rules applied as expected.
+8. **Security**: Headers present in responses; contact API rate‑limited.
+
+Merge is blocked if any gate fails. Codex should auto‑attempt fixes where trivial (lint, format, low‑hanging performance issues) and push a new commit.
+
+---
+
+## 14) Codex Agent Runbook
+
+> The following instructions can be pasted into a code agent console to orchestrate the program.
+
+### 14.1 Bootstrap Prompt (High‑Level)
+
+```
+You are the Implementation Agent for a website revamp. Goals:
+- Research first (create ADRs under docs/adr) for framework, styling, content pipeline, 3D, search.
+- Scaffold Next.js TS App Router project with Tailwind, shadcn/ui, Contentlayer MDX, Framer Motion, R3F.
+- Migrate legacy blogs from ./blogs/*.md to ./content/blog/*.mdx with validated frontmatter, image path rewrites, and redirects.
+- Implement blog UX (index w/ tags+search, post w/ ToC, code highlight, reading time, next/prev).
+- Add contact form (React Hook Form + Zod) with serverless route, anti-spam, and email integration via env.
+- Add SEO (titles, canonicals, OG, JSON-LD), feeds (RSS/Atom), and sitemap.
+- Add tests (Vitest + Testing Library), Playwright E2E+axe, Lighthouse CI budgets.
+- Set up CI/CD (GitHub Actions) with merge gates; deploy previews.
+- Add observability (Sentry + Plausible/Vercel Analytics).
+- Ensure R3F hero is lazy-loaded with motion toggle and fallbacks.
+- Provide run scripts and documentation.
+
+Constraints:
+- No secrets in repo; use env vars.
+- Respect performance budgets and accessibility.
+- Fix any CI failures and re-run until green.
+
+Deliverables:
+- Working repo with passing CI on revamp branch.
+- IMPLEMENTATION.md updated with steps taken and decisions in docs/adr.
+- Migration report (redirects.csv), feeds, sitemap, and verification artifacts.
+
+Begin by scanning repo for ./index.html, ./assets/, ./blogs/ and propose an ADR for each research gate.
+```
+
+### 14.2 Guardrails
+- Never delete content; move and deprecate with redirects.
+- Always run `pnpm migrate:content --dry-run` before `--write`.
+- If Playwright/LHCI fail, attempt automated fixes, else open an issue with logs.
+
+### 14.3 Commands (Agent Checklist)
+- `pnpm typecheck && pnpm lint && pnpm test`
+- `pnpm e2e:smoke` (local dev server) → fix failures
+- `pnpm lhci autorun` → improve LCP/CLS/TBT until budgets pass
+- `pnpm migrate:content:check` → only then `pnpm migrate:content --write`
+
+---
+
+## 15) Scripts & Config Snippets
+
+**`package.json` (scripts excerpt)**:
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e:smoke": "playwright test",
+    "lhci": "lhci",
+    "migrate:content": "ts-node --transpile-only scripts/migrate-content.ts",
+    "migrate:content:check": "pnpm migrate:content --dry-run && git diff --exit-code"
+  }
+}
+```
+
+**Lighthouse CI** (`lighthouserc.json`):
+```json
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": ".next",
+      "startServerCommand": "pnpm start",
+      "url": ["/", "/blog", "/blog/sample-post"]
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", {"minScore": 0.9}],
+        "categories:accessibility": ["error", {"minScore": 0.95}],
+        "categories:seo": ["error", {"minScore": 0.9}],
+        "uses-rel-preconnect": "warn"
+      }
+    }
+  }
+}
+```
+
+**Playwright** (`playwright.config.ts` smoke example):
+```ts
+import { defineConfig, devices } from '@playwright/test';
+export default defineConfig({
+  testDir: './tests/e2e',
+  use: { baseURL: 'http://localhost:3000' },
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+});
+```
+
+**A11y smoke** (`tests/e2e/a11y.spec.ts`):
+```ts
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('a11y: home/blog/contact have no serious violations', async ({ page }) => {
+  for (const path of ['/', '/blog', '/contact']) {
+    await page.goto(path);
+    const results = await new AxeBuilder({ page }).analyze();
+    const serious = results.violations.filter(v => ['serious','critical'].includes(v.impact));
+    expect(serious, `A11y violations on ${path}`).toEqual([]);
+  }
+});
+```
+
+---
+
+## 16) Security & Privacy
+- Add strict security headers in Next.js (CSP with nonces for RSC inline, `frame-ancestors 'none'`, HSTS on apex).
+- Rate‑limit contact API; redact PII in logs.
+- Cookie‑less analytics; opt‑in only.
+
+---
+
+## 17) Rollout Plan
+
+1. **Week 1** — Research ADRs, scaffold, shared content/MDX templates.
+2. **Week 2** — Migrate blogs & images, implement pages/components.
+3. **Week 3** — Harden a11y/perf; implement contact API; verify redirects.
+4. **Week 4** — SEO polish, analytics/monitoring, CI green, UAT → promote to `develop`, then `main`.
+
+**Promotion**:
+- Auto preview on PR → QA checks → merge to `develop` (staging) → UAT sign‑off → tag + release to `main`.
+
+**Rollback**:
+- Immutable builds; revert commit + redeploy. Keep old static assets for 7 days to preserve caches.
+
+---
+
+## 18) Acceptance Criteria (Definition of Done)
+
+- All CI gates pass (lint/type/unit/e2e/a11y/perf budgets).
+- Blog migration complete; redirects validated; feeds and sitemap live.
+- 3D hero loads lazily with motion toggle; fallbacks verified.
+- Contact form works with server validation and rate limits.
+- Error budget healthy; Sentry shows no unhandled exceptions post‑launch.
+- Documentation complete (ADRs, this IMPLEMENTATION.md, runbooks).
+
+---
+
+## 19) Open Questions
+- Branding system or design kit updates?
+- Search scale budget (stay local vs Algolia/Typesense)?
+- Preferred analytics provider?
+- Keep any legacy SCSS selectively?
+
+---
+
+## 20) Checklist (Copy into PR Template)
+
+- [ ] ADRs merged for gates A–E
+- [ ] Scaffold completed; scripts added
+- [ ] Content migration dry‑run clean; `--write` executed
+- [ ] Redirects validated (Playwright)
+- [ ] Blog UX complete (index/search/ToC/reading time)
+- [ ] Forms/API validated with spam tests
+- [ ] A11y/Lighthouse budgets green
+- [ ] Observability configured
+- [ ] CI/CD passing; preview deploy verified
+- [ ] Docs updated (ADRs, runbooks, IMPLEMENTATION.md)
+
+---
+
+## 21) Appendix — Minimal `next.config.mjs` Redirects Example
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async redirects() {
+    // Example: load from generated redirects.json if desired
+    return [
+      // { source: '/old-path', destination: '/blog/new-slug', permanent: true },
+    ];
+  },
+  experimental: {
+    // enable as needed
+  },
+};
+
+export default nextConfig;
+```
