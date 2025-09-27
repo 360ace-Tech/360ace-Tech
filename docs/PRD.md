@@ -1,53 +1,29 @@
 # Product Requirements Document (PRD)
 
 ## Project Title
-360ace.Tech Website Revamp — Next.js, Modern 3D UX, and Content Platform
-
-## Objective
-Rebuild the current static site into a performant, accessible, and scalable web app on Next.js 15.5.4 (App Router). Deliver a polished brand experience with subtle, high‑quality 3D/immersive elements, robust blog publishing, excellent Core Web Vitals, and a professional CI/CD workflow.
 
 ## Background & Context
 - Current site is a static HTML/CSS/JS build in this repo (`index.html`, `assets/`, `blogs/`).
-- Blogs exist as Markdown with images in `blogs/img/`.
-- Goals: modernize stack, unify content workflow, improve UX, and enable fast iteration.
-
 ## Goals
-- Modern stack with type safety, great DX, and easy hosting.
 - Seamless blog rendering from Markdown/MDX with tags, search, and SEO.
 - Tasteful 3D/immersive elements that enhance, not distract; graceful fallbacks.
 - Excellent performance (LCP, CLS, TBT), accessibility, and SEO.
 - Professional delivery: CI/CD, previews, observability, and documentation.
-
 ## Variations (3 Concepts to Prototype)
 Produce three distinct, high‑fidelity variations of the revamp to evaluate direction before committing to a final build. Each variant ships as a deployable preview with metrics.
 
-- Variant A — Minimal Performance‑First
-  - Style: Clean, typographic, low motion. Focus on clarity and speed.
-  - Tech emphasis: Tailwind + shadcn/ui, subtle Framer Motion; Canvas/CSS effects (no heavy 3D).
-  - Goal: Highest Core Web Vitals and readability; quickest content authoring.
-
 - Variant B — Immersive 3D Hero
-  - Style: Polished 3D hero (R3F + drei), tasteful micro‑interactions.
-  - Tech emphasis: React Three Fiber, dynamic import, motion toggle, GPU‑frugal techniques.
   - Goal: “Wow” factor on modern devices with graceful fallbacks.
 
-- Variant C — Editorial/Brand Story
   - Style: Magazine‑like layouts, rich MDX components, narrative case studies.
   - Tech emphasis: MDX template richness, callouts/steps/galleries; strong SEO.
-  - Goal: Content credibility and conversion, flexible templates.
 
 Variant selection process
-- Deliverables per variant: preview URL, Lighthouse/Axe report, size report, short design rationale.
-- Stakeholder review checklist: brand fit, clarity of value, performance, accessibility, maintainability.
 - Choose one primary direction; optionally merge strengths from others.
 
-## Non‑Goals
-- Building a custom headless CMS in phase 1.
 - Heavy WebGL scenes or game‑like interactions that harm performance.
 - Multi‑tenant authoring system (can be revisited later if needed).
-
 ---
-
 ## Discovery & Research Gates (Use Latest Tech)
 For each decision, maintain a short ADR (Architecture Decision Record) under `docs/adr/` with: problem, options, decision, rationale, and date. Re‑evaluate choices once before build freeze.
 
@@ -68,25 +44,6 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 - Criteria: FPS on mid‑tier devices, CPU/GPU usage, fallback for `prefers-reduced-motion`.
 
 5) Search
-- Options: Client‑side full‑text (FlexSearch/Lunr) vs. hosted (Algolia/Typesense Cloud) depending on index size and budget.
-
-6) Analytics & Monitoring
-- Options: Vercel Web Analytics or Plausible (privacy‑first), plus Sentry for error tracking.
-
-7) Forms
-- Options: Serverless function with email via Resend/SendGrid; anti‑spam via hCaptcha/reCAPTCHA or honeypot + rate limiting.
-
-8) Testing
-- Options: Playwright for E2E/visual, Vitest/Jest + Testing Library for units, Lighthouse CI for perf budgets.
-
-9) Deployment
-- Options: Vercel (default) vs. Netlify/Fly — prioritize preview URLs, Edge, and ISR support.
-
-10) Upgrades
-- Use Renovate/Dependabot; pin ranges; monthly “tech radar” review to keep current.
-
-11) Agent & Automation Workflow
-- Create small focused “agents” (human or AI‑assisted) for: UI polish, UX review, SEO, content improvement, and animation/3D. Each agent proposes changes via PRs referencing relevant ADRs and measurements (e.g., Lighthouse, Axe, size snapshots).
 
 ---
 
@@ -112,24 +69,11 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 5) Content Admin Flow (Phase 1)
 - Blog posts created via Git in `blogs/` with PR review and preview deployments.
 
-6) Templates & Content Model
-- Provide reusable content templates to accelerate updates and keep consistency:
-  - Blog post MDX template (frontmatter + components for callouts, code blocks, galleries).
-  - Case study/portfolio template (hero, metrics, quotes, process steps).
-  - Services page template (feature blocks, FAQs, CTAs).
-- MD/MDX lives in `content/` (or migrated from `blogs/`); pages generated via file‑based routing and Contentlayer.
-- Allow partials/slots for hero, sidebar, and CTA sections for flexibility.
 
-7) Variant Routing Strategy
-- Expose prototypes under `/v1`, `/v2`, `/v3` route groups. Production root `/` maps to the selected variant via environment config.
-- Ensure shared content/models so variants reuse the same MDX data and differ mainly in presentation.
 
----
 
 ## Non‑Functional Requirements
 - Performance budgets: LCP < 2.5s, CLS < 0.1, TBT < 200ms on fast 3G/low‑end desktop with 75th percentile targets.
-- Accessibility: WCAG 2.2 AA; Axe score ≥ 95 on key pages.
-- SEO: Lighthouse SEO ≥ 95; sitemaps, robots, structured data, canonical.
 - Security: Strict CSP, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, rate limiting on APIs.
 - Privacy: Cookie‑less analytics by default; GDPR‑friendly.
 
@@ -219,23 +163,8 @@ draft: false
 ---
 
 ## Acceptance Criteria (Definition of Done)
-- Tech decisions documented via ADRs; all research gates completed.
-- Pages implemented: Home, Services, About, Blog index, Post, Contact.
-- Blog MDX rendering with ToC, code highlighting, reading time, tags, search.
-- 3D elements implemented with graceful fallback and motion toggle.
-- Performance: LCP < 2.5s, CLS < 0.1, TBT < 200ms on target profiles; Lighthouse ≥ 90 across PWA/Perf/A11y/SEO.
-- Accessibility: Axe score ≥ 95 on key pages; keyboard nav passes.
-- SEO: sitemaps, robots, JSON‑LD, canonical, dynamic OG images.
-- CI/CD: automated checks passing; preview links for all PRs.
-- Analytics/Monitoring: privacy‑friendly analytics enabled; Sentry connected (DSN through env).
-- Documentation: README with dev setup, scripts, and deployment; migration guide.
- - Variants: Three deployed previews (`/v1`, `/v2`, `/v3`) with reports and a documented selection decision.
 
 ---
-
-## Metrics & KPIs
-- Core Web Vitals (CrUX/Lighthouse CI): LCP, CLS, TBT.
-- Organic traffic growth; blog read depth; time on page.
 - Error rate (Sentry), 95th percentile response time for serverless endpoints.
 
 ---
@@ -249,20 +178,20 @@ draft: false
 
 ## Timeline (Indicative)
 - Week 1: Discovery gates, scaffolding, shared content pipeline and templates.
-- Week 2: Build three variants (V1/V2/V3) on shared content; deploy previews + collect metrics.
-- Week 3: Select/merge direction; harden accessibility, performance; implement contact API.
+- Week 2: Migrate all blog content and images to the new site using MDX with frontmatter; implement reusable templates for all pages and posts.
+- Week 3: Harden accessibility, performance; implement contact API; validate site rendering and content migration with all test/validation tools.
 - Week 4: Finalize SEO, analytics/monitoring, CI/CD polish, redirects, launch.
 
 ---
 
 ## Work Breakdown (Agent‑Friendly)
 - Setup: Next.js app, TS, Tailwind, shadcn/ui, ESLint/Prettier, Husky.
-- Content: Migrate `blogs/` to MDX with frontmatter; image moves; feed/sitemap.
-- Blog UX: index with filters/search; post page with ToC and code highlight.
+- Content: Review all previous website contents for completeness and accuracy; migrate `blogs/` to MDX with frontmatter; image moves; feed/sitemap.
+- Blog UX: index with filters/search; post page with ToC and code highlight; ensure all pages and blog posts use reusable, well-documented templates for easy future updates and content improvement.
 - 3D: hero effect (R3F), dynamic import, reduced‑motion support.
 - SEO: titles, canonicals, OG, JSON‑LD, robots, redirects.
 - Forms: contact page + serverless handler + anti‑spam.
-- Testing: Playwright smoke, unit tests for utilities and components.
+- Testing: Playwright smoke, unit tests for utilities and components; validate site rendering and content migration with all test/validation tools.
 - Delivery: Vercel pipelines, preview links, monitoring, docs.
 
 ---
