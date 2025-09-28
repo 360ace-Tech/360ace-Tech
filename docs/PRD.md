@@ -59,6 +59,7 @@ What to keep / migrate / improve:
 ## Technology Stack & Architecture
 - Framework: Next.js 15.4.2+ (App Router, Server Components, Server Actions, Metadata API, PPR/Turbopack dev). React 19 for features and ecosystem parity.
 - Styling/UI: Tailwind CSS v4 (atomic, theming via CSS custom properties), shadcn/ui + Radix primitives (optional), CSS variables for theming.
+- Also take a look at shadcn, 3js and other suitable technologies to make the site transition, professional as much as possible
 - Motion: Motion for React (`motion/react`) for page/section transitions, micro-interactions, and scroll/gesture; respect `prefers-reduced-motion`.
 - 3D: React Three Fiber (+ Drei helpers) for optional hero/feature scenes; degrade gracefully with static fallback.
 - Content: MD/MDX in repository + Contentlayer for type-safe ingestion and live reload; alternative is plain MDX via `@next/mdx` if Contentlayer is not desired.
