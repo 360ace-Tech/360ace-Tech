@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import ThemeProvider from '../components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: '360ace.Tech — Under Construction',
@@ -21,9 +22,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
