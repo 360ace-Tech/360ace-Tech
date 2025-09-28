@@ -1,7 +1,12 @@
 import { ReactNode } from 'react';
 
-import { VariantShell } from '@/components/variants/variant-shell';
+import { SiteShell } from '@/components/layout/site-shell';
+import { PageTransition } from '@/components/motion/page-transition';
 
 export default function BlogLayout({ children }: { children: ReactNode }) {
-  return <VariantShell variant="v2">{children}</VariantShell>;
+  return (
+    <SiteShell>
+      <PageTransition>{children}</PageTransition>
+    </SiteShell>
+  );
 }

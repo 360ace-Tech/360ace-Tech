@@ -6,23 +6,24 @@ import { InsightsSection } from '@/components/sections/insights';
 import { ProcessSection } from '@/components/sections/process';
 import { ServicesSection } from '@/components/sections/services';
 import { TestimonialsSection } from '@/components/sections/testimonials';
-import { VariantThreeHero } from '@/components/variants/v3/hero';
+import { VariantOneHero } from '@/components/variants/v1/hero';
 import { VariantShell } from '@/components/variants/variant-shell';
 
 export const metadata: Metadata = {
-  title: 'Variant C — Editorial Brand Story',
+  title: 'Variant A — Minimal Performance-First',
 };
 
-export default function VariantThreePage() {
+export default function VariantOnePage() {
   return (
-    <VariantShell variant="v3">
-      <VariantThreeHero />
-      <ServicesSection variant="v3" />
-      <ProcessSection variant="v3" />
-      <DifferentiatorsSection variant="v3" />
-      <InsightsSection variant="v3" />
-      <TestimonialsSection variant="v3" />
-      <CallToActionSection variant="v3" />
+    <VariantShell variant="v1">
+      <VariantOneHero />
+      <ServicesSection variant="v1" />
+      <ProcessSection variant="v1" />
+      <DifferentiatorsSection variant="v1" />
+      <InsightsSection variant="v1" />
+      <TestimonialsSection variant="v1" />
+      <CallToActionSection variant="v1" />
     </VariantShell>
   );
 }
+

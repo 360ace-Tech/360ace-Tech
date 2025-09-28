@@ -1,7 +1,7 @@
 # Product Requirements Document (PRD)
 
 ## Project Title
-360ace.Tech Website Revamp — Next.js, Modern 3D UX, and Content Platform
+360ace.Tech Website — Next.js, Modern 3D UX, and Content Platform (V2‑only)
 
 ## Objective
 Rebuild the current static site into a performant, accessible, and scalable web app on Next.js 15.5.4 (App Router). Deliver a polished brand experience with subtle, high‑quality 3D/immersive elements, robust blog publishing, excellent Core Web Vitals, and a professional CI/CD workflow.
@@ -18,28 +18,8 @@ Rebuild the current static site into a performant, accessible, and scalable web 
 - Excellent performance (LCP, CLS, TBT), accessibility, and SEO.
 - Professional delivery: CI/CD, previews, observability, and documentation.
 
-## Variations (3 Concepts to Prototype)
-Produce three distinct, high‑fidelity variations of the revamp to evaluate direction before committing to a final build. Each variant ships as a deployable preview with metrics.
-
-- Variant A — Minimal Performance‑First
-  - Style: Clean, typographic, low motion. Focus on clarity and speed.
-  - Tech emphasis: Tailwind + shadcn/ui, subtle Framer Motion; Canvas/CSS effects (no heavy 3D).
-  - Goal: Highest Core Web Vitals and readability; quickest content authoring.
-
-- Variant B — Immersive 3D Hero
-  - Style: Polished 3D hero (R3F + drei), tasteful micro‑interactions.
-  - Tech emphasis: React Three Fiber, dynamic import, motion toggle, GPU‑frugal techniques.
-  - Goal: “Wow” factor on modern devices with graceful fallbacks.
-
-- Variant C — Editorial/Brand Story
-  - Style: Magazine‑like layouts, rich MDX components, narrative case studies.
-  - Tech emphasis: MDX template richness, callouts/steps/galleries; strong SEO.
-  - Goal: Content credibility and conversion, flexible templates.
-
-Variant selection process
-- Deliverables per variant: preview URL, Lighthouse/Axe report, size report, short design rationale.
-- Stakeholder review checklist: brand fit, clarity of value, performance, accessibility, maintainability.
-- Choose one primary direction; optionally merge strengths from others.
+## Design Direction
+The site standardizes on the former Variant B (immersive 3D hero) as the single experience. Earlier explorations (V1, V3) are archived for reference and no longer part of scope.
 
 ## Non‑Goals
 - Building a custom headless CMS in phase 1.
@@ -120,9 +100,8 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 - MD/MDX lives in `content/` (or migrated from `blogs/`); pages generated via file‑based routing and Contentlayer2.
 - Allow partials/slots for hero, sidebar, and CTA sections for flexibility.
 
-7) Variant Routing Strategy
-- Expose prototypes under `/v1`, `/v2`, `/v3` route groups. Production root `/` maps to the selected variant via environment config.
-- Ensure shared content/models so variants reuse the same MDX data and differ mainly in presentation.
+7) Routing
+- No variant routes. Root `/` renders the single V2 experience. Blog remains under `/blog` and `/blog/[slug]`.
 
 ---
 
@@ -152,12 +131,16 @@ For each decision, maintain a short ADR (Architecture Decision Record) under `do
 Directory sketch
 ```
 app/
-  (marketing)/
   blog/
     page.tsx       // index, tags, search
     [slug]/page.tsx
   api/contact/route.ts // serverless form handler
 components/
+  layout/          // SiteShell, shared chrome
+  sections/        // Services/Process/etc.
+  templates/       // NotFound, other shared templates
+  variants/
+    v2/            // v2 hero (kept as the chosen design)
 content/
   blog/            // Contentlayer2‑scanned MDX from `blogs/`
 lib/
@@ -229,7 +212,7 @@ draft: false
 - CI/CD: automated checks passing; preview links for all PRs.
 - Analytics/Monitoring: privacy‑friendly analytics enabled; Sentry connected (DSN through env).
 - Documentation: README with dev setup, scripts, and deployment; migration guide.
- - Variants: Three deployed previews (`/v1`, `/v2`, `/v3`) with reports and a documented selection decision.
+ - Variants: Out of scope. V1/V3 archived; site ships V2 only.
 
 ---
 

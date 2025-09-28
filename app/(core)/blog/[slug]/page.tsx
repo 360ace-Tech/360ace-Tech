@@ -45,7 +45,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <section className="bg-background/20 py-24">
       <div className="container-edge">
         <article className="mx-auto max-w-3xl space-y-10">
-          <FadeIn>
+          <FadeIn immediate>
             <header className="space-y-4 text-center">
               <Badge variant="subtle" className="mx-auto bg-primary/10 text-primary">
                 {post.formattedDate}
@@ -54,8 +54,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {post.summary && <p className="text-muted-foreground">{post.summary}</p>}
             </header>
           </FadeIn>
-          <FadeIn>
+          <FadeIn immediate>
             <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
+              {post.image?.path && (
+                <span className="block overflow-hidden rounded-3xl border border-white/10">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={post.image.path} alt={post.image.alt ?? post.title} className="h-auto w-full" loading="eager" />
+                </span>
+              )}
               <MDXContent components={mdxComponents} />
             </div>
           </FadeIn>

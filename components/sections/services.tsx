@@ -1,11 +1,10 @@
 import { FadeIn } from '@/components/motion/fade-in';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { services } from '@/lib/site-content';
-import { cn } from '@/lib/utils';
 
-export function ServicesSection({ variant = 'v1' }: { variant?: 'v1' | 'v2' | 'v3' }) {
+export function ServicesSection() {
   return (
-    <section id="services" className={cn('py-24', variant === 'v3' ? 'bg-white text-slate-900' : 'bg-background/30')}> 
+    <section id="services" className="py-24 bg-background/30"> 
       <div className="container-edge space-y-10">
         <FadeIn>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -23,17 +22,17 @@ export function ServicesSection({ variant = 'v1' }: { variant?: 'v1' | 'v2' | 'v
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {services.map((service, index) => (
             <FadeIn key={service.name} delay={index * 0.05}>
-              <Card className={cn('h-full bg-card/70', variant === 'v3' && 'border-slate-200 bg-white')}>
+              <Card className="h-full bg-card/70">
                 <CardHeader>
                   <CardTitle>{service.name}</CardTitle>
-                  <CardDescription className={cn(variant === 'v3' && 'text-slate-500')}>
+                  <CardDescription>
                     {service.summary}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     {service.outcomes.map((outcome) => (
-                      <li key={outcome} className={cn('leading-relaxed', variant === 'v3' && 'text-slate-600')}>
+                      <li key={outcome} className="leading-relaxed">
                         • {outcome}
                       </li>
                     ))}

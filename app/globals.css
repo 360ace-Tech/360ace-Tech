@@ -3,30 +3,42 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   :root {
-    --background: 220 27% 8%;
-    --foreground: 210 20% 98%;
-    --muted: 220 14% 20%;
-    --muted-foreground: 220 9% 70%;
-    --popover: 220 30% 12%;
-    --popover-foreground: 210 20% 98%;
-    --card: 220 27% 10%;
-    --card-foreground: 210 20% 98%;
-    --border: 220 14% 20%;
-    --input: 220 14% 20%;
-    --primary: 224 94% 65%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 280 80% 65%;
-    --secondary-foreground: 210 20% 98%;
-    --accent: 190 96% 72%;
+    /* Light theme (improved contrast) */
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --muted: 210 16% 92%;
+    --muted-foreground: 222 27% 35%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --primary: 224 86% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 291 89% 64%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 191 97% 42%;
     --accent-foreground: 210 20% 12%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 20% 98%;
-    --ring: 224 94% 65%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 224 86% 55%;
     --radius: 1rem;
   }
 
   .dark {
+    /* Dark theme */
     --background: 222 47% 11%;
     --foreground: 210 20% 96%;
     --muted: 223 47% 20%;
@@ -38,9 +50,9 @@
     --border: 225 36% 18%;
     --input: 225 36% 18%;
     --primary: 224 95% 68%;
-    --primary-foreground: 210 20% 10%;
+    --primary-foreground: 210 20% 96%;
     --secondary: 291 89% 64%;
-    --secondary-foreground: 210 20% 12%;
+    --secondary-foreground: 210 20% 96%;
     --accent: 191 97% 74%;
     --accent-foreground: 210 20% 12%;
     --destructive: 0 84% 60%;
@@ -58,6 +70,11 @@
     background-image: radial-gradient(800px 800px at top left, rgba(99,102,241,0.18), transparent 55%),
       radial-gradient(600px 600px at bottom right, rgba(14,116,144,0.2), transparent 50%);
     background-attachment: fixed;
+  }
+
+  /* Offset anchor scroll to account for sticky header (h-16) */
+  #services, #process, #insights, #contact {
+    scroll-margin-top: 6rem;
   }
 
   ::selection {

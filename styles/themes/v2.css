@@ -1,11 +1,8 @@
 .variant-theme-v2 {
-  --background: 231 35% 8%;
-  --foreground: 208 21% 96%;
-  --primary: 258 96% 70%;
-  --secondary: 200 98% 65%;
-  --accent: 160 84% 60%;
-  --card: 232 36% 12%;
-  --muted: 230 32% 20%;
+  /* Keep variant accents, let light/dark base define background/foreground */
+  --primary: 258 96% 66%;
+  --secondary: 200 98% 60%;
+  --accent: 160 84% 52%;
   --grid-overlay: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
 }

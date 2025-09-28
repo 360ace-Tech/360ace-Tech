@@ -3,7 +3,7 @@ export const company = {
   tagline: 'Cloud Native Engineers & Reliability Partners',
   summary:
     'We accelerate product teams with cloud native architectures, DevOps automation, and platform excellence tailored for regulated, high-growth businesses.',
-  contactEmail: 'hello@360ace.tech',
+  contactEmail: '360ace@360ace.tech',
 };
 
 export const heroContent = {
@@ -96,19 +96,19 @@ export const process = [
 
 export const differentiators = [
   {
-    title: 'Templates that accelerate teams',
+    title: 'Reliability you can measure',
     description:
-      'Contentlayer + MDX powered templates make it effortless to evolve services, case studies, and thought leadership without touching code.',
+      'SLOs, error budgets, and actionable observability drive decisions. We commit to availability and recovery targets that align with your SLAs.',
   },
   {
-    title: 'Research-led delivery',
+    title: 'Paved paths for developer velocity',
     description:
-      'Dedicated agents run UI polish, UX insight, SEO, and performance audits every sprint to keep us at the cutting edge.',
+      'Golden paths, reusable templates, and GitOps-based delivery reduce lead time and cognitive load so teams ship faster with confidence.',
   },
   {
-    title: 'Outcome obsessed',
+    title: 'Security and compliance by design',
     description:
-      'We focus on measurable improvements—faster releases, higher availability, stronger security posture, and empowered teams.',
+      'Landing zones, policy-as-code, and automated controls meet regulatory needs (SOC2, ISO 27001, PCI, HIPAA) without slowing delivery.',
   },
 ];
 

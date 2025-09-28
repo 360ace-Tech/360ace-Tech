@@ -1,6 +1,6 @@
 # Implementation Plan — 360ace.Tech Revamp (Next.js 15.5.4)
 
-This document translates the PRD (docs/PRD.md) into a concrete, step‑by‑step plan. It adds a variants strategy to deliver three distinct concepts (V1/V2/V3) before finalizing the direction.
+This document translates the PRD (docs/PRD.md) into a concrete, step‑by‑step plan. The site standardizes on a single design (V2). Prior explorations (V1, V3) are archived under `archive/` and excluded from builds.
 
 ## Targets
 - Framework: Next.js 15.5.4 (App Router, RSC)
@@ -19,25 +19,12 @@ This document translates the PRD (docs/PRD.md) into a concrete, step‑by‑step
 ## Branch Strategy
 - Long‑lived feature branch: `revamp` (no direct commits to `main`).
 - Flow: feature/* → PR → `revamp` → QA → `develop` → UAT → `main`.
-- Optional variant sub‑branches: `variant/minimal`, `variant/immersive`, `variant/editorial` merged into `revamp`.
 
-## Variants Strategy (V1/V2/V3)
-- Goals: ship three deployable previews that share the same content/model but differ in presentation.
-- Routing:
-  - Create route groups: `app/(variants)/v1`, `app/(variants)/v2`, `app/(variants)/v3`.
-  - Keep a shared core under `app/(core)` for layouts, head/metadata, and MDX providers.
-  - Root selection: production "/" uses env `SITE_VARIANT` (`v1|v2|v3`). During review, prototypes live at `/v1`, `/v2`, `/v3`.
-- Content reuse: single Contentlayer schema; all variants import the same typed data.
-- Theming:
-  - Define theme tokens (CSS variables, Tailwind theme extension) per variant under `styles/themes/{v1,v2,v3}.css`.
-  - shadcn/ui components read tokens; minimal overrides per variant.
-- Motion & 3D per variant:
-  - V1: minimal motion (Framer), CSS/Canvas effects only.
-  - V2: R3F hero (dynamic import + motion toggle + reduced‑motion support).
-  - V3: rich MDX components (callouts/steps/galleries) with light motion.
-- Measurement deliverables for each variant:
-  - Lighthouse (Perf/A11y/SEO/Best) + size snapshot, Axe, FPS notes for V2.
-  - Short rationale doc in `docs/variants/{v1,v2,v3}.md`.
+## Consolidated Strategy (V2 only)
+- Routing: remove `/v1` and `/v3`; root `/` renders the v2 experience. Keep `/blog` and `/blog/[slug]`.
+- Theming: use global light/dark tokens; v2 accents applied by the hero section.
+- Templates: factor shared chrome into `components/layout/site-shell.tsx` and the 404 into `components/templates/not-found.tsx`.
+- Archive: move v1/v3 routes/components/styles to `archive/`.
 
 ## Templates & Content Model
 - Canonical content root: `content/` (migrate `blogs/` → `content/blog/`).
@@ -86,21 +73,17 @@ Phase 2 — Content Pipeline
 3) Migrate `blogs/` → `content/blog/`; add shortcodes.
 4) Blog index with filters/search; post page with ToC, prev/next.
 
-Phase 3 — Variants (V1/V2/V3)
+Phase 3 — Consolidation (V2)
 1) Layout base in `app/(core)` + MDX provider and shared components.
-2) Create `app/(variants)/v1` (minimal), `v2` (immersive 3D), `v3` (editorial) with dedicated theme tokens.
-3) Wire env `SITE_VARIANT` and `/v1|/v2|/v3` routes; root `/` resolves to selected variant.
-4) Measure each variant (Lighthouse/Axe/FPS); write `docs/variants/*.md` rationales.
+2) Implement v2 home experience at `app/page.tsx` and remove `/v1` and `/v3` routes.
+3) Add `SiteShell` and 404 `NotFoundTemplate`; standardize pages on these templates.
+4) Archive prior variant routes/components/styles under `archive/`.
 
-Phase 4 — Selection + Merge
-1) Stakeholder review; choose primary direction; optionally merge best elements.
-2) Consolidate selected variant into production layout; keep `/v1|/v2|/v3` for reference until launch.
-
-Phase 5 — SEO/Perf/Analytics
+Phase 4 — SEO/Perf/Analytics
 1) Metadata, JSON‑LD, OG; tune to hit LCP/CLS/TBT budgets.
 2) Enable analytics; connect Sentry.
 
-Phase 6 — QA + Launch
+Phase 5 — QA + Launch
 1) Playwright smoke + accessibility checks.
 2) Final content migration; redirects; sitemap/robots.
 3) Promote `revamp` → `develop` → `main` after UAT.
@@ -117,42 +100,34 @@ Phase 6 — QA + Launch
 - `scripts/migrate-blogs.ts`: normalize frontmatter, update image paths.
 - `scripts/generate-rss.ts`: generate RSS/Atom to `public/`.
 - `scripts/verify-links.ts`: check internal links.
-- `scripts/collect-metrics.mjs`: run Lighthouse (CI) for `/v1|/v2|/v3` and store reports.
+- `scripts/collect-metrics.mjs`: run Lighthouse (CI) for key pages and store reports.
 
 ## Directory Layout (target)
 ```
 app/
-  (core)/               # shared layout/providers/seo
-  (variants)/
-    v1/                 # minimal performance-first
-      page.tsx
-    v2/                 # immersive 3D hero
-      page.tsx
-    v3/                 # editorial/brand story
-      page.tsx
   blog/
     page.tsx
     [slug]/page.tsx
   api/contact/route.ts
 components/
-  ui/           # shadcn/ui exports
-  mdx/          # MDX shortcodes
-  3d/           # R3F scenes
+  layout/      # SiteShell, nav/footer
+  sections/    # Services/Process/etc.
+  templates/   # NotFound, shared page templates
+  variants/
+    v2/        # 3D hero and v2‑specific bits
 content/
   blog/
-  services/
-  case-studies/
 lib/
 public/
 styles/
-  themes/
-    v1.css
-    v2.css
-    v3.css
 docs/
   adr/
+archive/
   variants/
-scripts/
+    v1/
+    v3/
+  components/
+  styles/
 ```
 
 ## Acceptance Gates
@@ -160,8 +135,7 @@ scripts/
 - Accessibility: Axe ≥ 95; keyboard nav; reduced‑motion honored.
 - SEO: Metadata complete; JSON‑LD valid; OG images render; Lighthouse SEO ≥ 95.
 - Content: Legacy blogs migrated; templates functioning; redirects in place.
-- CI/CD: All checks green; previews for each variant.
-- Variants: Three deployed previews with reports and a documented selection decision.
+- CI/CD: All checks green.
 
 ## Command Cheatsheet (revamp)
 ```
@@ -178,13 +152,10 @@ npx shadcn@latest add button input dialog sheet tabs accordion tooltip toast
 # contentlayer (dev)
 npm i -D contentlayer2 next-contentlayer2
 
-# run variants locally (visit /v1, /v2, /v3)
+# run locally
 npm run dev
-# or choose default variant for root
-SITE_VARIANT=v2 npm run dev
 ```
 
 ---
 
 For scope and quality bars, see `docs/PRD.md`.
-

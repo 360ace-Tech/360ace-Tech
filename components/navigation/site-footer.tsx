@@ -1,4 +1,3 @@
-import type { Route } from 'next';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
@@ -23,9 +22,9 @@ const footerLinks = [
   },
 ];
 
-export function SiteFooter({ variant }: { variant?: 'v1' | 'v2' | 'v3' }) {
+export function SiteFooter() {
   return (
-    <footer className={variant === 'v3' ? 'bg-white text-slate-900' : 'bg-background/40'}>
+    <footer className="bg-background/40">
       <div className="container-edge grid gap-10 border-t border-white/10 py-12 md:grid-cols-4">
         <div className="space-y-3">
           <Badge variant="subtle" className="bg-primary/10 text-primary">
@@ -48,16 +47,14 @@ export function SiteFooter({ variant }: { variant?: 'v1' | 'v2' | 'v3' }) {
             </h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               {column.links.map((link) => {
-                const isAnchor = link.href.startsWith('/#');
-                const href = isAnchor ? link.href.replace('/#', variant ? `/${variant}#` : '#') : link.href;
                 return (
                   <li key={link.label}>
-                    {isAnchor ? (
-                      <a className="hover:text-foreground" href={href}>
+                    {link.href.startsWith('/#') ? (
+                      <a className="hover:text-foreground" href={link.href}>
                         {link.label}
                       </a>
                     ) : (
-                      <Link className="hover:text-foreground" href={href as Route}>
+                      <Link className="hover:text-foreground" href={link.href}>
                         {link.label}
                       </Link>
                     )}

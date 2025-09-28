@@ -1,10 +1,9 @@
 import { FadeIn } from '@/components/motion/fade-in';
 import { process as processSteps } from '@/lib/site-content';
-import { cn } from '@/lib/utils';
 
-export function ProcessSection({ variant = 'v1' }: { variant?: 'v1' | 'v2' | 'v3' }) {
+export function ProcessSection() {
   return (
-    <section id="process" className={cn('relative overflow-hidden py-24', variant === 'v3' ? 'bg-slate-50 text-slate-900' : 'bg-background/20')}>
+    <section id="process" className="relative overflow-hidden py-24 bg-background/20">
       <div className="container-edge space-y-12">
         <FadeIn>
           <div className="max-w-2xl space-y-4">
@@ -18,12 +17,7 @@ export function ProcessSection({ variant = 'v1' }: { variant?: 'v1' | 'v2' | 'v3
         <div className="grid gap-6 md:grid-cols-2">
           {processSteps.map((step, index) => (
             <FadeIn key={step.id} delay={index * 0.05}>
-              <div
-                className={cn(
-                  'flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg backdrop-blur-xl',
-                  variant === 'v3' && 'border-slate-200 bg-white shadow-2xl',
-                )}
-              >
+              <div className="flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                   <span className="text-lg text-gradient-primary">{step.id}</span>
                   {step.title}

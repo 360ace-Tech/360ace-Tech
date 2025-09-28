@@ -1,10 +1,9 @@
 import { FadeIn } from '@/components/motion/fade-in';
 import { testimonials } from '@/lib/site-content';
-import { cn } from '@/lib/utils';
 
-export function TestimonialsSection({ variant = 'v1' }: { variant?: 'v1' | 'v2' | 'v3' }) {
+export function TestimonialsSection() {
   return (
-    <section className={cn('py-24', variant === 'v3' ? 'bg-slate-100 text-slate-900' : 'bg-background/20')}>
+    <section className="py-24 bg-background/20">
       <div className="container-edge space-y-12">
         <FadeIn>
           <div className="max-w-xl space-y-4">
@@ -15,12 +14,7 @@ export function TestimonialsSection({ variant = 'v1' }: { variant?: 'v1' | 'v2' 
         <div className="grid gap-6 lg:grid-cols-2">
           {testimonials.map((testimonial, index) => (
             <FadeIn key={testimonial.name} delay={index * 0.05}>
-              <blockquote
-                className={cn(
-                  'h-full rounded-3xl border border-white/10 bg-card/60 p-8 text-lg leading-relaxed shadow-lg',
-                  variant === 'v3' && 'border-slate-200 bg-white shadow-xl',
-                )}
-              >
+              <blockquote className="h-full rounded-3xl border border-white/10 bg-card/60 p-8 text-lg leading-relaxed shadow-lg">
                 “{testimonial.quote}”
                 <footer className="mt-6 text-sm text-muted-foreground">
                   <span className="font-semibold text-foreground">{testimonial.name}</span>

@@ -17,15 +17,21 @@ export const mdxComponents: MDXComponents = {
     <a className={cn('font-medium text-primary underline-offset-4 hover:underline', className)} {...props} />
   ),
   pre: ({ className, ...props }) => (
-    <pre className={cn('mt-6 overflow-x-auto rounded-2xl border border-white/10 bg-black/80 p-4 text-sm', className)} {...props} />
+    <pre
+      className={cn(
+        'mt-6 overflow-x-auto rounded-2xl border border-border bg-card p-4 text-sm shadow-md',
+        className,
+      )}
+      {...props}
+    />
   ),
   code: ({ className, ...props }) => (
-    <code className={cn('rounded bg-white/10 px-1.5 py-0.5 text-sm', className)} {...props} />
+    <code className={cn('rounded bg-muted/40 px-1.5 py-0.5 text-sm', className)} {...props} />
   ),
   img: ({ className, alt, ...props }) => (
     <span className="mt-8 block overflow-hidden rounded-3xl">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img alt={alt ?? ''} className={cn('h-auto w-full', className)} {...props} />
+      <img alt={alt ?? ''} className={cn('h-auto w-full', className)} loading="lazy" decoding="async" {...props} />
     </span>
   ),
 };

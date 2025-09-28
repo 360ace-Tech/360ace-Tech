@@ -52,13 +52,45 @@ const Post = defineDocumentType(() => ({
   },
 }));
 
-const rehypePlugins: PluggableList = [[rehypePrettyCode as unknown as any, { theme: 'one-dark-pro' }]];
+// Fix relative image paths in MD/MDX to use absolute public paths
+function remarkFixImagePaths() {
+  return (tree: any) => {
+    const visit = (node: any) => {
+      if (!node || typeof node !== 'object') return;
+      // Fix image nodes: ../../blogs/img/foo.png -> /blogs/img/foo.png
+      if (node.type === 'image' && typeof node.url === 'string') {
+        if (node.url.startsWith('../../blogs/')) {
+          node.url = node.url.replace(/^\.\.\/\.\.\//, '/');
+        } else if (node.url.startsWith('../blogs/')) {
+          node.url = node.url.replace(/^\.\.\//, '/');
+        }
+      }
+      // Recurse into children
+      if (Array.isArray((node as any).children)) {
+        for (const child of (node as any).children) visit(child);
+      }
+    };
+    visit(tree);
+  };
+}
+
+const rehypePlugins: PluggableList = [
+  [
+    rehypePrettyCode as unknown as any,
+    {
+      theme: {
+        dark: 'one-dark-pro',
+        light: 'github-light',
+      },
+    },
+  ],
+];
 
 export default makeSource({
   contentDirPath: 'content',
   documentTypes: [Post],
   markdown: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [remarkFixImagePaths as unknown as any, remarkGfm],
     // rehype-pretty-code bundles its own vfile dependency which conflicts with Contentlayer's
     // type expectations. Cast to `unknown` before handing to Contentlayer to avoid mismatched
     // types while retaining runtime behaviour.

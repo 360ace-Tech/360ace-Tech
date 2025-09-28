@@ -54,3 +54,4 @@ export function VariantThreeHero() {
     </section>
   );
 }
+

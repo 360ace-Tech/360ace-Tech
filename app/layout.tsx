@@ -1,12 +1,11 @@
 import '@/app/globals.css';
-import '@/styles/themes/v1.css';
 import '@/styles/themes/v2.css';
-import '@/styles/themes/v3.css';
 
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 
 import { Providers } from '@/app/(core)/providers';
+import { HashScroll } from '@/components/navigation/hash-scroll';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
@@ -32,9 +31,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-sans text-foreground antialiased')}>
+      <body suppressHydrationWarning className={cn('min-h-screen bg-background font-sans text-foreground antialiased')}>
         <Providers>
           <div className="relative flex min-h-screen flex-col">
+            <HashScroll />
             {children}
           </div>
         </Providers>

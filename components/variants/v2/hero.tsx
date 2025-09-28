@@ -18,7 +18,10 @@ export function VariantTwoHero() {
       <div className="container-edge relative z-10 grid gap-16 lg:grid-cols-2">
         <div className="space-y-8">
           <FadeIn>
-            <Badge variant="subtle" className="bg-secondary/10 text-secondary-foreground">
+            <Badge
+              variant="subtle"
+              className="bg-background/60 text-foreground backdrop-blur-sm border border-white/10 dark:border-white/10"
+            >
               {heroContent.eyebrow}
             </Badge>
           </FadeIn>
