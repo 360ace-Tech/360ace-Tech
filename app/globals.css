@@ -66,6 +66,22 @@ canvas.starfield {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
 }
 
+/* CTA buttons */
+.cta {
+  display: inline-block;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #0b1020;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.cta.secondary {
+  background: transparent;
+  color: #E6E6F0;
+}
+
 .tilt-card {
   --rx: 0;
   --ry: 0;
@@ -99,4 +115,3 @@ canvas.starfield {
 @media (prefers-reduced-motion: reduce) {
   .tilt-inner { transform: none !important; }
 }
-

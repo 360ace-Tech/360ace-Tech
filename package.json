@@ -1,23 +1,29 @@
 {
   "name": "360ace-tech-next",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.3.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint || echo 'lint skipped'"
+    "lint": "next lint || echo 'lint skipped'",
+    "validate": "npm run lint && next build"
   },
   "dependencies": {
-    "next": "14.2.5",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "@mdx-js/react": "^3.0.0",
+    "@next/mdx": "^15.4.2",
+    "gray-matter": "^4.0.3",
+    "motion": "^11.0.0",
+    "next": "15.4.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "typescript": "^5.4.5"
+    "@types/node": "^20.16.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.6.0",
+    "@mdx-js/loader": "^3.0.0"
   }
 }
-
