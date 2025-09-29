@@ -4,6 +4,8 @@ import BlogClient from './BlogClient';
 
 type Props = { params: Promise<{ slug: string }> };
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   // Static paths derived from manifest to ensure bundling includes MDX.
   return [
