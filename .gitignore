@@ -4,6 +4,7 @@ node_modules/
 out/
 .turbo/
 dist/
+.contentlayer/
 
 # Env
 .env*
@@ -28,4 +29,8 @@ coverage/
 
 # Misc
 *.local
-
+tsconfig.tsbuildinfo
+nav-menu
+index.html
+assets
+.vercel
