@@ -67,8 +67,9 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
   // sibling blur handled by blurStrong on the label span
   const blurStrong = {
     initial: { filter: 'blur(0px)', opacity: 1 },
-    open: { filter: 'blur(10px)', opacity: 0.2, transition: { duration: 0.18 } },
-    closed: { filter: 'blur(0px)', opacity: 1, transition: { duration: 0.18 } },
+    // Slow the blur and avoid dimming to keep color consistent
+    open: { filter: 'blur(10px)', opacity: 1, transition: { duration: 0.32 } },
+    closed: { filter: 'blur(0px)', opacity: 1, transition: { duration: 0.32 } },
   } as const;
   // Entire line reveal (no per-character split)
   const revealItem = {
@@ -204,7 +205,7 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                             }}
                             onTouchStart={() => setHoverIndex(i)}
                             onTouchEnd={() => setHoverIndex(null)}
-                            className="transition-all duration-150 group-hover:opacity-40 hover:opacity-100"
+                            className="transition-all duration-200"
                           >
                             <a
                               href={item.href}

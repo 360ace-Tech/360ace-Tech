@@ -1,5 +1,6 @@
 import { FadeIn } from '@/components/motion/fade-in';
 import { process as processSteps } from '@/lib/site-content';
+import { CardRail } from '@/components/ui/card-rail';
 
 export function ProcessSection() {
   return (
@@ -14,7 +15,25 @@ export function ProcessSection() {
             </p>
           </div>
         </FadeIn>
-        <div className="grid gap-6 md:grid-cols-2">
+        {/* Mobile rail */}
+        <div className="nav:hidden -mx-6">
+          <CardRail ariaLabel="Delivery rhythm">
+            {processSteps.map((step) => (
+              <div key={step.id} className="min-w-[80vw] snap-center">
+                <div className="flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg backdrop-blur-xl">
+                  <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                    <span className="text-lg text-gradient-primary">{step.id}</span>
+                    {step.title}
+                  </div>
+                  <h3 className="mt-4 text-2xl font-semibold">{step.heading}</h3>
+                  <p className="mt-4 text-sm text-muted-foreground">{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </CardRail>
+        </div>
+        {/* Desktop grid */}
+        <div className="hidden gap-6 nav:grid nav:grid-cols-2">
           {processSteps.map((step, index) => (
             <FadeIn key={step.id} delay={index * 0.05}>
               <div className="flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg backdrop-blur-xl">

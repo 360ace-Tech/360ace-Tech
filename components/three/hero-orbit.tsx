@@ -140,7 +140,7 @@ export function HeroOrbitScene() {
             viewBox="0 0 160 110"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={isLight ? '' : 'drop-shadow-[0_0_30px_rgba(56,189,248,0.5)]'}
+            className={isLight ? 'drop-shadow-[0_2px_6px_rgba(59,130,246,0.25)]' : 'drop-shadow-[0_0_30px_rgba(56,189,248,0.5)]'}
           >
             <defs>
               <linearGradient id="cloudGrad" x1="0" y1="0" x2="1" y2="1">
@@ -150,15 +150,15 @@ export function HeroOrbitScene() {
             </defs>
             <path
               d="M115 47c0-17-14-31-31-31-15 0-27 10-30 24-10 1-18 10-18 20 0 12 10 22 22 22h68c12 0 22-10 22-22s-10-22-22-22h-1z"
-              fill="url(#cloudGrad)"
+              fill={isLight ? 'white' : 'url(#cloudGrad)'}
             />
             {/* Outline for light mode to separate cloud from background */}
             <path
               d="M115 47c0-17-14-31-31-31-15 0-27 10-30 24-10 1-18 10-18 20 0 12 10 22 22 22h68c12 0 22-10 22-22s-10-22-22-22h-1z"
               fill="none"
-              stroke={isLight ? 'white' : 'transparent'}
-              strokeOpacity={isLight ? 0.3 : 0}
-              strokeWidth="1.5"
+              stroke={isLight ? 'hsl(var(--primary))' : 'transparent'}
+              strokeOpacity={isLight ? 0.7 : 0}
+              strokeWidth="2"
               strokeLinejoin="round"
             />
             {/* No white overlay in light mode now (darker cloud) */}
@@ -184,12 +184,18 @@ export function HeroOrbitScene() {
                   height: `${120 + index * 14}%`,
                   width: `${120 + index * 14}%`,
                   transform: `translate(-50%, -50%) rotate(${index * 10}deg)`,
-                  borderColor: isLight ? 'rgba(2,6,23,0.2)' : 'rgba(255,255,255,0.1)',
+                  borderColor: isLight ? 'hsl(var(--primary) / 0.25)' : 'rgba(255,255,255,0.1)',
                 }}
               >
                 {[0, 120, 240].map((a) => (
                   <div key={a} className="absolute left-1/2 top-1/2" style={{ transform: `translate(-50%, -50%) rotate(${a}deg) translate(0, -50%)` }}>
-                    <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isLight ? 'rgba(2,6,23,1)' : 'rgba(186,230,253,0.95)', boxShadow: isLight ? 'none' : '0 0 12px rgba(56,189,248,0.9)' }} />
+                    <div
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{
+                        backgroundColor: isLight ? 'hsl(var(--primary))' : 'rgba(186,230,253,0.95)',
+                        boxShadow: isLight ? '0 0 8px hsl(var(--primary) / 0.35)' : '0 0 12px rgba(56,189,248,0.9)',
+                      }}
+                    />
                   </div>
                 ))}
               </div>
@@ -241,7 +247,7 @@ export function HeroOrbitScene() {
               left: s.left,
               height: s.size,
               width: s.size,
-              backgroundColor: isLight ? 'rgba(2,6,23,0.8)' : 'rgba(255,255,255,0.6)',
+              backgroundColor: isLight ? 'hsl(var(--primary) / 0.55)' : 'rgba(255,255,255,0.6)',
             }}
             animate={reduceMotion ? {} : { opacity: [0.15, 0.7, 0.15], scale: [1, 1.4, 1] }}
             transition={{ repeat: Infinity, duration: 5.6, ease: 'easeInOut', delay: s.delay }}
@@ -258,7 +264,7 @@ export function HeroOrbitScene() {
               left: s.left,
               height: s.size + 0.5,
               width: s.size + 0.5,
-              backgroundColor: isLight ? 'rgba(2,6,23,0.85)' : 'rgba(255,255,255,0.7)',
+              backgroundColor: isLight ? 'hsl(var(--primary) / 0.7)' : 'rgba(255,255,255,0.7)',
             }}
             animate={reduceMotion ? {} : { opacity: [0.2, 0.9, 0.2], scale: [1, 1.6, 1] }}
             transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: s.delay }}
@@ -275,7 +281,7 @@ export function HeroOrbitScene() {
               left: s.left,
               height: s.size + 1,
               width: s.size + 1,
-              backgroundColor: isLight ? 'rgba(2,6,23,0.9)' : 'rgba(255,255,255,1)',
+              backgroundColor: isLight ? 'hsl(var(--primary))' : 'rgba(255,255,255,1)',
             }}
             animate={reduceMotion ? {} : { opacity: [0.25, 1, 0.25], scale: [1, 1.8, 1] }}
             transition={{ repeat: Infinity, duration: 4.2, ease: 'easeInOut', delay: s.delay }}
@@ -317,15 +323,26 @@ export function HeroOrbitScene() {
                   width: s.length,
                   height: isLight ? 2 : s.thickness,
                   background: isLight
-                    ? `linear-gradient(to left, transparent, ${glowSoft}, ${glowColor})`
+                    ? 'linear-gradient(to left, transparent, hsl(var(--primary) / 0.6), hsl(var(--primary)))'
                     : 'linear-gradient(to left, transparent, hsl(var(--muted) / 0.6), hsl(var(--primary)))',
                   opacity: isLight ? Math.min(1, s.opacity + 0.15) : s.opacity,
                 }}
               />
+              {isLight && (
+                <span
+                  className="absolute top-1/2 -translate-y-1/2"
+                  style={{
+                    left: '25%',
+                    width: '35%',
+                    height: 1,
+                    background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.6), transparent)',
+                  }}
+                />
+              )}
               {/* moving node along the line */}
               <motion.span
                 className="absolute top-1/2 -translate-y-1/2 rounded-full"
-                style={{ height: 6, width: 6, backgroundColor: isLight ? 'rgba(2,6,23,1)' : glowColor, boxShadow: isLight ? 'none' : glowShadow }}
+                style={{ height: 6, width: 6, backgroundColor: isLight ? 'hsl(var(--primary))' : glowColor, boxShadow: isLight ? '0 0 8px hsl(var(--primary) / 0.35)' : glowShadow }}
                 initial={{ x: '-10%' }}
                 animate={{ x: '110%' }}
                 transition={{ repeat: Infinity, duration: s.nodeSpeed, ease: 'linear', delay: s.delay + 0.4 }}
@@ -339,7 +356,7 @@ export function HeroOrbitScene() {
       {!reduceMotion && (
         <div className="absolute inset-0">
           {comets.map((c) => (
-            <motion.span
+            <motion.div
               key={`cm-${c.id}`}
               className="pointer-events-none absolute"
               style={{
@@ -347,16 +364,36 @@ export function HeroOrbitScene() {
                 left: c.dir === 1 ? '-25%' : '125%',
                 width: c.length,
                 height: isLight ? Math.max(2.5, c.size + 1) : c.size,
-                background: isLight
-                  ? 'linear-gradient(to left, transparent, rgba(2,6,23,0.9), rgba(2,6,23,1))'
-                  : 'linear-gradient(to left, transparent, hsl(var(--primary) / 0.8), hsl(var(--primary)))',
-                boxShadow: isLight ? '0 0 1px rgba(2,6,23,0.35)' : '0 0 16px hsla(var(--primary) / 0.6)',
                 transform: `rotate(${c.angle}deg)`,
               }}
               initial={{ x: 0, opacity: 0 }}
               animate={{ x: c.dir === 1 ? '170%' : '-170%', opacity: [0, 1, 0.9, 0] }}
               transition={{ repeat: Infinity, duration: c.duration, ease: 'easeOut', delay: c.delay }}
-            />
+            >
+              {/* comet body */}
+              <span
+                className="block h-full"
+                style={{
+                  width: '100%',
+                  background: isLight
+                    ? 'linear-gradient(to left, transparent, hsl(var(--primary) / 0.8), hsl(var(--primary)))'
+                    : 'linear-gradient(to left, transparent, hsl(var(--primary) / 0.8), hsl(var(--primary)))',
+                  boxShadow: isLight ? '0 0 10px hsl(var(--primary) / 0.35)' : '0 0 16px hsla(var(--primary) / 0.6)',
+                }}
+              />
+              {isLight && (
+                <span
+                  className="pointer-events-none absolute top-1/2 -translate-y-1/2"
+                  style={{
+                    right: '20%',
+                    width: '30%',
+                    height: Math.max(1, (c.size - 0.5)),
+                    background: 'linear-gradient(to left, rgba(255,255,255,0.7), rgba(255,255,255,0))',
+                    filter: 'blur(0.2px)',
+                  }}
+                />
+              )}
+            </motion.div>
           ))}
         </div>
       )}

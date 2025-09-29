@@ -1,6 +1,7 @@
 import { FadeIn } from '@/components/motion/fade-in';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { services } from '@/lib/site-content';
+import { CardRail } from '@/components/ui/card-rail';
 
 export function ServicesSection() {
   return (
@@ -19,7 +20,29 @@ export function ServicesSection() {
             </p>
           </div>
         </FadeIn>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {/* Mobile: CardRail; Desktop: grid */}
+        <div className="nav:hidden -mx-6">
+          <CardRail ariaLabel="Capabilities">
+            {services.map((service) => (
+              <div key={service.name} className="min-w-[80vw] snap-center">
+                <Card className="h-full bg-card/70">
+                  <CardHeader>
+                    <CardTitle>{service.name}</CardTitle>
+                    <CardDescription>{service.summary}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      {service.outcomes.map((outcome) => (
+                        <li key={outcome} className="leading-relaxed">• {outcome}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </CardRail>
+        </div>
+        <div className="hidden gap-6 nav:grid nav:grid-cols-2 xl:grid-cols-4">
           {services.map((service, index) => (
             <FadeIn key={service.name} delay={index * 0.05}>
               <Card className="h-full bg-card/70">
