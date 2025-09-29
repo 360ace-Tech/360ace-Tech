@@ -1,4 +1,7 @@
+"use client";
 import Link from 'next/link';
+import type { Route } from 'next';
+import { usePathname } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
 import { company } from '@/lib/site-content';
@@ -25,13 +28,29 @@ const footerLinks = [
 ];
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === '/') {
+      e.preventDefault();
+      const el = document.getElementById('home');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', '/#home');
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        history.replaceState(null, '', '/');
+      }
+    }
+  };
   return (
     <footer className="bg-background/40">
       <div className="container-edge grid gap-10 border-t border-white/10 py-12 md:grid-cols-4">
         <div className="space-y-3">
-          <Badge variant="subtle" className="bg-primary/10 text-primary">
-            {company.name}
-          </Badge>
+          <Link href={'/#home' as Route} onClick={handleHomeClick} className="inline-block">
+            <Badge variant="subtle" className="bg-primary/10 text-primary">
+              {company.name}
+            </Badge>
+          </Link>
           <p className="text-sm text-muted-foreground">
             {company.summary}
           </p>
@@ -51,12 +70,12 @@ export function SiteFooter() {
               {column.links.map((link) => {
                 return (
                   <li key={link.label}>
-                    {link.href.startsWith('/#') ? (
+                    {link.href.startsWith('/#') || link.href.startsWith('#') ? (
                       <a className="hover:text-foreground" href={link.href}>
                         {link.label}
                       </a>
                     ) : (
-                      <Link className="hover:text-foreground" href={link.href}>
+                      <Link className="hover:text-foreground" href={link.href as Route}>
                         {link.label}
                       </Link>
                     )}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -10,8 +11,10 @@ export default function ContactAliasPage() {
   }, [router]);
   return (
     <div className="container-edge py-20">
-      <p>Redirecting to the contact section… If you are not redirected, <a href="/#contact">click here</a>.</p>
+      <p>
+        Redirecting to the contact section… If you are not redirected,
+        <Link className="underline-offset-4 hover:underline" href="/#contact"> click here</Link>.
+      </p>
     </div>
   );
 }
-

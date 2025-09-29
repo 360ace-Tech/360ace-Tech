@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { ThemeToggle } from '@/components/theme/theme-toggle';
+import type { Route } from 'next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { company } from '@/lib/site-content';
@@ -35,7 +36,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button asChild size="sm">
-            <Link href="#contact">Talk to us</Link>
+            <Link href={'/#contact' as Route}>Talk to us</Link>
           </Button>
           <div className="nav:hidden">
             <MobileMenu items={navigation} />

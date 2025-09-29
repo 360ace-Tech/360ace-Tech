@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { SiteShell } from '@/components/layout/site-shell';
 
 type Section = { heading: string; body: string[] };
@@ -38,4 +37,3 @@ export function LegalPage({
     </SiteShell>
   );
 }
-

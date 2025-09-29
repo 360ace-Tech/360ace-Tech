@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Route } from 'next';
 import { ReactNode } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -26,12 +27,12 @@ export function NotFoundTemplate({
           <div className="mt-8 flex items-center justify-center gap-3">
             {primaryCta && (
               <Button asChild>
-                <Link href={primaryCta.href}>{primaryCta.label}</Link>
+                <Link href={primaryCta.href as Route}>{primaryCta.label}</Link>
               </Button>
             )}
             {secondaryCta && (
               <Button asChild variant="outline">
-                <Link href={secondaryCta.href}>{secondaryCta.label}</Link>
+                <Link href={secondaryCta.href as Route}>{secondaryCta.label}</Link>
               </Button>
             )}
           </div>
@@ -40,4 +41,3 @@ export function NotFoundTemplate({
     </section>
   );
 }
-

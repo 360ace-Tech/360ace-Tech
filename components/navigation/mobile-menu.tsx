@@ -34,6 +34,13 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  // Safety: ensure scroll isn't locked on mount
+  useEffect(() => {
+    document.documentElement.classList.remove('overflow-hidden');
+  }, []);
+  useEffect(() => {
+    if (!open) setHoverIndex(null);
+  }, [open]);
   const [hash, setHash] = useState<string>('');
   useEffect(() => {
     const update = () => setHash(window.location.hash || '');
@@ -41,23 +48,23 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
     window.addEventListener('hashchange', update);
     return () => window.removeEventListener('hashchange', update);
   }, []);
+  // Also clear lock if menu not open when route/hash changes
+  useEffect(() => {
+    if (!open) document.documentElement.classList.remove('overflow-hidden');
+  }, [open, pathname, hash]);
 
   // Effects-only integration from nav-menu (no images/footer)
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   // track if last pointer was touch (for UX tweaks), but do not block navigation
   const touchModeRef = useRef(false);
-  const transition = useMemo(() => ({ duration: 1, ease: [0.76, 0, 0.24, 1] as any }), []);
+  const transition = useMemo(() => ({ duration: 1, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] }), []);
   // Height animation for the menu block itself (auto height like the example)
   const height = {
     initial: { height: 0 },
     enter: { height: 'auto', transition },
     exit: { height: 0, transition },
   } as const;
-  const blur = {
-    initial: { filter: 'blur(0px)', opacity: 1 },
-    open: { filter: 'blur(6px)', opacity: 0.3, transition: { duration: 0.2 } },
-    closed: { filter: 'blur(0px)', opacity: 1, transition: { duration: 0.2 } },
-  } as const;
+  // sibling blur handled by blurStrong on the label span
   const blurStrong = {
     initial: { filter: 'blur(0px)', opacity: 1 },
     open: { filter: 'blur(10px)', opacity: 0.2, transition: { duration: 0.18 } },
@@ -71,18 +78,14 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
       opacity: 1,
       transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1], delay: 0.06 * i },
     }),
-    exit: (i: number) => ({
+    exit: () => ({
       y: '100%',
       opacity: 0,
       transition: { duration: 0.45, ease: [0.76, 0, 0.24, 1], delay: 0 },
     }),
   } as const;
 
-  const isActive = (href: string) => {
-    if (href === '/blog') return pathname?.startsWith('/blog');
-    if (href.startsWith('/#')) return hash === href.replace('/', '');
-    return pathname === href;
-  };
+  // For the overlay, underline is hover/focus only (no persistent active)
 
   return (
     <>
@@ -124,7 +127,7 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                   >
                     <div className="relative z-10" onClick={(e) => e.stopPropagation()}>
                     <ul
-                      className="mx-auto w-full max-w-5xl space-y-3 text-left sm:space-y-5 lg:space-y-6"
+                      className="group mx-auto w-full max-w-5xl space-y-3 text-left sm:space-y-5 lg:space-y-6"
                       onMouseLeave={() => setHoverIndex(null)}
                       onMouseMove={(e) => {
                         const el = (e.target as HTMLElement).closest('li[data-index]') as HTMLLIElement | null;
@@ -134,10 +137,10 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                     >
                       {items.map((item, i) => {
                         const isAnchor = item.href.startsWith('/#');
-                        const onPointerDown = (e: React.PointerEvent) => {
-                          touchModeRef.current = (e as any).pointerType === 'touch';
+                        const onPointerDown = (e: React.PointerEvent<HTMLElement>) => {
+                          touchModeRef.current = e.pointerType === 'touch';
                         };
-                        const onClick = (e: any) => {
+                        const onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
                           if (isAnchor) {
                             e.preventDefault();
                             e.stopPropagation();
@@ -161,7 +164,6 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                             else setOpen(false);
                           }
                         };
-                        const active = isActive(item.href);
                         const content = (
                           <motion.span
                             custom={i}
@@ -179,9 +181,7 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                             >
                               {item.label}
                               <span
-                                className={`pointer-events-none absolute -bottom-1 left-0 h-[2px] bg-foreground transition-all duration-300 ${
-                                  active ? 'w-full' : 'w-0 hover:w-full'
-                                }`}
+                                className="pointer-events-none absolute -bottom-1 left-0 h-[2px] w-0 bg-foreground transition-all duration-300 group-hover:w-full focus:w-full"
                               />
                             </motion.span>
                           </motion.span>
@@ -195,16 +195,16 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                             onFocus={() => setHoverIndex(i)}
                             onBlur={() => setHoverIndex(null)}
                             onPointerDown={onPointerDown}
-                            onPointerEnter={(e) => {
+                            onPointerEnter={(e: React.PointerEvent<HTMLElement>) => {
                               // For mouse/pen, treat as hover. Ignore for touch.
-                              if ((e as any).pointerType && (e as any).pointerType !== 'touch') setHoverIndex(i);
+                              if (e.pointerType !== 'touch') setHoverIndex(i);
                             }}
-                            onPointerLeave={(e) => {
-                              if ((e as any).pointerType && (e as any).pointerType !== 'touch') setHoverIndex(null);
+                            onPointerLeave={(e: React.PointerEvent<HTMLElement>) => {
+                              if (e.pointerType !== 'touch') setHoverIndex(null);
                             }}
                             onTouchStart={() => setHoverIndex(i)}
                             onTouchEnd={() => setHoverIndex(null)}
-                            className="transition-all duration-150"
+                            className="transition-all duration-150 group-hover:opacity-40 hover:opacity-100"
                           >
                             <a
                               href={item.href}
@@ -215,11 +215,11 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                               onBlur={() => setHoverIndex(null)}
                               onMouseEnter={() => setHoverIndex(i)}
                               onMouseLeave={() => setHoverIndex(null)}
-                              onPointerEnter={(e) => {
-                                if ((e as any).pointerType && (e as any).pointerType !== 'touch') setHoverIndex(i);
+                              onPointerEnter={(e: React.PointerEvent<HTMLElement>) => {
+                                if (e.pointerType !== 'touch') setHoverIndex(i);
                               }}
-                              onPointerLeave={(e) => {
-                                if ((e as any).pointerType && (e as any).pointerType !== 'touch') setHoverIndex(null);
+                              onPointerLeave={(e: React.PointerEvent<HTMLElement>) => {
+                                if (e.pointerType !== 'touch') setHoverIndex(null);
                               }}
                               onTouchStart={() => setHoverIndex(i)}
                               onTouchEnd={() => setHoverIndex(null)}
