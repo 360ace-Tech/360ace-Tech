@@ -10,7 +10,7 @@ import { VariantTwoHero } from '@/components/variants/v2/hero';
 import { SiteShell } from '@/components/layout/site-shell';
 
 export const metadata: Metadata = {
-  title: 'Immersive 3D Hero',
+  title: '360ace.Tech',
 };
 
 export default function RootPage() {

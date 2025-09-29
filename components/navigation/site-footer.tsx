@@ -18,6 +18,8 @@ const footerLinks = [
       { label: 'Blog', href: '/blog' },
       { label: 'Playbooks', href: '#resources' },
       { label: 'Case studies', href: '#insights' },
+      { label: 'privacy', href: '/legal/privacy' },
+      { label: 'terms', href: '/legal/terms' },
     ],
   },
 ];
@@ -67,7 +69,7 @@ export function SiteFooter() {
         <div className="space-y-3 text-sm text-muted-foreground">
           <h3 className="text-sm font-semibold uppercase tracking-wide">Stay informed</h3>
           <p>Insights on DevOps, SRE, AI-ready platforms, and delivery rituals straight to your inbox.</p>
-          <p className="text-xs">Subscribe form coming soon as part of the marketing automation track.</p>
+          {/* <p className="text-xs">Subscribe form coming soon as part of the marketing automation track.</p> */}
         </div>
       </div>
       <div className="border-t border-white/10 py-6 text-center text-xs text-muted-foreground">

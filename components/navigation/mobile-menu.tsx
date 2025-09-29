@@ -2,11 +2,13 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+// Using native anchors for reliable navigation in the overlay
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
 import { Button } from '@/components/ui/button';
+import { menuFooter } from '@/lib/site-content';
 
 export interface NavItem {
   href: string;
@@ -14,6 +16,7 @@ export interface NavItem {
 }
 
 export function MobileMenu({ items }: { items: NavItem[] }) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -31,6 +34,55 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  const [hash, setHash] = useState<string>('');
+  useEffect(() => {
+    const update = () => setHash(window.location.hash || '');
+    update();
+    window.addEventListener('hashchange', update);
+    return () => window.removeEventListener('hashchange', update);
+  }, []);
+
+  // Effects-only integration from nav-menu (no images/footer)
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  // track if last pointer was touch (for UX tweaks), but do not block navigation
+  const touchModeRef = useRef(false);
+  const transition = useMemo(() => ({ duration: 1, ease: [0.76, 0, 0.24, 1] as any }), []);
+  // Height animation for the menu block itself (auto height like the example)
+  const height = {
+    initial: { height: 0 },
+    enter: { height: 'auto', transition },
+    exit: { height: 0, transition },
+  } as const;
+  const blur = {
+    initial: { filter: 'blur(0px)', opacity: 1 },
+    open: { filter: 'blur(6px)', opacity: 0.3, transition: { duration: 0.2 } },
+    closed: { filter: 'blur(0px)', opacity: 1, transition: { duration: 0.2 } },
+  } as const;
+  const blurStrong = {
+    initial: { filter: 'blur(0px)', opacity: 1 },
+    open: { filter: 'blur(10px)', opacity: 0.2, transition: { duration: 0.18 } },
+    closed: { filter: 'blur(0px)', opacity: 1, transition: { duration: 0.18 } },
+  } as const;
+  // Entire line reveal (no per-character split)
+  const revealItem = {
+    initial: { y: '100%', opacity: 0 },
+    enter: (i: number) => ({
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1], delay: 0.06 * i },
+    }),
+    exit: (i: number) => ({
+      y: '100%',
+      opacity: 0,
+      transition: { duration: 0.45, ease: [0.76, 0, 0.24, 1], delay: 0 },
+    }),
+  } as const;
+
+  const isActive = (href: string) => {
+    if (href === '/blog') return pathname?.startsWith('/blog');
+    if (href.startsWith('/#')) return hash === href.replace('/', '');
+    return pathname === href;
+  };
 
   return (
     <>
@@ -54,49 +106,189 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                onClick={() => setOpen(false)}
               >
-                <motion.div
-                  role="dialog"
-                  aria-modal="true"
-                  id="mobile-menu-panel"
-                  className="absolute inset-0 bg-background"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18, ease: 'easeOut' }}
-                  onClick={() => setOpen(false)}
-                />
-                <motion.nav
-                  className="absolute inset-0 flex flex-col items-center justify-center p-8"
-                  initial={{ scale: 0.98, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.98, opacity: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                >
-                  <ul className="w-full max-w-sm space-y-3 text-center">
-                    {items.map((item) => {
-                      const isAnchor = item.href.startsWith('/#');
-                      const content = (
-                        <span className="block w-full rounded-xl px-4 py-3 text-2xl font-semibold text-foreground hover:bg-white/5">
-                          {item.label}
-                        </span>
-                      );
-                      return (
-                        <li key={item.href}>
-                          {isAnchor ? (
-                            <a href={item.href} onClick={() => setOpen(false)}>
+                <div className="relative w-full">
+                  {/* Menu block (expands to auto height) */}
+                  <motion.nav
+                    variants={height}
+                    initial="initial"
+                    animate="enter"
+                    exit="exit"
+                    className="relative w-full bg-background p-8 text-foreground sm:p-12"
+                    onClick={(e) => {
+                      // Close when clicking on the nav's own background (padding area),
+                      // but not when clicking inside the inner content wrapper.
+                      if (e.target === e.currentTarget) setOpen(false);
+                    }}
+                  >
+                    <div className="relative z-10" onClick={(e) => e.stopPropagation()}>
+                    <ul
+                      className="mx-auto w-full max-w-5xl space-y-3 text-left sm:space-y-5 lg:space-y-6"
+                      onMouseLeave={() => setHoverIndex(null)}
+                      onMouseMove={(e) => {
+                        const el = (e.target as HTMLElement).closest('li[data-index]') as HTMLLIElement | null;
+                        const idx = el ? Number(el.dataset.index) : null;
+                        setHoverIndex((prev) => (prev === idx ? prev : idx));
+                      }}
+                    >
+                      {items.map((item, i) => {
+                        const isAnchor = item.href.startsWith('/#');
+                        const onPointerDown = (e: React.PointerEvent) => {
+                          touchModeRef.current = (e as any).pointerType === 'touch';
+                        };
+                        const onClick = (e: any) => {
+                          if (isAnchor) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const hash = item.href.replace('/#', '');
+                            if (window.location.pathname !== '/') {
+                              setOpen(false);
+                              window.location.assign(`/#${hash}`);
+                              return;
+                            }
+                            const doScroll = () => {
+                              const el = document.getElementById(hash);
+                              if (el) {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                history.replaceState(null, '', `/#${hash}`);
+                              }
+                            };
+                            setOpen(false);
+                            setTimeout(doScroll, touchModeRef.current ? 120 : 30);
+                          } else {
+                            if (touchModeRef.current) setTimeout(() => setOpen(false), 100);
+                            else setOpen(false);
+                          }
+                        };
+                        const active = isActive(item.href);
+                        const content = (
+                          <motion.span
+                            custom={i}
+                            variants={revealItem}
+                            initial="initial"
+                            animate="enter"
+                            exit="exit"
+                            className="block w-full px-2 py-2 text-2xl font-light lowercase tracking-[0.02em] sm:text-4xl sm:tracking-[0.03em] lg:text-[5vw] lg:leading-[1.05]"
+                          >
+                            <motion.span
+                              variants={blurStrong}
+                              animate={hoverIndex !== null && hoverIndex !== i ? 'open' : 'closed'}
+                              className="relative inline-block"
+                              style={{ willChange: 'filter' }}
+                            >
+                              {item.label}
+                              <span
+                                className={`pointer-events-none absolute -bottom-1 left-0 h-[2px] bg-foreground transition-all duration-300 ${
+                                  active ? 'w-full' : 'w-0 hover:w-full'
+                                }`}
+                              />
+                            </motion.span>
+                          </motion.span>
+                        );
+                        return (
+                          <motion.li
+                            data-index={i}
+                            key={item.href}
+                            onMouseEnter={() => setHoverIndex(i)}
+                            onMouseLeave={() => setHoverIndex(null)}
+                            onFocus={() => setHoverIndex(i)}
+                            onBlur={() => setHoverIndex(null)}
+                            onPointerDown={onPointerDown}
+                            onPointerEnter={(e) => {
+                              // For mouse/pen, treat as hover. Ignore for touch.
+                              if ((e as any).pointerType && (e as any).pointerType !== 'touch') setHoverIndex(i);
+                            }}
+                            onPointerLeave={(e) => {
+                              if ((e as any).pointerType && (e as any).pointerType !== 'touch') setHoverIndex(null);
+                            }}
+                            onTouchStart={() => setHoverIndex(i)}
+                            onTouchEnd={() => setHoverIndex(null)}
+                            className="transition-all duration-150"
+                          >
+                            <a
+                              href={item.href}
+                              data-menu-interactive
+                              className="group block"
+                              onClick={onClick}
+                              onFocus={() => setHoverIndex(i)}
+                              onBlur={() => setHoverIndex(null)}
+                              onMouseEnter={() => setHoverIndex(i)}
+                              onMouseLeave={() => setHoverIndex(null)}
+                              onPointerEnter={(e) => {
+                                if ((e as any).pointerType && (e as any).pointerType !== 'touch') setHoverIndex(i);
+                              }}
+                              onPointerLeave={(e) => {
+                                if ((e as any).pointerType && (e as any).pointerType !== 'touch') setHoverIndex(null);
+                              }}
+                              onTouchStart={() => setHoverIndex(i)}
+                              onTouchEnd={() => setHoverIndex(null)}
+                            >
                               {content}
                             </a>
-                          ) : (
-                            <Link href={item.href} onClick={() => setOpen(false)}>
-                              {content}
-                            </Link>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </motion.nav>
+                          </motion.li>
+                        );
+                      })}
+                    </ul>
+                    {/* Footer inside menu block (editable via lib/site-content.ts) */}
+                    <motion.div
+                      className="mx-auto mt-8 w-full max-w-5xl text-left"
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.5, delay: 0.12, ease: [0.76, 0, 0.24, 1] }}
+                    >
+                      <div className="rounded-md border border-black/15 bg-black/10 px-2 py-3 text-xs lowercase text-muted-foreground dark:border-white/25 dark:bg-white/15 sm:px-3 sm:py-4 sm:text-sm">
+                        <div className="grid grid-cols-2 items-center gap-4 sm:grid-cols-2">
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <span className="text-foreground/80">resources:</span>
+                            {menuFooter.resources?.map((r) => (
+                              <a key={r.label} href={r.href} className="underline-offset-4 hover:underline">
+                                {r.label}
+                              </a>
+                            ))}
+                          </div>
+                          <div className="flex gap-4">
+                            {menuFooter.links.map((l) => (
+                              <a
+                                key={l.label}
+                                href={l.href}
+                                onClick={(e) => {
+                                  if (l.label.toLowerCase() === 'close') {
+                                    e.preventDefault();
+                                    setOpen(false);
+                                  }
+                                }}
+                                className="underline-offset-4 hover:underline"
+                              >
+                                {l.label}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                    {/* Close button */}
+                    <button
+                      aria-label="Close menu"
+                      onClick={() => setOpen(false)}
+                      className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-foreground backdrop-blur-md"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                    </div>
+                  </motion.nav>
+                  {/* Dim remaining viewport below menu block */}
+                  <motion.div
+                    role="presentation"
+                    aria-hidden
+                    className="absolute left-0 right-0 bottom-0 top-full bg-black/60"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35 }}
+                    onClick={() => setOpen(false)}
+                  />
+                </div>
               </motion.div>
             )}
           </AnimatePresence>,

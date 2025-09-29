@@ -29,7 +29,7 @@ export function InsightsSection() {
               <h2 className="text-3xl font-semibold sm:text-4xl">Insights from the engineering floor</h2>
             </div>
             <Badge variant="subtle" className="self-start bg-primary/10 text-primary">
-              {posts.length} articles ready in Contentlayer
+              Recent Articles
             </Badge>
           </div>
         </FadeIn>

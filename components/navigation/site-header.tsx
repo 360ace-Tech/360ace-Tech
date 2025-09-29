@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { company } from '@/lib/site-content';
 import { cn } from '@/lib/utils';
 import { MobileMenu } from '@/components/navigation/mobile-menu';
+import { DesktopNav } from '@/components/navigation/desktop-nav';
 
 export const navigation = [
   { href: '/#services', label: 'What we do' },
@@ -30,20 +31,7 @@ export function SiteHeader() {
           </Badge>
           <span className="hidden text-xs text-muted-foreground sm:block">Cloud Native Engineering Studio</span>
         </Link>
-        <nav className="hidden items-center gap-8 nav:flex">
-          {navigation.map((item) => {
-            const isAnchor = item.href.startsWith('/#');
-            return isAnchor ? (
-              <a key={item.href} href={item.href} className="text-sm font-medium text-muted-foreground transition hover:text-foreground">
-                {item.label}
-              </a>
-            ) : (
-              <Link key={item.href} href={item.href} className="text-sm font-medium text-muted-foreground transition hover:text-foreground">
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <DesktopNav items={navigation} />
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button asChild size="sm">
