@@ -12,8 +12,8 @@ export function HeroOrbitScene() {
   const isLight = resolvedTheme !== 'dark';
   // Glow palette used for light-mode moving elements
   const glowColor = 'rgba(186,230,253,0.95)';
-  const glowMid = 'rgba(186,230,253,0.8)';
-  const glowSoft = 'rgba(186,230,253,0.6)';
+  // const glowMid = 'rgba(186,230,253,0.8)';
+  // const glowSoft = 'rgba(186,230,253,0.6)';
   const glowShadow = '0 0 12px rgba(56,189,248,0.9)';
 
   // Pointer parallax for subtle 3D tilt

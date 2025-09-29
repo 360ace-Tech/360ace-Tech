@@ -11,6 +11,10 @@ interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Ensure only statically generated paths are valid.
+// This avoids on-demand fallback which is not supported by next-on-pages prerender.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return allPosts.map((post) => ({ slug: post.slug }));
 }

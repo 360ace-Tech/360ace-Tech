@@ -1,5 +1,6 @@
 "use client";
 import Link from 'next/link';
+import { Mail, Linkedin } from 'lucide-react';
 import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
 
@@ -55,10 +56,15 @@ export function SiteFooter() {
             {company.summary}
           </p>
           <div className="text-sm">
-            <span className="font-medium">Let’s collaborate:</span>{' '}
-            <a className="underline-offset-4 hover:underline" href={`mailto:${company.contactEmail}`}>
-              {company.contactEmail}
-            </a>
+            <span className="font-medium">Let’s collaborate:</span>
+            <div className="mt-2 flex items-center gap-1">
+              <Link aria-label="Email" href="/contact" className="group inline-flex items-center justify-center rounded-full p-0.5 text-foreground transition hover:bg-white/10">
+                <Mail className="h-3 w-3 transition group-hover:scale-110" />
+              </Link>
+              <a aria-label="LinkedIn" href="https://www.linkedin.com/company/360ace-net" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center justify-center rounded-full p-0.5 text-foreground transition hover:bg-white/10">
+                <Linkedin className="h-3 w-3 transition group-hover:scale-110" />
+              </a>
+            </div>
           </div>
         </div>
         {footerLinks.map((column) => (
@@ -67,27 +73,40 @@ export function SiteFooter() {
               {column.title}
             </h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              {column.links.map((link) => {
-                return (
-                  <li key={link.label}>
-                    {link.href.startsWith('/#') || link.href.startsWith('#') ? (
-                      <a className="hover:text-foreground" href={link.href}>
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link className="hover:text-foreground" href={link.href as Route}>
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
+                {column.links.map((link) => {
+                  return (
+                    <li key={link.label}>
+                      {link.href.startsWith('/#') || link.href.startsWith('#') ? (
+                        <a className={`hover:text-foreground ${link.label === 'privacy' || link.label === 'terms' ? 'relative group' : ''}`} href={link.href}>
+                          {link.label}
+                          {(link.label === 'privacy' || link.label === 'terms') && (
+                            <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-current transition-all duration-300 group-hover:w-full" />
+                          )}
+                        </a>
+                      ) : (
+                        <Link className={`hover:text-foreground ${link.label === 'privacy' || link.label === 'terms' ? 'relative group' : ''}`} href={link.href as Route}>
+                          {link.label}
+                          {(link.label === 'privacy' || link.label === 'terms') && (
+                            <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-current transition-all duration-300 group-hover:w-full" />
+                          )}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
             </ul>
           </div>
         ))}
-        <div className="space-y-3 text-sm text-muted-foreground">
-          <h3 className="text-sm font-semibold uppercase tracking-wide">Stay informed</h3>
-          <p>Insights on DevOps, SRE, AI-ready platforms, and delivery rituals straight to your inbox.</p>
+        <div className="space-y-2 text-sm text-muted-foreground">
+          <Link href={'/blog' as Route} className="group inline-block">
+            <h3 className="text-sm font-semibold uppercase tracking-wide relative text-foreground">
+              Stay informed
+              <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-current transition-all duration-300 group-hover:w-full" />
+            </h3>
+            <p className="mt-1">
+              Insights on DevOps, SRE, AI-ready platforms, and delivery rituals straight to your inbox.
+            </p>
+          </Link>
           {/* <p className="text-xs">Subscribe form coming soon as part of the marketing automation track.</p> */}
         </div>
       </div>

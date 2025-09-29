@@ -131,7 +131,7 @@ export const callToAction = {
   headline: 'Ready to modernise your platform?',
   copy:
     'Let’s explore how cloud native tooling, AI-ready architectures, and reliable operations can unlock your next growth chapter.',
-  primaryCta: { label: 'Schedule strategy session', href: 'mailto:hello@360ace.tech?subject=360ace.Tech%20Strategy%20Session' },
+  primaryCta: { label: 'Schedule strategy session', href: '/contact' },
   secondaryCta: { label: 'Download our capability deck', href: '#resources' },
 };
 

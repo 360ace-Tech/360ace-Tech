@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
 import { Button } from '@/components/ui/button';
+import { Mail, Linkedin } from 'lucide-react';
 import { menuFooter } from '@/lib/site-content';
 
 export interface NavItem {
@@ -238,17 +239,28 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ duration: 0.5, delay: 0.12, ease: [0.76, 0, 0.24, 1] }}
                     >
-                      <div className="rounded-md border border-black/15 bg-black/10 px-2 py-3 text-xs lowercase text-muted-foreground dark:border-white/25 dark:bg-white/15 sm:px-3 sm:py-4 sm:text-sm">
-                        <div className="grid grid-cols-2 items-center gap-4 sm:grid-cols-2">
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                            <span className="text-foreground/80">resources:</span>
+                      <div className="rounded-md border border-black/15 bg-black/10 px-2 py-3 text-xs text-muted-foreground dark:border-white/25 dark:bg-white/15 sm:px-3 sm:py-4 sm:text-sm">
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          {/* Left: resources */}
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 justify-start">
+                            <span className="text-foreground/80">Resources:</span>
                             {menuFooter.resources?.map((r) => (
-                              <a key={r.label} href={r.href} className="underline-offset-4 hover:underline">
+                              <a key={r.label} href={r.href} className="underline-offset-4 hover:underline capitalize">
                                 {r.label}
                               </a>
                             ))}
                           </div>
-                          <div className="flex gap-4">
+                          {/* Middle: icons */}
+                          <div className="flex items-center gap-2.5 justify-center">
+                            <a aria-label="Email" href="/contact" className="group inline-flex items-center justify-center rounded-full p-1.5 text-foreground transition hover:bg-white/10">
+                              <Mail className="h-4 w-4 transition group-hover:scale-110" />
+                            </a>
+                            <a aria-label="LinkedIn" href="https://www.linkedin.com/company/360ace-net" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center justify-center rounded-full p-1.5 text-foreground transition hover:bg-white/10">
+                              <Linkedin className="h-4 w-4 transition group-hover:scale-110" />
+                            </a>
+                          </div>
+                          {/* Right: links (privacy, terms, close) */}
+                          <div className="flex gap-4 justify-end">
                             {menuFooter.links.map((l) => (
                               <a
                                 key={l.label}
@@ -259,9 +271,12 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                                     setOpen(false);
                                   }
                                 }}
-                                className="underline-offset-4 hover:underline"
+                                className="underline-offset-4 hover:underline relative group capitalize"
                               >
                                 {l.label}
+                                {(l.label === 'privacy' || l.label === 'terms') && (
+                                  <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-current transition-all duration-300 group-hover:w-full" />
+                                )}
                               </a>
                             ))}
                           </div>

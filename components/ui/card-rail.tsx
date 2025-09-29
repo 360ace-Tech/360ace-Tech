@@ -21,7 +21,7 @@ export function CardRail({ children, ariaLabel, showArrows = true, showHint = tr
     const onScroll = () => {
       setAtStart(el.scrollLeft <= 2);
       setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
-      if (hint) setHint(false);
+      setHint((prev) => (prev ? false : prev));
     };
     onScroll();
     el.addEventListener('scroll', onScroll, { passive: true });
