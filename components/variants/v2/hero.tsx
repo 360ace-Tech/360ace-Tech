@@ -7,9 +7,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { heroContent } from '@/lib/site-content';
 
-const HeroOrbit = dynamic(() => import('@/components/three/hero-orbit').then((mod) => mod.HeroOrbitScene), {
+// Revert to CSS-based orbit scene to avoid runtime issues on some setups
+const HeroOrbit = dynamic(() => import('@/components/three/hero-orbit').then((m) => m.HeroOrbitScene), {
   ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse rounded-3xl bg-white/5" />,
+  loading: () => (
+    <div className="h-full w-full rounded-3xl border border-white/10 bg-gradient-to-br from-primary/15 via-background to-secondary/15" />
+  ),
 });
 
 export function VariantTwoHero() {
@@ -21,24 +24,30 @@ export function VariantTwoHero() {
             <Badge
               variant="subtle"
               className="bg-background/60 text-foreground backdrop-blur-sm border border-white/10 dark:border-white/10"
+              style={{ viewTransitionName: 'hero-eyebrow' }}
             >
               {heroContent.eyebrow}
             </Badge>
           </FadeIn>
           <FadeIn>
-            <h1 className="max-w-2xl text-balance text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+            <h1
+              className="max-w-2xl text-balance text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl"
+              style={{ viewTransitionName: 'hero-title' }}
+            >
               {heroContent.title}
             </h1>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <p className="max-w-2xl text-lg text-muted-foreground lg:text-xl">{heroContent.description}</p>
+            <p className="max-w-2xl text-lg text-muted-foreground lg:text-xl" style={{ viewTransitionName: 'hero-sub' }}>
+              {heroContent.description}
+            </p>
           </FadeIn>
           <FadeIn delay={0.15}>
             <div className="flex flex-wrap items-center gap-4">
-              <Button asChild size="lg" variant="secondary">
+              <Button asChild size="lg" variant="secondary" style={{ viewTransitionName: 'cta-primary' }}>
                 <a href={heroContent.primaryCta.href}>{heroContent.primaryCta.label}</a>
               </Button>
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="outline" style={{ viewTransitionName: 'cta-secondary' }}>
                 <a href={heroContent.secondaryCta.href}>{heroContent.secondaryCta.label}</a>
               </Button>
             </div>

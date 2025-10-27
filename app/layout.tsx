@@ -6,6 +6,7 @@ import { ReactNode } from 'react';
 import Script from 'next/script';
 
 import { Providers } from '@/app/(core)/providers';
+import { ViewTransitions } from 'next-view-transitions';
 import { HashScroll } from '@/components/navigation/hash-scroll';
 import { cn } from '@/lib/utils';
 import { UnderConstruction } from '@/components/templates/under-construction';
@@ -19,6 +20,20 @@ export const metadata: Metadata = {
   description:
     '360ace.Tech partners with teams to design, ship, and operate resilient cloud-native products with DevOps, platform engineering, and SRE excellence.',
   keywords: ['cloud native', 'platform engineering', 'devops', 'site reliability', '360ace tech', 'engineering consultancy'],
+  openGraph: {
+    title: '360ace.Tech — Cloud Native Engineering & SRE Studio',
+    description:
+      '360ace.Tech partners with teams to design, ship, and operate resilient cloud-native products with DevOps, platform engineering, and SRE excellence.',
+    url: 'https://360ace.tech',
+    siteName: '360ace.Tech',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '360ace.Tech — Cloud Native Engineering & SRE Studio',
+    description:
+      'Cloud Native engineering studio helping teams ship and operate resilient products with DevOps and SRE.',
+  },
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -51,10 +66,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </>
         ) : null}
         <Providers>
-          <div className="relative flex min-h-screen flex-col">
-            <HashScroll />
-            {maintenance ? <UnderConstruction /> : children}
-          </div>
+          <ViewTransitions>
+            <div className="relative flex min-h-screen flex-col">
+              <HashScroll />
+              {maintenance ? <UnderConstruction /> : children}
+            </div>
+          </ViewTransitions>
         </Providers>
       </body>
     </html>

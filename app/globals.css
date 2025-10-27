@@ -72,6 +72,21 @@
     background-attachment: fixed;
   }
 
+  /* View Transitions API tuning */
+  :root::view-transition-old(root),
+  :root::view-transition-new(root) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  ::view-transition-group(brand) {
+    animation-duration: 400ms;
+  }
+  ::view-transition-group(hero-title) { animation-duration: 380ms; }
+  ::view-transition-group(hero-sub) { animation-duration: 360ms; }
+  ::view-transition-group(hero-eyebrow) { animation-duration: 340ms; }
+  ::view-transition-group(cta-primary) { animation-duration: 320ms; }
+  ::view-transition-group(cta-secondary) { animation-duration: 320ms; }
+
   /* Offset anchor scroll to account for sticky header (h-16) */
   #services, #process, #insights, #contact {
     scroll-margin-top: 6rem;
@@ -83,6 +98,26 @@
 }
 
 @layer utilities {
+  /* Simple reveal animation utility for safe, SSR-friendly motion */
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition-property: opacity, transform;
+    transition-duration: 600ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; }
+  }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  /* Directional variants */
+  .reveal[data-reveal-dir="up"] { transform: translateY(10px); }
+  .reveal[data-reveal-dir="down"] { transform: translateY(-10px); }
+  .reveal[data-reveal-dir="left"] { transform: translateX(-12px); }
+  .reveal[data-reveal-dir="right"] { transform: translateX(12px); }
+
   .container-edge {
     @apply container px-6 sm:px-8 lg:px-12;
   }

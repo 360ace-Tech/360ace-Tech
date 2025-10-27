@@ -1,5 +1,6 @@
 "use client";
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, Linkedin } from 'lucide-react';
 import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
@@ -20,7 +21,6 @@ const footerLinks = [
     title: 'Resources',
     links: [
       { label: 'Blog', href: '/blog' },
-      { label: 'Playbooks', href: '#resources' },
       { label: 'Case studies', href: '#insights' },
       { label: 'privacy', href: '/legal/privacy' },
       { label: 'terms', href: '/legal/terms' },
@@ -47,7 +47,11 @@ export function SiteFooter() {
     <footer className="bg-background/40">
       <div className="container-edge grid gap-10 border-t border-white/10 py-12 md:grid-cols-4">
         <div className="space-y-3">
-          <Link href={'/#home' as Route} onClick={handleHomeClick} className="inline-block">
+          <Link href={'/#home' as Route} onClick={handleHomeClick} className="inline-flex items-center gap-1">
+            <span className="relative inline-block h-6 w-6">
+              <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="24px" />
+              <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="24px" />
+            </span>
             <Badge variant="subtle" className="bg-primary/10 text-primary">
               {company.name}
             </Badge>
@@ -57,12 +61,12 @@ export function SiteFooter() {
           </p>
           <div className="text-sm">
             <span className="font-medium">Let’s collaborate:</span>
-            <div className="mt-2 flex items-center gap-1">
-              <Link aria-label="Email" href="/contact" className="group inline-flex items-center justify-center rounded-full p-0.5 text-foreground transition hover:bg-white/10">
-                <Mail className="h-3 w-3 transition group-hover:scale-110" />
+            <div className="mt-2 flex items-center gap-1.5">
+              <Link aria-label="Email" href="/contact" className="group inline-flex items-center justify-center rounded-full p-1 text-foreground transition hover:bg-white/10">
+                <Mail className="h-4 w-4 transition group-hover:scale-110" />
               </Link>
-              <a aria-label="LinkedIn" href="https://www.linkedin.com/company/360ace-net" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center justify-center rounded-full p-0.5 text-foreground transition hover:bg-white/10">
-                <Linkedin className="h-3 w-3 transition group-hover:scale-110" />
+              <a aria-label="LinkedIn" href="https://www.linkedin.com/company/360ace-net" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center justify-center rounded-full p-1 text-foreground transition hover:bg-white/10">
+                <Linkedin className="h-4 w-4 transition group-hover:scale-110" />
               </a>
             </div>
           </div>
@@ -104,10 +108,9 @@ export function SiteFooter() {
               <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-current transition-all duration-300 group-hover:w-full" />
             </h3>
             <p className="mt-1">
-              Insights on DevOps, SRE, AI-ready platforms, and delivery rituals straight to your inbox.
+              Insights on DevOps, SRE, AI-ready platforms, and delivery rituals.
             </p>
           </Link>
-          {/* <p className="text-xs">Subscribe form coming soon as part of the marketing automation track.</p> */}
         </div>
       </div>
       <div className="border-t border-white/10 py-6 text-center text-xs text-muted-foreground">

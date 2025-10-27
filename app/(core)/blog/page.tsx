@@ -29,8 +29,8 @@ export default function BlogIndexPage() {
           </header>
         </FadeIn>
         <div className="grid gap-8 lg:grid-cols-3">
-          {posts.map((post) => (
-            <FadeIn key={post._id} immediate>
+          {posts.map((post, index) => (
+            <FadeIn key={post._id} delay={0.03 + index * 0.06} dir={index % 2 === 0 ? 'left' : 'right'}>
               <article className="h-full rounded-3xl border border-white/10 bg-card/60 p-6 shadow-lg">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">{post.formattedDate}</p>
                 <h2 className="mt-3 text-2xl font-semibold">{post.title}</h2>

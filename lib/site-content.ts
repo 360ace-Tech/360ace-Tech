@@ -132,7 +132,7 @@ export const callToAction = {
   copy:
     'Let’s explore how cloud native tooling, AI-ready architectures, and reliable operations can unlock your next growth chapter.',
   primaryCta: { label: 'Schedule strategy session', href: '/contact' },
-  secondaryCta: { label: 'Download our capability deck', href: '#resources' },
+  secondaryCta: { label: 'Download compatibility check', href: '/downloads/compatibility-check' },
 };
 
 // Footer content used inside the mobile menu overlay. Edit here to update the

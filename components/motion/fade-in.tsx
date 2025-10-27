@@ -1,65 +1,50 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ReactNode, ElementType, useEffect, useRef } from 'react';
 
 export function FadeIn({
   children,
   className,
   delay = 0,
-  as = motion.div,
+  as: Comp = 'div',
   immediate = false,
-  mode = 'inView',
+  dir = 'up',
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
-  as?: typeof motion.div;
+  as?: ElementType;
   immediate?: boolean;
-  mode?: 'inView' | 'mount' | 'mountSoft';
+  dir?: 'up' | 'down' | 'left' | 'right';
 }) {
-  const shouldReduce = useReducedMotion();
-
-  if (shouldReduce || immediate) {
-    const Comp = as;
-    return <Comp className={className}>{children}</Comp>;
-  }
-
-  const Comp = as;
-  if (mode === 'mount') {
-    return (
-      <Comp
-        className={className}
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut', delay }}
-      >
-        {children}
-      </Comp>
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (immediate) {
+      el.classList.add('is-visible');
+      return;
+    }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            obs.disconnect();
+          }
+        });
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
     );
-  }
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [immediate]);
 
-  if (mode === 'mountSoft') {
-    return (
-      <Comp
-        className={className}
-        initial={{ opacity: 1, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut', delay }}
-      >
-        {children}
-      </Comp>
-    );
-  }
-
+  const style: React.CSSProperties = { '--reveal-delay': `${Math.round(delay * 1000)}ms` } as React.CSSProperties;
+  const cls = ['reveal', className].filter(Boolean).join(' ');
   return (
-    <Comp
-      className={className}
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 0.6, ease: 'easeOut', delay }}
-    >
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <Comp ref={ref as unknown as any} className={cls} style={style} data-reveal-dir={dir}>
       {children}
     </Comp>
   );
