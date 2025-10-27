@@ -3,7 +3,7 @@ import '@/styles/themes/v2.css';
 
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
-import Script from 'next/script';
+import NextScript from 'next/script';
 
 import { Providers } from '@/app/(core)/providers';
 import { ViewTransitions } from 'next-view-transitions';
@@ -45,11 +45,14 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
+import Script from 'next/script';
+import PreloaderServer from '@/components/preloader/preloader-server';
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   const maintenance = process.env.NEXT_PUBLIC_MAINTENANCE === 'true';
   const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-YL349263YB';
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-preload-active="1">
       <body suppressHydrationWarning className={cn('min-h-screen bg-background font-sans text-foreground antialiased')}>
         {/* Google Analytics */}
         {gaId ? (
@@ -67,6 +70,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         ) : null}
         <Providers>
           <ViewTransitions>
+            {/* Preloader bootstrap: set a short, branded delay (once per session) */}
+            <NextScript id="preloader-init" strategy="beforeInteractive">
+              {`
+                try {
+                  setTimeout(() => {
+                    delete document.documentElement.dataset.preloadActive;
+                  }, 4000);
+                } catch {}
+              `}
+            </NextScript>
+            <PreloaderServer />
             <div className="relative flex min-h-screen flex-col">
               <HashScroll />
               {maintenance ? <UnderConstruction /> : children}
