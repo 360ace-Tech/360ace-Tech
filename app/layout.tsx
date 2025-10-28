@@ -70,13 +70,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         ) : null}
         <Providers>
           <ViewTransitions>
-            {/* Preloader bootstrap: set a short, branded delay (once per session) */}
+            {/* Preloader bootstrap: two-phase (glow then text), timed so text fully spells before fade */}
             <NextScript id="preloader-init" strategy="beforeInteractive">
               {`
                 try {
-                  setTimeout(() => {
+                  var cfg = Number('${process.env.NEXT_PUBLIC_PRELOADER_MS ?? '1800'}');
+                  var total = Number.isFinite(cfg) && cfg > 0 ? cfg : 1800;
+                  // Compute letter phase to fully spell "360ace.Tech"
+                  var chars = 11; // 3 6 0 a c e . T e c h
+                  var base = 220; // initial wait before first letter
+                  var step = 90;  // per-letter stagger
+                  var charAnim = 480; // each letter anim duration
+                  var tail = 150; // small tail after last letter
+                  var letter = base + (chars - 1) * step + charAnim + tail; // ensure full write
+                  var totalHold = Math.max(letter + 150, Number(total));
+                  setTimeout(function(){
                     delete document.documentElement.dataset.preloadActive;
-                  }, 4000);
+                  }, totalHold);
                 } catch {}
               `}
             </NextScript>
