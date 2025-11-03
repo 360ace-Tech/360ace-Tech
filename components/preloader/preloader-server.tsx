@@ -1,6 +1,4 @@
-import { Dancing_Script } from 'next/font/google';
-
-const handwriting = Dancing_Script({ subsets: ['latin'], weight: ['700'] });
+// Uses local Priestacy font via global CSS utility `.font-priestacy`.
 
 export default function PreloaderServer() {
   const text = '360ace.Tech'.split('');
@@ -17,7 +15,7 @@ export default function PreloaderServer() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo-light.png" alt="logo" className="preloader-logo-img block h-full w-full object-contain dark:hidden" />
             </div>
-            <div className={`preloader-caption ${handwriting.className}`}>
+            <div className={`preloader-caption font-priestacy`}>
               <span className="preloader-word">
                 {text.map((ch, i) => (
                   <span key={i} className="preloader-letter" style={{ animationDelay: `${150 + i * 90}ms` }}>
