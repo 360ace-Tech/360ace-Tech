@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { allPosts } from 'contentlayer/generated';
+import { allPosts, type Post } from 'contentlayer/generated';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://360ace.tech';
 
@@ -20,8 +20,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const postPages: MetadataRoute.Sitemap = allPosts
-    .filter((p) => !p.draft)
-    .map((post) => ({
+    .filter((p: Post) => !p.draft)
+    .map((post: Post) => ({
       url: `${BASE_URL}/blog/${post.slug}`,
       lastModified: new Date(post.date),
     }));

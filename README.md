@@ -1,5 +1,7 @@
 # 360ace.Tech — Next.js Site (V2‑only)
 
+[![CI - Build & Test](https://github.com/360ace-Tech/360ace-Tech/actions/workflows/ci.yml/badge.svg)](https://github.com/360ace-Tech/360ace-Tech/actions/workflows/ci.yml)
+
 This site runs on Next.js 15.5.4 with Tailwind, shadcn/ui, Contentlayer, and an immersive but performant V2 design. Variant exploration (V1/V3) has been archived under `archive/` and routes are now simplified to a single experience.
 
 ## Getting Started
@@ -29,6 +31,22 @@ Visit:
 - `npm run lint` — lint the project.
 - `npm run typecheck` — TypeScript validation.
 - `npm run format` — Prettier format.
+
+## CI/CD
+
+The project uses GitHub Actions for continuous integration:
+
+- **Pull Requests**: All PRs automatically run linting, type checking, and build validation.
+- **Branch Pushes**: Pushes to `dev`, `staging`, and feature branches (`feature/**`, `fix/**`) trigger CI checks.
+- **Production**: The `main` branch is protected and requires all CI checks to pass before merging.
+
+The CI workflow (`.github/workflows/ci.yml`) runs:
+1. ESLint checks for code quality
+2. TypeScript type validation
+3. Full production build with Edge runtime compatibility
+4. Build artifact verification
+
+All routes are configured with Edge runtime for Cloudflare Pages compatibility.
 
 ## Troubleshooting
 

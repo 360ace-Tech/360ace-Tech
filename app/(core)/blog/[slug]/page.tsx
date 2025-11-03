@@ -5,7 +5,7 @@ import { getMDXComponent } from 'next-contentlayer2/hooks';
 import { mdxComponents } from '@/components/mdx/mdx-components';
 import { FadeIn } from '@/components/motion/fade-in';
 import { Badge } from '@/components/ui/badge';
-import { allPosts } from 'contentlayer/generated';
+import { allPosts, type Post } from 'contentlayer/generated';
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -16,12 +16,12 @@ interface BlogPostPageProps {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return allPosts.map((post) => ({ slug: post.slug }));
+  return allPosts.map((post: Post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = allPosts.find((item) => item.slug === slug);
+  const post = allPosts.find((item: Post) => item.slug === slug);
   if (!post) {
     return {
       title: 'Post not found',
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = allPosts.find((item) => item.slug === slug);
+  const post = allPosts.find((item: Post) => item.slug === slug);
 
   if (!post) {
     notFound();

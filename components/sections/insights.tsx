@@ -2,12 +2,12 @@ import Link from 'next/link';
 
 import { FadeIn } from '@/components/motion/fade-in';
 import { Badge } from '@/components/ui/badge';
-import { allPosts } from 'contentlayer/generated';
+import { allPosts, type Post } from 'contentlayer/generated';
 
 function getFeaturedPosts() {
   return allPosts
-    .filter((post) => !post.draft)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .filter((post: Post) => !post.draft)
+    .sort((a: Post, b: Post) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3);
 }
 
@@ -59,7 +59,7 @@ export function InsightsSection() {
           </div>
         </FadeIn>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post, index) => (
+          {posts.map((post: Post, index: number) => (
             <FadeIn key={post._id} delay={index * 0.05}>
               <article className="h-full rounded-3xl border border-white/10 bg-card/60 p-6 shadow-lg transition hover:-translate-y-1">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">

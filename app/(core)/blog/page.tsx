@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { FadeIn } from '@/components/motion/fade-in';
 import { Badge } from '@/components/ui/badge';
-import { allPosts } from 'contentlayer/generated';
+import { allPosts, type Post } from 'contentlayer/generated';
 
 export const metadata: Metadata = {
   title: 'Insights & Articles',
@@ -36,7 +36,7 @@ function stripMarkdown(text: string): string {
 }
 
 export default function BlogIndexPage() {
-  const posts = allPosts.filter((post) => !post.draft).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const posts = allPosts.filter((post: Post) => !post.draft).sort((a: Post, b: Post) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <section className="bg-background/20 py-24">
@@ -53,14 +53,14 @@ export default function BlogIndexPage() {
           </header>
         </FadeIn>
         <div className="grid gap-8 lg:grid-cols-3">
-          {posts.map((post) => (
+          {posts.map((post: Post) => (
             <FadeIn key={post._id} immediate>
               <article className="h-full rounded-3xl border border-white/10 bg-card/60 p-6 shadow-lg">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">{post.formattedDate}</p>
                 <h2 className="mt-3 text-2xl font-semibold">{post.title}</h2>
                 <p className="mt-3 text-sm text-muted-foreground">{post.summary ?? stripMarkdown(post.body.raw).slice(0, 200)}...</p>
                 <div className="mt-6 flex flex-wrap gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                  {post.tags?.map((tag) => (
+                  {post.tags?.map((tag: string) => (
                     <span key={tag} className="rounded-full bg-white/5 px-3 py-1">
                       {tag}
                     </span>
