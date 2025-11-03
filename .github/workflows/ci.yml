@@ -9,9 +9,7 @@ on:
       - dev
       - 'feature/**'
       - 'fix/**'
-    # Exclude main branch from push triggers (production handled separately)
-    branches-ignore:
-      - main
+    # Note: main branch excluded by not listing it above (production handled separately)
 
 jobs:
   lint-and-typecheck:
