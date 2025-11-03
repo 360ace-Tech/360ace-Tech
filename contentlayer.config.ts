@@ -6,7 +6,7 @@ import type { PluggableList } from 'unified';
 
 const Post = defineDocumentType(() => ({
   name: 'Post',
-  filePathPattern: 'blog/**/*.md',
+  filePathPattern: 'blog/**/*.{md,mdx}',
   contentType: 'mdx',
   fields: {
     title: { type: 'string', required: true },
@@ -15,6 +15,7 @@ const Post = defineDocumentType(() => ({
     tags: { type: 'list', of: { type: 'string' }, required: false },
     categories: { type: 'list', of: { type: 'string' }, required: false },
     summary: { type: 'string', required: false },
+    description: { type: 'string', required: false },
     image: {
       type: 'nested',
       of: defineNestedType(() => ({

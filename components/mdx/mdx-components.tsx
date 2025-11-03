@@ -1,8 +1,12 @@
 import type { MDXComponents } from 'mdx/types';
 
 import { cn } from '@/lib/utils';
+import Callout from './Callout';
 
 export const mdxComponents: MDXComponents = {
+  // Shortcodes / custom components
+  Callout,
+  // Typography
   h1: (props) => <h1 className="mt-8 text-4xl font-semibold" {...props} />,
   h2: (props) => <h2 className="mt-12 text-3xl font-semibold" {...props} />,
   h3: (props) => <h3 className="mt-8 text-2xl font-semibold" {...props} />,
