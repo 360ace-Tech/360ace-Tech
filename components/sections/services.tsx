@@ -25,9 +25,9 @@ export function ServicesSection() {
           <CardRail ariaLabel="Capabilities">
             {services.map((service) => (
               <div key={service.name} className="min-w-[80vw] snap-center">
-                <Card className="h-full bg-card/70">
+                <Card className="group h-full bg-card/70 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] md:hover:scale-[1.03] hover:shadow-2xl">
                   <CardHeader>
-                    <CardTitle>{service.name}</CardTitle>
+                    <CardTitle className="transition-colors duration-300 group-hover:text-primary">{service.name}</CardTitle>
                     <CardDescription>{service.summary}</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -45,9 +45,9 @@ export function ServicesSection() {
         <div className="hidden gap-6 nav:grid nav:grid-cols-2 xl:grid-cols-4">
           {services.map((service, index) => (
             <FadeIn key={service.name} delay={index * 0.05}>
-              <Card className="h-full bg-card/70">
+              <Card className="group h-full bg-card/70 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] md:hover:scale-[1.03] hover:shadow-2xl">
                 <CardHeader>
-                  <CardTitle>{service.name}</CardTitle>
+                  <CardTitle className="transition-colors duration-300 group-hover:text-primary">{service.name}</CardTitle>
                   <CardDescription>
                     {service.summary}
                   </CardDescription>

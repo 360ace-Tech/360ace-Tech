@@ -17,13 +17,13 @@ export function DifferentiatorsSection() {
           <CardRail ariaLabel="Differentiators">
             {differentiators.map((item, index) => (
               <div key={item.title} className="min-w-[80vw] snap-center">
-                <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg transition-transform hover:-translate-y-1">
+                <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] md:hover:scale-[1.03] hover:shadow-2xl">
                   <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden="true">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" />
                   </div>
                   <div className="relative space-y-4">
                     <span className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">{`0${index + 1}`}</span>
-                    <h3 className="text-2xl font-semibold">{item.title}</h3>
+                    <h3 className="text-2xl font-semibold transition-colors duration-300 group-hover:text-primary">{item.title}</h3>
                     <p className="text-sm text-muted-foreground">{item.description}</p>
                   </div>
                 </div>
@@ -34,13 +34,13 @@ export function DifferentiatorsSection() {
         <div className="hidden gap-8 nav:grid nav:grid-cols-3">
           {differentiators.map((item, index) => (
             <FadeIn key={item.title} delay={index * 0.05}>
-              <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg transition-transform hover:-translate-y-1">
+              <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] md:hover:scale-[1.03] hover:shadow-2xl">
                 <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden="true">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" />
                 </div>
                 <div className="relative flex flex-col space-y-4">
                   <span className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">{`0${index + 1}`}</span>
-                  <h3 className="text-2xl font-semibold">{item.title}</h3>
+                  <h3 className="text-2xl font-semibold transition-colors duration-300 group-hover:text-primary">{item.title}</h3>
                   <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
                 </div>
               </div>

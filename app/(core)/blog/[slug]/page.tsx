@@ -93,12 +93,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {prevPost ? (
                 <Link
                   href={`/blog/${prevPost.slug}`}
-                  className="group flex items-start justify-between rounded-2xl border border-white/10 bg-card/60 p-4 hover:bg-card/80"
+                  className="group flex items-start justify-between rounded-2xl border border-white/10 bg-card/60 p-4 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] md:hover:scale-[1.03] hover:shadow-2xl hover:bg-card/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label={`Previous post: ${prevPost.title}`}
                 >
                   <div>
                     <span className="block text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Previous</span>
-                    <span className="mt-1 block font-medium text-foreground group-hover:text-primary">{prevPost.title}</span>
+                    <span className="mt-1 block font-medium text-foreground transition-colors duration-300 group-hover:text-primary">{prevPost.title}</span>
                   </div>
                   <span aria-hidden className="ml-3 text-primary">←</span>
                 </Link>
@@ -108,12 +108,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {nextPost && (
                 <Link
                   href={`/blog/${nextPost.slug}`}
-                  className="group flex items-start justify-between rounded-2xl border border-white/10 bg-card/60 p-4 hover:bg-card/80 sm:text-right"
+                  className="group flex items-start justify-between rounded-2xl border border-white/10 bg-card/60 p-4 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] md:hover:scale-[1.03] hover:shadow-2xl hover:bg-card/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-right"
                   aria-label={`Next post: ${nextPost.title}`}
                 >
                   <div className="sm:order-2">
                     <span className="block text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Next</span>
-                    <span className="mt-1 block font-medium text-foreground group-hover:text-primary">{nextPost.title}</span>
+                    <span className="mt-1 block font-medium text-foreground transition-colors duration-300 group-hover:text-primary">{nextPost.title}</span>
                   </div>
                   <span aria-hidden className="mr-3 text-primary sm:order-1 sm:mr-0">→</span>
                 </Link>

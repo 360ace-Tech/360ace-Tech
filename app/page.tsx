@@ -5,7 +5,6 @@ import { DifferentiatorsSection } from '@/components/sections/differentiators';
 import { InsightsSection } from '@/components/sections/insights';
 import { ProcessSection } from '@/components/sections/process';
 import { ServicesSection } from '@/components/sections/services';
-import { TestimonialsSection } from '@/components/sections/testimonials';
 import { VariantTwoHero } from '@/components/variants/v2/hero';
 import { SiteShell } from '@/components/layout/site-shell';
 
@@ -21,7 +20,7 @@ export default function RootPage() {
       <ProcessSection />
       <DifferentiatorsSection />
       <InsightsSection />
-      <TestimonialsSection />
+      {/* Stories/testimonials temporarily hidden */}
       <CallToActionSection />
     </SiteShell>
   );
