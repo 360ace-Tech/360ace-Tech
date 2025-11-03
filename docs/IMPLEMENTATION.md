@@ -106,9 +106,12 @@ Phase 5 — QA + Launch
 ```
 app/
   blog/
-    page.tsx
-    [slug]/page.tsx
-  api/contact/route.ts
+  about/
+  contact/
+  sitemap.ts
+  robots.ts
+  manifest.ts
+  opengraph-image.tsx
 components/
   layout/      # SiteShell, nav/footer
   sections/    # Services/Process/etc.
@@ -118,6 +121,8 @@ components/
 content/
   blog/
 lib/
+  contentlayer.ts
+  seo.ts
 public/
 styles/
 docs/
@@ -156,6 +161,7 @@ npm i -D contentlayer2 next-contentlayer2
 npm run dev
 ```
 
----
+Rollback:
+- Maintain a `release/*` branch per deploy; revert via GitHub UI or `git revert` and re-deploy.
 
 For scope and quality bars, see `docs/PRD.md`.
