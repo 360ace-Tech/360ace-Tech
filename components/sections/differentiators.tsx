@@ -38,10 +38,10 @@ export function DifferentiatorsSection() {
                 <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden="true">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" />
                 </div>
-                <div className="relative space-y-4">
+                <div className="relative flex flex-col space-y-4">
                   <span className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">{`0${index + 1}`}</span>
                   <h3 className="text-2xl font-semibold">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
                 </div>
               </div>
             </FadeIn>

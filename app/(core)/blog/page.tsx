@@ -66,7 +66,7 @@ export default function BlogIndexPage() {
                     </span>
                   ))}
                 </div>
-                <Link className="mt-6 inline-flex text-sm font-semibold text-primary" href={`/blog/${post.slug}`}>
+                <Link className="mt-6 inline-flex text-sm font-semibold text-primary hover:text-primary/80" href={`/blog/${post.slug}`}>
                   Read article →
                 </Link>
               </article>

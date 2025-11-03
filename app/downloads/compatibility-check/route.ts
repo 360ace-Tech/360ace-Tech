@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { company, services, differentiators, process as deliveryProcess } from '@/lib/site-content';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 
 export async function GET() {
   const pdf = await PDFDocument.create();

@@ -52,7 +52,7 @@ export function ServicesSection() {
                     {service.summary}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     {service.outcomes.map((outcome) => (
                       <li key={outcome} className="leading-relaxed">

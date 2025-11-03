@@ -58,15 +58,15 @@ export function InsightsSection() {
             </Badge>
           </div>
         </FadeIn>
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post, index) => (
             <FadeIn key={post._id} delay={index * 0.05}>
               <article className="h-full rounded-3xl border border-white/10 bg-card/60 p-6 shadow-lg transition hover:-translate-y-1">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                   {post.formattedDate}
                 </p>
-                <h3 className="mt-3 text-xl font-semibold text-foreground">{post.title}</h3>
-                <p className="mt-3 text-sm text-muted-foreground">
+                <h3 className="mt-3 text-xl font-semibold leading-tight text-foreground">{post.title}</h3>
+                <p className="mt-3 flex-grow text-sm leading-relaxed text-muted-foreground">
                   {buildExcerpt(post.summary ?? post.body.raw)}
                 </p>
                 <Link
