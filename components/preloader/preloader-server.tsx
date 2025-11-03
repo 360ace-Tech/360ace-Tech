@@ -1,7 +1,7 @@
 // Uses local Priestacy font via global CSS utility `.font-priestacy`.
 
 export default function PreloaderServer() {
-  const text = '360ace.Tech'.split('');
+  const text = '360ace.tech'.split('');
   return (
     <div className="preloader-overlay" aria-hidden>
       <div className="preloader-stack">
@@ -18,7 +18,12 @@ export default function PreloaderServer() {
             <div className={`preloader-caption font-priestacy`}>
               <span className="preloader-word">
                 {text.map((ch, i) => (
-                  <span key={i} className="preloader-letter" style={{ animationDelay: `${150 + i * 90}ms` }}>
+                  <span
+                    key={i}
+                    className="preloader-letter"
+                    data-ch={ch}
+                    style={{ animationDelay: `${150 + i * 90}ms` }}
+                  >
                     {ch}
                   </span>
                 ))}
