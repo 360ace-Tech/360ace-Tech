@@ -35,7 +35,7 @@ export function ProcessSection() {
         {/* Desktop grid */}
         <div className="hidden gap-6 nav:grid nav:grid-cols-2">
           {processSteps.map((step, index) => (
-            <FadeIn key={step.id} delay={0.04 + index * 0.08} dir={index % 2 === 0 ? 'left' : 'right'}>
+            <FadeIn key={step.id} delay={index * 0.05}>
               <div className="flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-card/60 p-8 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                   <span className="text-lg text-gradient-primary">{step.id}</span>

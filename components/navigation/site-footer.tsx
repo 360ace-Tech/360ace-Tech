@@ -48,9 +48,9 @@ export function SiteFooter() {
       <div className="container-edge grid gap-10 border-t border-white/10 py-12 md:grid-cols-4">
         <div className="space-y-3">
           <Link href={'/#home' as Route} onClick={handleHomeClick} className="inline-flex items-center gap-1">
-            <span className="relative inline-block h-6 w-6">
-              <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="24px" />
-              <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="24px" />
+            <span className="relative inline-block h-8 w-8">
+              <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="32px" />
+              <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="32px" />
             </span>
             <Badge variant="subtle" className="bg-primary/10 text-primary">
               {company.name}
@@ -114,7 +114,14 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-white/10 py-6 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} {company.name}. All rights reserved.
+        <div className="inline-flex items-center gap-1">
+          © {new Date().getFullYear()}
+          <span className="relative inline-block h-5 w-5">
+            <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="20px" />
+            <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="20px" />
+          </span>
+          {company.name}. All rights reserved.
+        </div>
       </div>
     </footer>
   );

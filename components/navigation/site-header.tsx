@@ -29,9 +29,9 @@ export function SiteHeader() {
       <div className="container-edge flex h-16 items-center justify-between gap-4">
         <Link href="/" className="group inline-flex items-center gap-1 text-sm font-semibold" style={{ viewTransitionName: 'brand' }}>
           {/* Logo: light/dark variants */}
-          <span className="relative inline-block h-8 w-8">
-            <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="32px" priority />
-            <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="32px" priority />
+          <span className="relative inline-block h-10 w-10">
+            <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="40px" priority />
+            <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="40px" priority />
           </span>
           <Badge variant="subtle" className="bg-primary/10 text-primary">
             {company.name}

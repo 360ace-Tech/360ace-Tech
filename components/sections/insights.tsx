@@ -11,9 +11,34 @@ function getFeaturedPosts() {
     .slice(0, 3);
 }
 
+function stripMarkdown(text: string): string {
+  return text
+    // Remove headers (# ## ###)
+    .replace(/#{1,6}\s+/g, '')
+    // Remove bold/italic (**text** __text__ *text* _text_)
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')
+    .replace(/(\*|_)(.*?)\1/g, '$2')
+    // Remove links [text](url)
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+    // Remove inline code `code`
+    .replace(/`([^`]+)`/g, '$1')
+    // Remove code blocks ```code```
+    .replace(/```[\s\S]*?```/g, '')
+    // Remove blockquotes
+    .replace(/^\s*>\s+/gm, '')
+    // Remove list markers
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    // Clean up extra whitespace
+    .replace(/\n\s*\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function buildExcerpt(input: string) {
-  if (input.length <= 180) return input;
-  return `${input.slice(0, 177)}…`;
+  const cleaned = stripMarkdown(input);
+  if (cleaned.length <= 180) return cleaned;
+  return `${cleaned.slice(0, 177)}…`;
 }
 
 export function InsightsSection() {
@@ -35,7 +60,7 @@ export function InsightsSection() {
         </FadeIn>
         <div className="grid gap-8 lg:grid-cols-3">
           {posts.map((post, index) => (
-            <FadeIn key={post._id} delay={0.03 + index * 0.06} dir={index % 2 === 0 ? 'up' : 'up'}>
+            <FadeIn key={post._id} delay={index * 0.05}>
               <article className="h-full rounded-3xl border border-white/10 bg-card/60 p-6 shadow-lg transition hover:-translate-y-1">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                   {post.formattedDate}

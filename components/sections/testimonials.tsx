@@ -13,9 +13,9 @@ export function TestimonialsSection() {
         </FadeIn>
         <div className="grid gap-6 lg:grid-cols-2">
           {testimonials.map((testimonial, index) => (
-            <FadeIn key={testimonial.name} delay={0.04 + index * 0.08} dir={index % 2 === 0 ? 'left' : 'right'}>
+            <FadeIn key={testimonial.name} delay={index * 0.05}>
               <blockquote className="h-full rounded-3xl border border-white/10 bg-card/60 p-8 text-lg leading-relaxed shadow-lg">
-                “{testimonial.quote}”
+                &ldquo;{testimonial.quote}&rdquo;
                 <footer className="mt-6 text-sm text-muted-foreground">
                   <span className="font-semibold text-foreground">{testimonial.name}</span>
                   <span className="block">{testimonial.role}</span>
