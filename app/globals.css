@@ -223,7 +223,7 @@ html:not([data-preload-active='1']) .preloader-overlay {
 .preloader-letter { opacity: 0; display: inline-block; transform: translateY(6px); animation: preloader-letter 480ms cubic-bezier(0.22,1,0.36,1) forwards; }
 @keyframes preloader-letter { to { opacity: 1; transform: none; } }
 /* Nudge the dot (.) upward slightly for better baseline alignment in Priestacy */
-.preloader-letter[data-ch="."] { position: relative; top: -0.08em; }
+.preloader-letter[data-ch="."] { position: relative; top: -0.46em; }
 
 /* Phase control: glow then text */
 /* Text-first single-phase: logo + text visible while overlay active */
