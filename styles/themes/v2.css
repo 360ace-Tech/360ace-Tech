@@ -1,0 +1,14 @@
+.variant-theme-v2 {
+  /* Keep variant accents, let light/dark base define background/foreground */
+  --primary: 258 96% 66%;
+  --secondary: 200 98% 60%;
+  --accent: 160 84% 52%;
+  --grid-overlay: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+}
+
+.variant-theme-v2 .hero-bg {
+  background: radial-gradient(circle at 20% 20%, rgba(192,132,252,0.32), transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(56,189,248,0.28), transparent 55%),
+    linear-gradient(135deg, rgba(15,118,110,0.2), transparent 55%);
+}

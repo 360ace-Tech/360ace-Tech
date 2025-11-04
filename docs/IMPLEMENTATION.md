@@ -1,82 +1,110 @@
-# 360ace.Tech — Implementation Guide
+# Implementation Plan — 360ace.Tech Revamp (Next.js 15.5.4)
 
-Updated: 2025-09-28
+This document translates the PRD (docs/PRD.md) into a concrete, step‑by‑step plan. The site standardizes on a single design (V2). Prior explorations (V1, V3) are archived under `archive/` and excluded from builds.
 
-This guide provides the practical, end-to-end steps to implement the PRD (`docs/PRD.md`) and coordinate the agents (`docs/AGENTS.md`). It supports both a fresh scaffold and an in-repo upgrade.
+## Targets
+- Framework: Next.js 15.5.4 (App Router, RSC)
+- TypeScript: strict
+- Styling/UI: Tailwind CSS + shadcn/ui (Radix primitives)
+- Animation: Framer Motion
+- 3D: React Three Fiber (R3F) + @react-three/drei (graceful fallbacks)
+- Content: MDX + Contentlayer2 (typed) using existing `blogs/` migrated to `content/`
+- Search: FlexSearch (client) with adapter to Algolia/Typesense
+- SEO: Next metadata + JSON‑LD helpers; optional `next-seo`
+- Images: `next/image` + `sharp`; OG via `@vercel/og`
+- Forms: Route Handlers + Zod validation with anti‑spam
+- QA: ESLint, Prettier, Vitest/Jest + Testing Library, Playwright E2E, Lighthouse CI
+- Delivery: Vercel (previews), Renovate/Dependabot
 
-Link to next phase: Use the orchestrator prompt in `docs/PROMPT.md`.
+## Branch Strategy
+- Long‑lived feature branch: `revamp` (no direct commits to `main`).
+- Flow: feature/* → PR → `revamp` → QA → `develop` → UAT → `main`.
 
+## Consolidated Strategy (V2 only)
+- Routing: remove `/v1` and `/v3`; root `/` renders the v2 experience. Keep `/blog` and `/blog/[slug]`.
+- Theming: use global light/dark tokens; v2 accents applied by the hero section.
+- Templates: factor shared chrome into `components/layout/site-shell.tsx` and the 404 into `components/templates/not-found.tsx`.
+- Archive: move v1/v3 routes/components/styles to `archive/`.
 
-## 0) Prerequisites
-- Node.js 20+ recommended (LTS). Next.js 15 requires Node ≥ 18.18.
-- PNPM or NPM (examples use NPM).
-- GitHub repo with CI permissions and Vercel account (recommended) or Cloudflare Pages alternative.
+## Templates & Content Model
+- Canonical content root: `content/` (migrate `blogs/` → `content/blog/`).
+- MDX frontmatter: `title`, `date`, `author`, `tags`, `summary`, `hero`, `draft`, `canonical`.
+- MDX shortcodes: Callout, Steps/Step, ImageGrid, Video, Note, Quote.
+- Contentlayer schemas: `Post`, `Service`, `CaseStudy` with computed fields (slug, reading time, canonical).
 
+## Information Architecture
+- Marketing: Home, Services, About, Contact.
+- Blog: `/blog` index with tags/search; `/blog/[slug]` with ToC, prev/next.
+- API: `/api/contact` route handler with spam protection.
 
-## 1) Create or Upgrade the Next.js App
-Option A — Fresh scaffold (recommended clean start):
-- `npx create-next-app@latest 360ace-tech --typescript --eslint --app --src-dir=false --tailwind=false`
-- `cd 360ace-tech`
+## 3D & Motion
+- V2 R3F hero: low‑poly scene, dynamic import, GPU budget targets; graceful fallbacks on reduced‑motion/low capability.
+- Framer Motion transitions: route/page transitions, hover/focus microinteractions.
 
-Option B — In-place upgrade (this repo already contains an App Router shell):
-- `npm i -E next@15.4.2 react@19 react-dom@19`
-- Ensure `app/` exists and `next.config.mjs` exports a plain config (we will extend it later as needed).
+## SEO & Analytics
+- Route metadata + JSON‑LD (`Organization`, `BreadcrumbList`, `BlogPosting`).
+- Dynamic OG images via `@vercel/og`.
+- Analytics: Vercel or Plausible; Sentry for error tracking.
 
+## Security, Privacy, Accessibility
+- Validate API inputs via Zod; set security headers (CSP, Permissions‑Policy, Referrer‑Policy, X‑Frame‑Options).
+- Prefer cookie‑less analytics; GDPR‑friendly.
+- Accessibility: keyboard nav, visible focus, reduced‑motion; Axe checks in CI.
 
-## 2) Tailwind CSS Setup (v4 preferred; include v3 fallback)
-Preferred (v4):
-- `npm i -D tailwindcss@latest`
-- Create `app/globals.css` (or keep) with at least:
-  - `@import "tailwindcss";`
-- If using a config, create `tailwind.config.ts` with `content: ["./app/**/*.{ts,tsx,mdx}", "./components/**/*.{ts,tsx}", "./content/**/*.{md,mdx}"]` and define theme tokens.
+## CI/CD
+- Vercel previews for every PR; labels to build all variants.
+- Required checks: lint, typecheck, unit, E2E smoke, Lighthouse CI budgets.
+- Renovate/Dependabot for controlled upgrades.
 
-Fallback (v3.4.x):
-- `npm i -D tailwindcss@^3.4 postcss autoprefixer`
-- `npx tailwindcss init -p`
-- Configure `content` globs to `app/**` + `components/**` + `content/**` and import `@tailwind base; @tailwind components; @tailwind utilities;` in `app/globals.css`.
+## Step‑By‑Step Plan
 
-Add dark theme toggle:
-- `npm i next-themes`
-- Create a `ThemeProvider` and wrap it in `app/layout.tsx`; persist theme in `localStorage`.
+Phase 0 — Branch + Baseline
+1) Create `revamp`; protect `main`. Add ESLint/Prettier/Husky + lint‑staged.
+2) Upgrade to Next 15.5.4 in `package.json` (within `revamp`).
 
+Phase 1 — Styling + UI Kit
+1) Tailwind (`tailwind.config.ts`, `postcss.config.js`, `app/globals.css`).
+2) Initialize shadcn/ui; generate Button, Input, Dialog, Sheet, Tabs, Accordion, Tooltip, Toast.
+3) Theme tokens + reduced‑motion defaults.
 
-## 3) Animation & 3D
-Motion (official modern package):
-- `npm i motion`
-- Use `import { motion } from 'motion/react'` and prefer variants + reduced-motion checks.
+Phase 2 — Content Pipeline
+1) Install Contentlayer2; add schemas for `Post`, `Service`, `CaseStudy`.
+2) MDX pipeline: remark‑gfm, rehype‑pretty‑code (Shiki), image handling.
+3) Migrate `blogs/` → `content/blog/`; add shortcodes.
+4) Blog index with filters/search; post page with ToC, prev/next.
 
-3D (React Three Fiber + Drei):
-- `npm i three @react-three/fiber @react-three/drei`
-- Lazy-load heavy scenes (`dynamic(() => import('../components/Hero3D'), { ssr: false })`).
-- Provide a static fallback poster image for LCP; gate effects on mobile.
+Phase 3 — Consolidation (V2)
+1) Layout base in `app/(core)` + MDX provider and shared components.
+2) Implement v2 home experience at `app/page.tsx` and remove `/v1` and `/v3` routes.
+3) Add `SiteShell` and 404 `NotFoundTemplate`; standardize pages on these templates.
+4) Archive prior variant routes/components/styles under `archive/`.
 
+Phase 4 — SEO/Perf/Analytics
+1) Metadata, JSON‑LD, OG; tune to hit LCP/CLS/TBT budgets.
+2) Enable analytics; connect Sentry.
 
-## 4) Content System (MDX + Contentlayer)
-Install:
-- `npm i contentlayer next-contentlayer @mdx-js/react remark-gfm`
+Phase 5 — QA + Launch
+1) Playwright smoke + accessibility checks.
+2) Final content migration; redirects; sitemap/robots.
+3) Promote `revamp` → `develop` → `main` after UAT.
 
-Configure `contentlayer.config.ts` (example outline):
-- Define `Post` with fields: title, date, tags, categories, image (path, alt), author, slug.
-- Source from `content/blog/**/*.mdx` and compute slug from filename.
+## Agents & Research Tasks
+- UI Agent: spacing/typography/polish; PRs with screenshots.
+- UX Agent: IA, nav labels, form flow; PRs with rationale.
+- SEO Agent: meta/schema/sitemap/internal links; PRs with Lighthouse/validator results.
+- Motion/3D Agent: timing, performance, fallbacks; PRs with FPS/bundle diffs.
+- Content Agent: improve wording/CTAs; PRs with style notes.
+- Each agent documents notable decisions with ADRs in `docs/adr/*`.
 
-Wire into Next:
-- Wrap `next.config.mjs` with `withContentlayer()`.
-- Create `content/` and migrate posts from `blogs/` (see migration in PRD Appendix A).
+## Scripts to Add
+- `scripts/migrate-blogs.ts`: normalize frontmatter, update image paths.
+- `scripts/generate-rss.ts`: generate RSS/Atom to `public/`.
+- `scripts/verify-links.ts`: check internal links.
+- `scripts/collect-metrics.mjs`: run Lighthouse (CI) for key pages and store reports.
 
-Pages:
-- `app/blog/page.tsx` — listing with pagination and tag filters.
-- `app/blog/[slug]/page.tsx` — render MDX via `MDXProvider` shortcodes.
-- Optional: `/tags/[tag]` route for filtered view.
-
-Shortcodes:
-- `components/mdx/Callout.tsx`, `Figure.tsx`, `CodeBlock.tsx` (copy-to-clipboard), `Steps.tsx`.
-
-
-## 5) Core App Structure
-Recommended folders:
+## Directory Layout (target)
 ```
 app/
-  (marketing)/
   blog/
   about/
   contact/
@@ -85,94 +113,55 @@ app/
   manifest.ts
   opengraph-image.tsx
 components/
-  mdx/
-  ui/
-  sections/
+  layout/      # SiteShell, nav/footer
+  sections/    # Services/Process/etc.
+  templates/   # NotFound, shared page templates
+  variants/
+    v2/        # 3D hero and v2‑specific bits
 content/
   blog/
 lib/
   contentlayer.ts
   seo.ts
 public/
-  images/
+styles/
+docs/
+  adr/
+archive/
+  variants/
+    v1/
+    v3/
+  components/
+  styles/
 ```
 
+## Acceptance Gates
+- Performance: LCP < 2.5s, CLS < 0.1, TBT < 200ms on target profiles.
+- Accessibility: Axe ≥ 95; keyboard nav; reduced‑motion honored.
+- SEO: Metadata complete; JSON‑LD valid; OG images render; Lighthouse SEO ≥ 95.
+- Content: Legacy blogs migrated; templates functioning; redirects in place.
+- CI/CD: All checks green.
 
-## 6) SEO & Metadata
-- Use the Metadata API with a `metadata` export per route.
-- Create `app/sitemap.ts` (or `next-sitemap` for very large sites) and `app/robots.ts`.
-- Generate social images via `opengraph-image.tsx` (Satori) or static assets; include per-post OG images.
+## Command Cheatsheet (revamp)
+```
+# next + core libs
+npm i next@15.5.4 framer-motion three @react-three/fiber @react-three/drei \
+  tailwindcss postcss autoprefixer class-variance-authority clsx tailwind-merge \
+  lucide-react contentlayer2 next-contentlayer2 remark-gfm rehype-pretty-code \
+  react-hook-form zod @hookform/resolvers flexsearch --save
 
+# shadcn/ui
+npx shadcn@latest init
+npx shadcn@latest add button input dialog sheet tabs accordion tooltip toast
 
-## 7) Forms & Integrations
-- Contact form: Server Action or `app/api/contact/route.ts` with schema validation (Zod) and email provider (Resend or SES); honeypot and rate-limit.
-- Analytics: Vercel Analytics/Speed Insights or Plausible.
-- Error instrumentation: basic `error.js` and `not-found.js` pages; consider Sentry (optional).
+# contentlayer (dev)
+npm i -D contentlayer2 next-contentlayer2
 
-
-## 8) Theming & Design System
-- Establish CSS variables for color tokens (light/dark) and semantic roles.
-- Define typography scale, spacing, radii, and shadows; align with Tailwind tokens.
-- Replace icon fonts with inline SVGs or `react-icons`/`lucide-react`.
-
-
-## 9) Testing & Quality Gates
-Install:
-- `npm i -D jest @testing-library/react @testing-library/jest-dom ts-jest`
-- `npm i -D playwright @playwright/test`
-- `npm i -D pa11y-ci lighthouse` (or use GitHub Action marketplace actions)
-
-Scripts (examples to add to `package.json`):
-- `"test": "jest"`
-- `"test:e2e": "playwright test"`
-- `"validate": "npm run lint && npm run test && npm run build"`
-- `"validate:ci": "npm run lint && npm run test && npm run test:e2e && npm run build"`
-
-Playwright basics:
-- Add tests for: main nav, blog open/close, contact form submission.
-
-A11y & Perf:
-- Pa11y CI against `http://localhost:3000` key routes.
-- Lighthouse CI with budgets for LCP/TBT/CLS.
-
-
-## 10) CI/CD
-GitHub Actions (outline):
-- Workflow triggers: PRs and `main`.
-- Jobs: install/cache, lint, unit, build, e2e (optional with preview), pa11y/lighthouse, deploy to Vercel on `main`.
-
-Vercel:
-- Connect repo, set project, configure ENV secrets, and custom domain.
-
-
-## 11) Migration from Current Repo
-- Remove legacy `index.html` from root after Next pages are complete.
-- Move `assets/img` under `public/images/..`; convert large GIFs to MP4/WebM or APNG.
-- Convert `/blogs/*.md` → `/content/blog/*.mdx`; update image references to `/images/...`.
-- Replace icon fonts/CDN assets with local packages and SVGs.
-- Re-implement existing sections as server components with Motion where needed.
-
-
-## 12) Validation — Local and CI
-Local:
-- `npm run dev` — smoke test routes and responsive behavior.
-- `npm run validate` — lint + tests + build.
-- Manual a11y and reduced-motion reviews.
-
-CI:
-- Ensure all jobs pass; check Lighthouse/Pa11y reports.
-
-
-## 13) Troubleshooting & Rollback
-Common issues:
-- Build fails after Tailwind v4 upgrade → temporarily pin to v3.4 and revisit.
-- Contentlayer type errors → run a clean build and check frontmatter fields.
-- Slow LCP due to hero media → serve a static poster, lazy-mount canvas, ensure `priority` image is optimized.
+# run locally
+npm run dev
+```
 
 Rollback:
 - Maintain a `release/*` branch per deploy; revert via GitHub UI or `git revert` and re-deploy.
 
-
-## 14) Completion
-- All PRD acceptance criteria satisfied; agents hand off to ReleaseAgent.
-- Archive legacy assets and keep a changelog of structural changes for future maintainers.
+For scope and quality bars, see `docs/PRD.md`.

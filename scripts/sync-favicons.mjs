@@ -28,9 +28,11 @@ async function copyIfExists(name) {
   const to = path.join(dstDir, name);
   try {
     await fs.copyFile(from, to);
+    // eslint-disable-next-line no-console
     console.log(`[favicons] Copied ${name}`);
   } catch (err) {
     if (err && err.code === 'ENOENT') {
+      // eslint-disable-next-line no-console
       console.warn(`[favicons] Skipped missing ${name}`);
     } else {
       throw err;

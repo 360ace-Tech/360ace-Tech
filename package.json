@@ -4,27 +4,58 @@
   "version": "0.3.0",
   "scripts": {
     "dev": "next dev",
+    "clean": "rm -rf .next .contentlayer node_modules/.cache",
     "prebuild": "node scripts/sync-favicons.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint || echo 'lint skipped'",
-    "validate": "npm run lint && next build"
+    "smoke": "npm run build && node scripts/smoke.mjs",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "engines": {
+    "node": ">=18.18 <25"
   },
   "dependencies": {
-    "@mdx-js/react": "^3.0.0",
-    "@next/mdx": "^15.4.2",
-    "gray-matter": "^4.0.3",
-    "motion": "^11.0.0",
-    "next": "15.4.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "remark-gfm": "^4.0.0"
+    "@emotion/is-prop-valid": "^1.4.0",
+    "@google-cloud/recaptcha-enterprise": "^6.3.1",
+    "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "contentlayer2": "^0.5.8",
+    "flexsearch": "^0.7.31",
+    "framer-motion": "^11.1.7",
+    "gsap": "^3.12.5",
+    "lucide-react": "^0.407.0",
+    "next": "^15.5.4",
+    "next-contentlayer2": "^0.5.8",
+    "next-themes": "^0.3.0",
+    "next-view-transitions": "^0.3.4",
+    "pdf-lib": "^1.17.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.4",
+    "reading-time": "^1.5.0",
+    "rehype-pretty-code": "^0.14.0",
+    "remark-gfm": "^4.0.0",
+    "shiki": "^1.2.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.16.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "typescript": "^5.6.0",
-    "@mdx-js/loader": "^3.0.0"
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/three": "^0.180.0",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^9.38.0",
+    "eslint-config-next": "^15.5.6",
+    "postcss": "^8.4.35",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5"
   }
 }
