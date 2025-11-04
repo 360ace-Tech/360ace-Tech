@@ -1,117 +1,234 @@
-/* CSS reset (minimal) */
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-body {
-  margin: 0;
-  color: #E6E6F0;
-  background: radial-gradient(1200px 800px at 10% 10%, #0f172a, #020617 50%),
-              radial-gradient(800px 600px at 90% 90%, rgba(30,58,138,0.5), rgba(2,6,23,0));
-  background-color: #020617;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Priestacy font (local). Place files under public/fonts/. Fallbacks gracefully if missing. */
+@font-face {
+  font-family: 'Priestacy';
+  src: url('/fonts/Priestacy.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-:root {
-  --accent: #60a5fa; /* sky-400 */
-  --accent-2: #c084fc; /* violet-400 */
-  --shadow: rgba(0,0,0,0.35);
+/* Utility for using Priestacy */
+.font-priestacy { font-family: 'Priestacy', cursive; }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  :root {
+    /* Light theme (improved contrast) */
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --muted: 210 16% 92%;
+    --muted-foreground: 222 27% 35%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --primary: 224 86% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 291 89% 64%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 191 97% 42%;
+    --accent-foreground: 210 20% 12%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 224 86% 55%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    /* Dark theme */
+    --background: 222 47% 11%;
+    --foreground: 210 20% 96%;
+    --muted: 223 47% 20%;
+    --muted-foreground: 215 20% 82%;
+    --popover: 222 47% 7%;
+    --popover-foreground: 210 20% 96%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 20% 96%;
+    --border: 225 36% 18%;
+    --input: 225 36% 18%;
+    --primary: 224 95% 68%;
+    --primary-foreground: 210 20% 96%;
+    --secondary: 291 89% 64%;
+    --secondary-foreground: 210 20% 96%;
+    --accent: 191 97% 74%;
+    --accent-foreground: 210 20% 12%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 96%;
+    --ring: 224 95% 68%;
+    --radius: 1rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased min-h-screen;
+    background-image: radial-gradient(800px 800px at top left, rgba(99,102,241,0.18), transparent 55%),
+      radial-gradient(600px 600px at bottom right, rgba(14,116,144,0.2), transparent 50%);
+    background-attachment: fixed;
+  }
+  /* Lock scroll while preloading */
+  html[data-preload-active='1'] body { overflow: hidden; }
+
+  /* View Transitions API tuning */
+  :root::view-transition-old(root),
+  :root::view-transition-new(root) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  ::view-transition-group(brand) {
+    animation-duration: 400ms;
+  }
+  ::view-transition-group(hero-title) { animation-duration: 380ms; }
+  ::view-transition-group(hero-sub) { animation-duration: 360ms; }
+  ::view-transition-group(hero-eyebrow) { animation-duration: 340ms; }
+  ::view-transition-group(cta-primary) { animation-duration: 320ms; }
+  ::view-transition-group(cta-secondary) { animation-duration: 320ms; }
+
+  /* Offset anchor scroll to account for sticky header (h-16) */
+  #services, #process, #insights, #contact {
+    scroll-margin-top: 6rem;
+  }
+
+  ::selection {
+    @apply bg-primary/70 text-primary-foreground;
+  }
 }
 
-.uc-wrap {
-  position: relative;
-  min-height: 100dvh;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
+@layer utilities {
+  /* Simple reveal animation utility for safe, SSR-friendly motion */
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition-property: opacity, transform;
+    transition-duration: 600ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; }
+  }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  /* Directional variants */
+  .reveal[data-reveal-dir="up"] { transform: translateY(10px); }
+  .reveal[data-reveal-dir="down"] { transform: translateY(-10px); }
+  .reveal[data-reveal-dir="left"] { transform: translateX(-12px); }
+  .reveal[data-reveal-dir="right"] { transform: translateX(12px); }
+
+  .container-edge {
+    @apply container px-6 sm:px-8 lg:px-12;
+  }
+
+  .text-gradient-primary {
+    background: linear-gradient(120deg, hsl(var(--primary)), hsl(var(--secondary)) 60%, hsl(var(--accent)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg;
+  }
+
+  .grid-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grid-overlay);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
 }
 
-canvas.starfield {
+/* Preloader overlay */
+.preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--background));
+  transition: opacity 500ms ease, visibility 500ms ease;
+}
+html:not([data-preload-active='1']) .preloader-overlay {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.preloader-stack { display: flex; flex-direction: column; align-items: center; }
+/* Allow content to size naturally; no fixed box that causes overlap */
+.preloader-inner { position: relative; height: auto; width: auto; }
+/* Lay out logo and text side by side */
+.preloader-row { display: inline-flex; align-items: center; gap: 1rem; }
+/* Logo is part of the flow; relative for spinner ring */
+.preloader-logo { position: relative; inset: auto; display: grid; place-items: center; z-index: auto; transition: opacity 200ms ease, visibility 200ms ease; padding: 0.5rem; }
+/* Animated loading ring around the logo */
+.preloader-loading-ring { position: absolute; inset: 0; border-radius: 9999px; border: 3px solid transparent; border-top-color: hsl(var(--primary)); border-right-color: hsl(var(--primary)); opacity: 0.9; animation: preloader-spin 1s linear infinite; pointer-events: none; }
+.preloader-logo-img { height: 4rem; width: 4rem; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.35)); transform: scale(0.94); animation: preloader-pop 600ms cubic-bezier(0.22,1,0.36,1) forwards; }
+@keyframes preloader-pop { to { transform: scale(1); } }
+.preloader-rings { position: absolute; inset: 0; transition: opacity 360ms ease; z-index: 0; }
+.preloader-ring {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  filter: drop-shadow(0 0 2px rgba(255,255,255,0.1));
+  border-radius: 9999px;
+  /* Conic gradient ring with gap in centre via mask */
+  background: conic-gradient(from 0deg, rgba(99,102,241,0.85), rgba(236,72,153,0.75), rgba(59,130,246,0.8), rgba(99,102,241,0.85));
+  -webkit-mask: radial-gradient(farthest-side, transparent 68%, #000 70%);
+  mask: radial-gradient(farthest-side, transparent 68%, #000 70%);
+  filter: drop-shadow(0 0 24px rgba(99,102,241,0.45));
+  animation: preloader-spin 1.2s linear infinite;
 }
+@keyframes preloader-spin { to { transform: rotate(360deg); } }
 
-.uc-content {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 2rem;
+/* Dual-ring variants */
+.preloader-ring--outer { inset: 0; }
+.preloader-ring--inner {
+  inset: 12px;
+  background: conic-gradient(from 0deg, rgba(59,130,246,0.85), rgba(14,165,233,0.75), rgba(236,72,153,0.8), rgba(59,130,246,0.85));
+  -webkit-mask: radial-gradient(farthest-side, transparent 62%, #000 64%);
+  mask: radial-gradient(farthest-side, transparent 62%, #000 64%);
+  filter: drop-shadow(0 0 18px rgba(59,130,246,0.45));
+  animation: preloader-spin-rev 1.6s linear infinite;
 }
+@keyframes preloader-spin-rev { to { transform: rotate(-360deg); } }
 
-.logo-badge {
-  display: inline-block;
-  padding: 0.5rem 0.75rem;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(96,165,250,0.15), rgba(192,132,252,0.15));
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(4px);
-}
+/* Caption letters */
+.preloader-caption { position: static; display: block; color: hsl(var(--foreground)); letter-spacing: 0.03em; }
+.preloader-word { display: inline-block; white-space: nowrap; line-height: 1.1; }
+.preloader-caption { font-size: clamp(2.2rem, 7vw, 3.6rem); }
+.preloader-caption { opacity: 0; transition: opacity 220ms ease; }
+.preloader-letter { opacity: 0; display: inline-block; transform: translateY(6px); animation: preloader-letter 480ms cubic-bezier(0.22,1,0.36,1) forwards; }
+@keyframes preloader-letter { to { opacity: 1; transform: none; } }
+/* Nudge the dot (.) upward slightly for better baseline alignment in Priestacy */
+.preloader-letter[data-ch="."] { position: relative; top: -0.46em; }
 
-.title3d {
-  margin: 1.25rem 0 0.5rem;
-  font-size: clamp(2rem, 6vw, 4rem);
-  line-height: 1.1;
-  letter-spacing: 0.02em;
-  text-shadow: 0 10px 30px var(--shadow);
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+/* Phase control: glow then text */
+/* Text-first single-phase: logo + text visible while overlay active */
+html[data-preload-active='1'] .preloader-caption { opacity: 1; }
+html[data-preload-active='1'] .preloader-logo { opacity: 1; }
 
-.subtitle {
-  color: #A3A3B2;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-}
-
-/* CTA buttons */
-.cta {
-  display: inline-block;
-  padding: 0.6rem 0.9rem;
-  border-radius: 10px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color: #0b1020;
-  text-decoration: none;
-  font-weight: 600;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-.cta.secondary {
-  background: transparent;
-  color: #E6E6F0;
-}
-
-.tilt-card {
-  --rx: 0;
-  --ry: 0;
-  perspective: 1000px;
-  transform-style: preserve-3d;
-  margin-top: 2rem;
-}
-
-.tilt-inner {
-  display: inline-block;
-  padding: 1.25rem 1.5rem;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(17,24,39,0.6), rgba(2,6,23,0.6));
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 20px 60px -20px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
-  transform: rotateX(var(--rx)) rotateY(var(--ry));
-  will-change: transform;
-}
-
-.cta {
-  margin-top: 2rem;
-  display: inline-block;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #E6E6F0;
-  text-decoration: none;
-  background: linear-gradient(90deg, rgba(96,165,250,0.15), rgba(192,132,252,0.15));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tilt-inner { transform: none !important; }
-}
+/* Shimmer effect for caption during text phase */
+/* Optional subtle shimmer can be added later; removed phase-based selector to avoid conflicts */

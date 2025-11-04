@@ -5,7 +5,7 @@ import CodeBlock from './CodeBlock';
 const MDXComponents = {
   Callout,
   Figure,
-  pre: (props: any) => <CodeBlock {...props} />,
+  pre: (props: React.HTMLAttributes<HTMLPreElement>) => <CodeBlock {...props} />,
 };
 
 export default MDXComponents;

@@ -1,10 +1,14 @@
 import type { MetadataRoute } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://360ace.tech';
+
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://360ace.tech';
   return {
-    rules: [{ userAgent: '*', allow: '/' }],
-    sitemap: `${base}/sitemap.xml`,
+    rules: {
+      userAgent: '*',
+      allow: '/',
+    },
+    sitemap: [`${BASE_URL}/sitemap.xml`],
   };
 }
 

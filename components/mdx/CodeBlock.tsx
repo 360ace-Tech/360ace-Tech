@@ -4,7 +4,7 @@ import { useState } from 'react';
 export default function CodeBlock(props: React.HTMLAttributes<HTMLPreElement>) {
   const [copied, setCopied] = useState(false);
   const onCopy = async () => {
-    const text = (props.children as any)?.toString?.() ?? '';
+    const text = typeof props.children === 'string' ? props.children : String(props.children ?? '');
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);

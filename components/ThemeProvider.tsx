@@ -13,5 +13,5 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
     const theme = stored ?? (systemDark ? 'dark' : 'light');
     root.classList.toggle('dark', theme === 'dark');
   }, []);
-  return children as any;
+  return <>{children}</>;
 }
