@@ -67,7 +67,7 @@ export default function PreloaderOverlay() {
           @keyframes spin { to { transform: rotate(360deg); } }
         `}</style>
         <div className="relative h-full w-full flex items-center justify-center">
-          <div className="relative h-16 w-16 sm:h-20 sm:w-20 drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
+          <div className="relative h-16 w-16 sm:h-20 sm:w-20">
             <Image src={logoSrc} alt="Site logo" fill sizes="80px" className="object-contain" priority />
           </div>
         </div>
