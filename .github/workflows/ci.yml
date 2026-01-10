@@ -65,7 +65,7 @@ jobs:
           NEXT_PUBLIC_REOPEN_AT=
 
           # Contact form (not needed for build, but prevents warnings)
-          SENDGRID_API_KEY=ci_build_placeholder
+          MAILERSEND_API_KEY=ci_build_placeholder
           CONTACT_TO_EMAIL=ci@example.com
           CONTACT_FROM_EMAIL=no-reply@example.com
           CONTACT_SUBJECT_PREFIX="Contact:"
