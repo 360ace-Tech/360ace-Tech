@@ -21,7 +21,7 @@ A modern, high-performance marketing website for 360ace.Tech, showcasing platfor
 - 📝 **Content Management**: MDX-powered blog with syntax highlighting
 - 🔍 **SEO Optimized**: Meta tags, sitemap, and semantic HTML
 - ♿ **Accessible**: WCAG compliant with keyboard navigation
-- 📧 **Contact Forms**: Integrated with SendGrid and reCAPTCHA
+- 📧 **Contact Forms**: Integrated with MailerSend and reCAPTCHA
 - 🎯 **Analytics Ready**: Google Analytics integration
 
 ## Tech Stack
@@ -163,8 +163,8 @@ Required environment variables (see `.env.example`):
 # Site configuration
 NEXT_PUBLIC_SITE_URL=https://360ace.tech
 
-# Email (SendGrid)
-SENDGRID_API_KEY=your_key
+# Email (MailerSend)
+MAILERSEND_API_KEY=your_key
 CONTACT_TO_EMAIL=hello@example.com
 CONTACT_FROM_EMAIL=no-reply@example.com
 

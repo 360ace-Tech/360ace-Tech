@@ -81,8 +81,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Send email via SendGrid when configured
-    const apiKey = process.env.SENDGRID_API_KEY;
+    // Send email via MailerSend when configured
+    const apiKey = process.env.MAILERSEND_API_KEY;
     const to = process.env.CONTACT_TO_EMAIL || 'hello@360ace.tech';
     const from = process.env.CONTACT_FROM_EMAIL || 'no-reply@360ace.tech';
 
@@ -150,25 +150,25 @@ export async function POST(req: NextRequest) {
 </body></html>`;
 
     const payload = {
-      personalizations: [
+      from: {
+        email: from,
+        name: '360ace.Tech Contact Form',
+      },
+      to: [
         {
-          to: [{ email: to }],
-          subject: `${subjectPrefix}: ${subject}`,
+          email: to,
         },
       ],
-      from: { email: from, name: '360ace.Tech Contact Form' },
-      reply_to: { email },
-      content: [
-        {
-          type: 'text/plain',
-          value: textBody,
-        },
-        { type: 'text/html', value: htmlBody },
-      ],
+      reply_to: {
+        email,
+      },
+      subject: `${subjectPrefix}: ${subject}`,
+      text: textBody,
+      html: htmlBody,
     };
 
     try {
-      const resp = await fetch('https://api.sendgrid.com/v3/mail/send', {
+      const resp = await fetch('https://api.mailersend.com/v1/email', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${apiKey}`,
