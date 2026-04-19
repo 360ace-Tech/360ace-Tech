@@ -178,8 +178,7 @@ export async function POST(req: NextRequest) {
       });
 
       if (!resp.ok) {
-        const text = await resp.text();
-        return NextResponse.json({ ok: false, error: 'Email failed', details: text }, { status: 200 });
+        return NextResponse.json({ ok: false, error: 'Email failed. Please try again.' }, { status: 200 });
       }
     } catch {
       return NextResponse.json({ ok: false, error: 'Email service unreachable.' }, { status: 200 });
