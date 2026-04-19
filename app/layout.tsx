@@ -3,8 +3,6 @@ import '@/styles/themes/v2.css';
 
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
-import NextScript from 'next/script';
-
 import { Providers } from '@/app/(core)/providers';
 import { ViewTransitions } from 'next-view-transitions';
 import { HashScroll } from '@/components/navigation/hash-scroll';
@@ -20,6 +18,9 @@ export const metadata: Metadata = {
   description:
     '360ace.Tech partners with teams to design, ship, and operate resilient cloud-native products with DevOps, platform engineering, and SRE excellence.',
   keywords: ['cloud native', 'platform engineering', 'devops', 'site reliability', '360ace tech', 'engineering consultancy'],
+  alternates: {
+    canonical: 'https://360ace.tech',
+  },
   openGraph: {
     title: '360ace.Tech — Cloud Native Engineering & SRE Studio',
     description:
@@ -27,12 +28,21 @@ export const metadata: Metadata = {
     url: 'https://360ace.tech',
     siteName: '360ace.Tech',
     type: 'website',
+    images: [
+      {
+        url: 'https://360ace.tech/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: '360ace.Tech — Cloud Native Engineering & SRE Studio',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: '360ace.Tech — Cloud Native Engineering & SRE Studio',
     description:
       'Cloud Native engineering studio helping teams ship and operate resilient products with DevOps and SRE.',
+    images: ['https://360ace.tech/og-image.png'],
   },
   icons: {
     icon: [
@@ -71,7 +81,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Providers>
           <ViewTransitions>
             {/* Preloader bootstrap: two-phase (glow then text), timed so text fully spells before fade */}
-            <NextScript id="preloader-init" strategy="beforeInteractive">
+            <Script id="preloader-init" strategy="beforeInteractive">
               {`
                 try {
                   var cfg = Number('${process.env.NEXT_PUBLIC_PRELOADER_MS ?? '1800'}');
@@ -89,7 +99,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   }, totalHold);
                 } catch {}
               `}
-            </NextScript>
+            </Script>
             <PreloaderServer />
             <div className="relative flex min-h-screen flex-col">
               <HashScroll />
