@@ -1,14 +1,12 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import type { Route } from 'next';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { company } from '@/lib/site-content';
 import { cn } from '@/lib/utils';
 import { MobileMenu } from '@/components/navigation/mobile-menu';
 import { DesktopNav } from '@/components/navigation/desktop-nav';
+import { HeaderLogo } from '@/components/navigation/header-logo';
 
 export const navigation = [
   { href: '/#services', label: 'What we do' },
@@ -27,17 +25,7 @@ export function SiteHeader() {
       )}
     >
       <div className="container-edge flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="group inline-flex items-center gap-1 text-sm font-semibold [perspective:200px]" style={{ viewTransitionName: 'brand' }}>
-          {/* Logo: light/dark variants — logo-spin rotates around the Y-axis */}
-          <span className="logo-spin relative inline-block h-10 w-10">
-            <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="40px" priority />
-            <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="40px" priority />
-          </span>
-          <Badge variant="subtle" className="bg-primary/10 text-primary">
-            {company.name}
-          </Badge>
-          <span className="hidden text-xs text-muted-foreground sm:block">Cloud Native Engineering Studio</span>
-        </Link>
+        <HeaderLogo />
         <DesktopNav items={navigation} />
         <div className="flex items-center gap-2">
           <ThemeToggle />
