@@ -6,7 +6,6 @@ import {
   geoOrthographic,
   geoPath,
   geoGraticule10,
-  geoCentroid,
   geoInterpolate,
   geoDistance,
   type GeoProjection,
@@ -15,6 +14,93 @@ import {
 import { feature } from 'topojson-client';
 // Bundled locally — no CDN fetch needed, renders immediately
 import worldAtlas from 'world-atlas/countries-110m.json';
+
+// ---------------------------------------------------------------------------
+// Curated major city coordinates [longitude, latitude]
+// Using real cities ensures arcs always originate from land, not ocean.
+// ---------------------------------------------------------------------------
+const CITY_COORDS: [number, number][] = [
+  // Europe
+  [-0.1276, 51.5074],   // London
+  [2.3522, 48.8566],    // Paris
+  [13.4050, 52.5200],   // Berlin
+  [12.4964, 41.9028],   // Rome
+  [-3.7038, 40.4168],   // Madrid
+  [4.9041, 52.3676],    // Amsterdam
+  [18.0686, 59.3293],   // Stockholm
+  [24.9384, 60.1699],   // Helsinki
+  [16.3738, 48.2082],   // Vienna
+  [14.4208, 50.0880],   // Prague
+  [21.0122, 52.2297],   // Warsaw
+  [28.9784, 41.0082],   // Istanbul
+  [23.7275, 37.9838],   // Athens
+  [37.6173, 55.7558],   // Moscow
+  [30.5234, 50.4501],   // Kyiv
+  [44.8291, 41.6938],   // Tbilisi
+  // Americas
+  [-74.0060, 40.7128],  // New York
+  [-87.6298, 41.8781],  // Chicago
+  [-118.2437, 34.0522], // Los Angeles
+  [-122.4194, 37.7749], // San Francisco
+  [-79.3832, 43.6532],  // Toronto
+  [-123.1207, 49.2827], // Vancouver
+  [-47.9297, -15.7801], // Brasília
+  [-43.1729, -22.9068], // Rio de Janeiro
+  [-46.6333, -23.5505], // São Paulo
+  [-58.3816, -34.6037], // Buenos Aires
+  [-70.6483, -33.4569], // Santiago
+  [-77.0428, -12.0464], // Lima
+  [-74.0721, 4.7110],   // Bogotá
+  [-99.1332, 19.4326],  // Mexico City
+  [-84.0907, 9.9281],   // San José
+  [-57.6540, -25.2867], // Asunción
+  // Africa
+  [3.3792, 6.5244],     // Lagos
+  [36.8219, -1.2921],   // Nairobi
+  [31.2357, 30.0444],   // Cairo
+  [3.0588, 36.7538],    // Algiers
+  [-17.4441, 14.6937],  // Dakar
+  [38.7469, 9.0320],    // Addis Ababa
+  [32.5731, 15.5007],   // Khartoum
+  [28.0473, -26.2041],  // Johannesburg
+  [18.4241, -33.9249],  // Cape Town
+  [13.1913, -8.8368],   // Luanda
+  [15.2663, -4.3217],   // Brazzaville
+  [7.4898, 9.0574],     // Abuja
+  [32.5824, 0.3476],    // Kampala
+  [29.3543, -3.3822],   // Bujumbura
+  // Asia
+  [116.4074, 39.9042],  // Beijing
+  [121.4737, 31.2304],  // Shanghai
+  [103.8198, 1.3521],   // Singapore
+  [100.5018, 13.7563],  // Bangkok
+  [139.6917, 35.6895],  // Tokyo
+  [127.0276, 37.5665],  // Seoul
+  [72.8777, 19.0760],   // Mumbai
+  [77.2090, 28.6139],   // New Delhi
+  [88.3639, 22.5726],   // Kolkata
+  [67.0099, 24.8607],   // Karachi
+  [69.2163, 41.2995],   // Tashkent
+  [51.3890, 35.6892],   // Tehran
+  [44.3661, 33.3152],   // Baghdad
+  [46.6753, 24.6877],   // Riyadh
+  [55.2708, 25.2048],   // Dubai
+  [90.4125, 23.8103],   // Dhaka
+  [96.1561, 16.8661],   // Yangon
+  [104.9160, 11.5564],  // Phnom Penh
+  [106.6297, 10.8231],  // Ho Chi Minh City
+  [121.0244, 14.5995],  // Manila
+  [106.8456, -6.2088],  // Jakarta
+  [114.1694, 22.3193],  // Hong Kong
+  [135.5023, 34.6937],  // Osaka
+  // Oceania
+  [151.2093, -33.8688], // Sydney
+  [144.9631, -37.8136], // Melbourne
+  [153.0251, -27.4698], // Brisbane
+  [115.8575, -31.9505], // Perth
+  [174.7633, -36.8485], // Auckland
+  [172.6362, -43.5321], // Christchurch
+];
 
 // ---------------------------------------------------------------------------
 // Types
@@ -127,7 +213,7 @@ const LIGHT: ThemeColors = {
 const SIZE = 300;
 const PROJECTION_SCALE = SIZE * 0.47; // ~141 — globe nearly fills the canvas
 const SAMPLES = 48;
-const SPIN_SPEED = 0.10;        // deg/frame-unit
+const SPIN_SPEED = 0.05;        // deg/frame-unit
 const ARC_FREQ_MS = 620;
 
 type State = {
@@ -186,10 +272,17 @@ function GlobeCanvas({ isLight }: { isLight: boolean }) {
     function spawnArc() {
       const { centroids, arcs } = st;
       if (!centroids.length) return;
-      const a = centroids[Math.floor(Math.random() * centroids.length)];
-      let b = centroids[Math.floor(Math.random() * centroids.length)];
+      // Only pick cities clearly on the front face of the globe (within ~65° of
+      // the visible centre). Near the limb, orthographic projection foreshortens
+      // land so heavily that even valid city coords look like they're in the ocean.
+      const rot = st.projection.rotate() as [number, number, number];
+      const centre: [number, number] = [-rot[0], -rot[1]];
+      const visible = centroids.filter(c => geoDistance(c, centre) < 1.13); // ~65°
+      if (visible.length < 2) return;
+      const a = visible[Math.floor(Math.random() * visible.length)];
+      let b = visible[Math.floor(Math.random() * visible.length)];
       for (let i = 0; i < 6 && geoDistance(a, b) < 0.3; i++)
-        b = centroids[Math.floor(Math.random() * centroids.length)];
+        b = visible[Math.floor(Math.random() * visible.length)];
       arcs.push({
         src: a, dst: b,
         born: performance.now(),
@@ -332,9 +425,8 @@ function GlobeCanvas({ isLight }: { isLight: boolean }) {
     const fc = feature(topo, topo.objects.countries) as unknown as GeoJSON.FeatureCollection;
 
     st.landFeatures = fc.features as ExtendedFeature[];
-    st.centroids = st.landFeatures
-      .map((f) => geoCentroid(f) as [number, number])
-      .filter((c) => Number.isFinite(c[0]) && Number.isFinite(c[1]));
+    // Use curated city coords so arcs always originate from real land locations
+    st.centroids = CITY_COORDS;
 
     startSpawning();
     spawnArc();
