@@ -132,6 +132,18 @@
   .reveal[data-reveal-dir="left"] { transform: translateX(-12px); }
   .reveal[data-reveal-dir="right"] { transform: translateX(12px); }
 
+  /* Header logo — slow Y-axis spin (3D coin-flip effect) */
+  .logo-spin {
+    animation: logo-spin-y 10s linear infinite;
+  }
+  @keyframes logo-spin-y {
+    from { transform: rotateY(0deg); }
+    to   { transform: rotateY(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-spin { animation: none; }
+  }
+
   .container-edge {
     @apply container px-6 sm:px-8 lg:px-12;
   }

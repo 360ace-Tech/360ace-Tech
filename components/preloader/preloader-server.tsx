@@ -6,8 +6,8 @@ export default function PreloaderServer() {
     <div className="preloader-overlay" aria-hidden>
       <div className="preloader-stack">
         <div className="preloader-inner">
-          <div className="preloader-row">
-            <div className="preloader-logo">
+          <div className="preloader-row" style={{ perspective: '200px' }}>
+            <div className="preloader-logo logo-spin">
               <span className="preloader-loading-ring" aria-hidden />
               {/* Render both; theme controls visibility */}
               {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -27,9 +27,9 @@ export function SiteHeader() {
       )}
     >
       <div className="container-edge flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="group inline-flex items-center gap-1 text-sm font-semibold" style={{ viewTransitionName: 'brand' }}>
-          {/* Logo: light/dark variants */}
-          <span className="relative inline-block h-10 w-10">
+        <Link href="/" className="group inline-flex items-center gap-1 text-sm font-semibold [perspective:200px]" style={{ viewTransitionName: 'brand' }}>
+          {/* Logo: light/dark variants — logo-spin rotates around the Y-axis */}
+          <span className="logo-spin relative inline-block h-10 w-10">
             <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="40px" priority />
             <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="40px" priority />
           </span>
