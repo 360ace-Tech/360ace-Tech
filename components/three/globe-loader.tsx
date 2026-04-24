@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import {
   geoOrthographic,
@@ -221,12 +221,28 @@ type State = {
   centroids: [number, number][];
   arcs: Arc[];
   rotLon: number;
+  pointerLon: number;
+  pointerLat: number;
   last: number;
   projection: GeoProjection;
   colors: ThemeColors;
 };
 
-function GlobeCanvas({ isLight }: { isLight: boolean }) {
+function useReducedMotion() {
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(query.matches);
+    const onChange = () => setReducedMotion(query.matches);
+    query.addEventListener('change', onChange);
+    return () => query.removeEventListener('change', onChange);
+  }, []);
+
+  return reducedMotion;
+}
+
+function GlobeCanvas({ isLight, reducedMotion }: { isLight: boolean; reducedMotion: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Store mutable render state in a ref so it never causes re-renders
   const stRef = useRef<State>({
@@ -234,6 +250,8 @@ function GlobeCanvas({ isLight }: { isLight: boolean }) {
     centroids: [],
     arcs: [],
     rotLon: 0,
+    pointerLon: 0,
+    pointerLat: 0,
     last: 0,
     projection: geoOrthographic()
       .scale(PROJECTION_SCALE)
@@ -267,6 +285,8 @@ function GlobeCanvas({ isLight }: { isLight: boolean }) {
     const sphere = { type: 'Sphere' };
     let rafId = 0;
     let spawnId: ReturnType<typeof setInterval> | null = null;
+    let dragging = false;
+    let lastPointer: { x: number; y: number } | null = null;
 
     // ---- Arc helpers ----
     function spawnArc() {
@@ -368,11 +388,12 @@ function GlobeCanvas({ isLight }: { isLight: boolean }) {
 
     // ---- Main render ----
     function frame(t: number) {
+      rafId = 0;
       const dt = Math.min(64, t - st.last);
       st.last = t;
-      st.rotLon += SPIN_SPEED * dt * 0.06;
+      if (!reducedMotion) st.rotLon += SPIN_SPEED * dt * 0.06;
       if (st.rotLon > 360) st.rotLon -= 360;
-      st.projection.rotate([st.rotLon, -12, 0]);
+      st.projection.rotate([st.rotLon + st.pointerLon, -12 + st.pointerLat, 0]);
 
       const { colors } = st;
       ctx.clearRect(0, 0, SIZE, SIZE);
@@ -415,7 +436,7 @@ function GlobeCanvas({ isLight }: { isLight: boolean }) {
       ctx.stroke();
 
       drawArcs(t);
-      rafId = requestAnimationFrame(frame);
+      if (!reducedMotion) rafId = requestAnimationFrame(frame);
     }
 
     // ---- Init — use bundled world-atlas, no fetch ----
@@ -428,20 +449,52 @@ function GlobeCanvas({ isLight }: { isLight: boolean }) {
     // Use curated city coords so arcs always originate from real land locations
     st.centroids = CITY_COORDS;
 
-    startSpawning();
-    spawnArc();
-    setTimeout(spawnArc, 130);
-    setTimeout(spawnArc, 340);
+    if (!reducedMotion) {
+      startSpawning();
+      spawnArc();
+      setTimeout(spawnArc, 130);
+      setTimeout(spawnArc, 340);
+    }
 
     st.last = performance.now();
     rafId = requestAnimationFrame(frame);
 
+    const onPointerDown = (event: PointerEvent) => {
+      dragging = true;
+      lastPointer = { x: event.clientX, y: event.clientY };
+      canvas.setPointerCapture(event.pointerId);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!dragging || !lastPointer) return;
+      const dx = event.clientX - lastPointer.x;
+      const dy = event.clientY - lastPointer.y;
+      st.pointerLon += dx * 0.35;
+      st.pointerLat = Math.max(-36, Math.min(28, st.pointerLat - dy * 0.22));
+      lastPointer = { x: event.clientX, y: event.clientY };
+      if (reducedMotion && !rafId) rafId = requestAnimationFrame(frame);
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      dragging = false;
+      lastPointer = null;
+      if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    };
+
+    canvas.addEventListener('pointerdown', onPointerDown);
+    canvas.addEventListener('pointermove', onPointerMove);
+    canvas.addEventListener('pointerup', onPointerUp);
+    canvas.addEventListener('pointercancel', onPointerUp);
+
     return () => {
+      canvas.removeEventListener('pointerdown', onPointerDown);
+      canvas.removeEventListener('pointermove', onPointerMove);
+      canvas.removeEventListener('pointerup', onPointerUp);
+      canvas.removeEventListener('pointercancel', onPointerUp);
       cancelAnimationFrame(rafId);
       if (spawnId) clearInterval(spawnId);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once on mount; theme handled via stRef
+  }, [reducedMotion]);
 
   return (
     <canvas
@@ -451,6 +504,8 @@ function GlobeCanvas({ isLight }: { isLight: boolean }) {
         height: SIZE,
         display: 'block',
         borderRadius: '50%',
+        cursor: 'grab',
+        touchAction: 'none',
       }}
       role="img"
       aria-label="Interactive globe showing global connectivity routes"
@@ -483,6 +538,9 @@ function WhirlRings({ c }: { c: ThemeColors }) {
           .wrl-cw2 { transform-origin: 50% 50%; transform-box: fill-box; animation: wrlCW 17s linear infinite; }
           @keyframes wrlCW  { to { transform: rotate(360deg); } }
           @keyframes wrlCCW { to { transform: rotate(-360deg); } }
+          @media (prefers-reduced-motion: reduce) {
+            .wrl-cw, .wrl-ccw, .wrl-cw2 { animation: none; }
+          }
         `}</style>
         <g className="wrl-cw">
           <circle cx={cx} cy={cx} r={r1} fill="none"
@@ -511,6 +569,7 @@ function WhirlRings({ c }: { c: ThemeColors }) {
 // ---------------------------------------------------------------------------
 export function GlobeScene() {
   const { resolvedTheme } = useTheme();
+  const reducedMotion = useReducedMotion();
   const isLight = resolvedTheme === 'light';
   const c = isLight ? LIGHT : DARK;
 
@@ -535,7 +594,7 @@ export function GlobeScene() {
       />
 
       <div style={{ boxShadow: c.shadow, borderRadius: '50%' }}>
-        <GlobeCanvas isLight={isLight} />
+        <GlobeCanvas isLight={isLight} reducedMotion={reducedMotion} />
       </div>
     </div>
   );

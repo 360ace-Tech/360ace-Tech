@@ -4,10 +4,10 @@ import { callToAction } from '@/lib/site-content';
 
 export function CallToActionSection() {
   return (
-    <section id="contact" className="py-24 bg-background/30">
+    <section id="contact" className="full-page-section bg-background/30">
       <div className="container-edge">
         <FadeIn>
-          <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-primary/25 via-transparent to-secondary/20 p-12 shadow-2xl">
+          <div className="cinematic-panel p-8 sm:p-12 lg:p-16">
             <div className="absolute inset-0 -z-10 opacity-40">
               <div className="absolute left-[-10%] top-[-30%] h-64 w-64 rounded-full bg-white/20 blur-3xl" />
               <div className="absolute bottom-[-20%] right-[-20%] h-72 w-72 rounded-full bg-secondary/20 blur-3xl" />

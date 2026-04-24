@@ -57,6 +57,7 @@ export const metadata: Metadata = {
 
 import Script from 'next/script';
 import PreloaderServer from '@/components/preloader/preloader-server';
+import { NavigationPreloader } from '@/components/preloader/navigation-preloader';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const maintenance = process.env.NEXT_PUBLIC_MAINTENANCE === 'true';
@@ -101,6 +102,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               `}
             </Script>
             <PreloaderServer />
+            {/* Client preloader: fires on blog → home soft navigation */}
+            <NavigationPreloader />
             <div className="relative flex min-h-screen flex-col">
               <HashScroll />
               {maintenance ? <UnderConstruction /> : children}

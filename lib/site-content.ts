@@ -8,9 +8,9 @@ export const company = {
 
 export const heroContent = {
   eyebrow: 'Cloud Native. AI ready. Human centred.',
-  title: 'Build resilient digital products that scale with confidence.',
+  title: 'Build resilient GLOBAL digital products that scale with confidence.',
   description:
-    'We help ambitious teams design, ship, and operate modern software with battle-tested DevOps, site reliability, and platform engineering practices.',
+    'We help ambitious teams design, ship, and operate modern software and AI workloads with battle-tested DevOps, site reliability, and platform engineering practices.',
   primaryCta: { label: 'Book a discovery call', href: '#contact' },
   secondaryCta: { label: 'Explore our playbooks', href: '#services' },
   stats: [
