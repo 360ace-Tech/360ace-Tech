@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { FadeIn } from '@/components/motion/fade-in';
+import { InteractiveCard } from '@/components/motion/interactive-card';
 import { Badge } from '@/components/ui/badge';
 import { allPosts, type Post } from 'contentlayer/generated';
 
@@ -45,12 +46,12 @@ export function InsightsSection() {
   const posts = getFeaturedPosts();
 
   return (
-    <section id="insights" className="py-24 bg-background/10">
+    <section id="insights" className="full-page-section bg-background/10">
       <div className="container-edge space-y-12">
         <FadeIn>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="space-y-4">
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">Latest thinking</p>
+              <p className="chapter-label">Latest thinking</p>
               <h2 className="text-3xl font-semibold sm:text-4xl">Insights from the engineering floor</h2>
             </div>
             <Badge variant="subtle" className="self-start bg-primary/10 text-primary">
@@ -65,29 +66,31 @@ export function InsightsSection() {
                 href={`/blog/${post.slug}`}
                 className="group block rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                <article className="h-full rounded-3xl border border-white/10 bg-card/60 p-6 shadow-lg transition-all duration-300 ease-out hover:-translate-y-0.5 group-hover:scale-[1.01] md:group-hover:scale-[1.03] group-hover:shadow-2xl">
-                  {post.image?.path && (
-                    <span className="block overflow-hidden rounded-2xl -mx-1 -mt-1 mb-4">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={post.image.path}
-                        alt={post.image.alt ?? post.title}
-                        className="h-auto w-full transform transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </span>
-                  )}
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-                    {post.formattedDate}
-                  </p>
-                  <h3 className="mt-3 text-xl font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary group-focus:text-primary">
-                    {post.title}
-                  </h3>
-                  <p className="mt-3 flex-grow text-sm leading-relaxed text-muted-foreground">
-                    {buildExcerpt(post.summary ?? post.body.raw)}
-                  </p>
-                </article>
+                <InteractiveCard className="group h-full">
+                  <article className="h-full p-6">
+                    {post.image?.path && (
+                      <span className="-mx-1 -mt-1 mb-4 block overflow-hidden rounded-2xl">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={post.image.path}
+                          alt={post.image.alt ?? post.title}
+                          className="h-auto w-full transform transition-transform duration-700 group-hover:scale-105"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                    )}
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                      {post.formattedDate}
+                    </p>
+                    <h3 className="mt-3 text-xl font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary group-focus:text-primary">
+                      {post.title}
+                    </h3>
+                    <p className="mt-3 flex-grow text-sm leading-relaxed text-muted-foreground">
+                      {buildExcerpt(post.summary ?? post.body.raw)}
+                    </p>
+                  </article>
+                </InteractiveCard>
               </Link>
             </FadeIn>
           ))}
