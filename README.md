@@ -168,9 +168,9 @@ MAILERSEND_API_KEY=your_key
 CONTACT_TO_EMAIL=hello@example.com
 CONTACT_FROM_EMAIL=no-reply@example.com
 
-# reCAPTCHA v2
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_site_key
-RECAPTCHA_SECRET=your_secret
+# Cloudflare Turnstile
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_site_key
+TURNSTILE_SECRET_KEY=your_secret
 
 # Analytics (optional)
 NEXT_PUBLIC_GA_ID=your_ga_id
