@@ -6,6 +6,7 @@ import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
+import { FadeIn } from '@/components/motion/fade-in';
 import { company } from '@/lib/site-content';
 
 const footerLinks = [
@@ -46,7 +47,7 @@ export function SiteFooter() {
   return (
     <footer className="bg-background/40">
       <div className="container-edge grid gap-10 border-t border-white/10 py-12 md:grid-cols-4">
-        <div className="space-y-3">
+        <FadeIn as="div" dir="up" className="space-y-3">
           <Link href={'/#home' as Route} onClick={handleHomeClick} className="inline-flex items-center gap-1">
             <span className="relative inline-block h-8 w-8">
               <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="32px" />
@@ -70,9 +71,9 @@ export function SiteFooter() {
               </a>
             </div>
           </div>
-        </div>
-        {footerLinks.map((column) => (
-          <div key={column.title} className="space-y-3">
+        </FadeIn>
+        {footerLinks.map((column, index) => (
+          <FadeIn key={column.title} as="div" delay={(index + 1) * 0.08} dir="up" className="space-y-3">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               {column.title}
             </h3>
@@ -99,9 +100,9 @@ export function SiteFooter() {
                   );
                 })}
             </ul>
-          </div>
+          </FadeIn>
         ))}
-        <div className="space-y-2 text-sm text-muted-foreground">
+        <FadeIn as="div" delay={0.24} dir="up" className="space-y-2 text-sm text-muted-foreground">
           <Link href={'/blog' as Route} className="group inline-block">
             <h3 className="text-sm font-semibold uppercase tracking-wide relative text-foreground">
               Stay informed
@@ -111,9 +112,9 @@ export function SiteFooter() {
               Insights on DevOps, SRE, AI-ready platforms, and delivery rituals.
             </p>
           </Link>
-        </div>
+        </FadeIn>
       </div>
-      <div className="border-t border-white/10 py-6 text-center text-xs text-muted-foreground">
+      <FadeIn as="div" delay={0.32} dir="up" className="border-t border-white/10 py-6 text-center text-xs text-muted-foreground">
         <div className="inline-flex items-center gap-1">
           © {new Date().getFullYear()}
           <span className="relative inline-block h-5 w-5">
@@ -122,7 +123,7 @@ export function SiteFooter() {
           </span>
           {company.name}. All rights reserved.
         </div>
-      </div>
+      </FadeIn>
     </footer>
   );
 }
