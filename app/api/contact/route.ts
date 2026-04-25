@@ -10,15 +10,28 @@ type ContactBody = {
   subject: string;
   message: string;
   token?: string;
-  action?: string;
   hp?: string;
   formStart?: number;
+};
+
+type TurnstileSiteVerifyResponse = {
+  success?: boolean;
+  challenge_ts?: string;
+  hostname?: string;
+  action?: string;
+  cdata?: string;
+  'error-codes'?: string[];
 };
 
 // Basic in-memory rate limit (per process). For distributed/serverless, use a shared store.
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX = 10; // 10 requests per minute per IP
 const rateMap = new Map<string, { count: number; resetAt: number }>();
+const TURNSTILE_TEST_SECRETS = new Set([
+  '1x0000000000000000000000000000000AA',
+  '2x0000000000000000000000000000000AA',
+  '3x0000000000000000000000000000000AA',
+]);
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,31 +73,41 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // reCAPTCHA v2 verification (Edge runtime compatible)
-    const recaptchaSecret = process.env.RECAPTCHA_SECRET;
-    if (recaptchaSecret && token) {
+    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+    if (turnstileSecret) {
+      const isTestSecret = TURNSTILE_TEST_SECRETS.has(turnstileSecret);
+      if (!token) {
+        return NextResponse.json({ ok: false, error: 'Security check is required.' }, { status: 400 });
+      }
+
       try {
-        const params = new URLSearchParams();
-        params.set('secret', recaptchaSecret);
-        params.set('response', token);
-        const verify = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        const verify = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: params.toString(),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            secret: turnstileSecret,
+            response: token,
+            remoteip: ip !== 'unknown' ? ip : undefined,
+          }),
         });
-        const data = (await verify.json()) as { success?: boolean };
+
+        const data = (await verify.json()) as TurnstileSiteVerifyResponse;
         if (!data.success) {
-          return NextResponse.json({ ok: false, error: 'Captcha validation failed.' }, { status: 400 });
+          return NextResponse.json({ ok: false, error: 'Security check failed. Please try again.' }, { status: 400 });
+        }
+
+        if (!isTestSecret && data.action && data.action !== 'contact') {
+          return NextResponse.json({ ok: false, error: 'Security check failed. Please try again.' }, { status: 400 });
         }
       } catch {
-        return NextResponse.json({ ok: false, error: 'Captcha verification error.' }, { status: 200 });
+        return NextResponse.json({ ok: false, error: 'Security verification is unavailable. Please try again.' }, { status: 200 });
       }
     }
 
     // Send email via MailerSend when configured
-    const apiKey = process.env.MAILERSEND_API_KEY;
-    const to = process.env.CONTACT_TO_EMAIL || 'hello@360ace.tech';
-    const from = process.env.CONTACT_FROM_EMAIL || 'no-reply@360ace.tech';
+    const apiKey = process.env.MAILERSEND_API_KEY?.trim();
+    const to = process.env.CONTACT_TO_EMAIL?.trim() || 'hello@360ace.tech';
+    const from = process.env.CONTACT_FROM_EMAIL?.trim() || 'no-reply@360ace.tech';
 
     if (!apiKey) {
       // Not configured: return safe message
@@ -178,6 +201,10 @@ export async function POST(req: NextRequest) {
       });
 
       if (!resp.ok) {
+        if (process.env.NODE_ENV !== 'production') {
+          const errorText = await resp.text();
+          console.error('MailerSend contact email failed', resp.status, errorText.slice(0, 600));
+        }
         return NextResponse.json({ ok: false, error: 'Email failed. Please try again.' }, { status: 200 });
       }
     } catch {

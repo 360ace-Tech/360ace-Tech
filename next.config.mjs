@@ -12,17 +12,17 @@ const nextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'",
-      // Scripts: Next, GA, reCAPTCHA (allow eval for some libs; prefer nonces in future)
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net",
+      // Scripts: Next, GA, Turnstile (allow eval for some libs; prefer nonces in future)
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://challenges.cloudflare.com",
       // Styles: Tailwind in <style> tags
       "style-src 'self' 'unsafe-inline'",
       // Images and fonts
       "img-src 'self' data: blob: https:",
       "font-src 'self' data: https:",
       // XHR/Web fetch
-      "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.google.com https://www.gstatic.com",
-      // Frames for recaptcha
-      "frame-src https://www.google.com https://www.gstatic.com https://www.recaptcha.net",
+      "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://challenges.cloudflare.com",
+      // Frames for Cloudflare Turnstile
+      "frame-src https://challenges.cloudflare.com",
       // Disallow embedding
       "frame-ancestors 'none'",
       // Form posting
