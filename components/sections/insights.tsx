@@ -67,28 +67,32 @@ export function InsightsSection() {
                 className="group block rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <InteractiveCard className="group h-full">
-                  <article className="h-full p-6">
+                  <article className={post.image?.path ? 'insight-card h-full' : 'insight-card insight-card--no-image h-full'}>
                     {post.image?.path && (
-                      <span className="-mx-1 -mt-1 mb-4 block overflow-hidden rounded-2xl">
+                      <span className="insight-card__thumb">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={post.image.path}
                           alt={post.image.alt ?? post.title}
-                          className="h-auto w-full transform transition-transform duration-700 group-hover:scale-105"
+                          className="h-full w-full object-cover transform transition-transform duration-700 group-hover:scale-105"
                           loading="lazy"
                           decoding="async"
                         />
                       </span>
                     )}
-                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-                      {post.formattedDate}
-                    </p>
-                    <h3 className="mt-3 text-xl font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary group-focus:text-primary">
-                      {post.title}
-                    </h3>
-                    <p className="mt-3 flex-grow text-sm leading-relaxed text-muted-foreground">
-                      {buildExcerpt(post.summary ?? post.body.raw)}
-                    </p>
+                    <span className="insight-card__info">
+                      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                        {post.formattedDate}
+                      </p>
+                      <h3 className="mt-3 text-xl font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary group-focus:text-primary">
+                        {post.title}
+                      </h3>
+                      <span className="insight-card__divider" aria-hidden="true" />
+                      <p className="insight-card__excerpt text-sm leading-relaxed text-muted-foreground">
+                        {buildExcerpt(post.summary ?? post.body.raw)}
+                      </p>
+                      <span className="insight-card__details">Read article</span>
+                    </span>
                   </article>
                 </InteractiveCard>
               </Link>

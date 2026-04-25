@@ -12,13 +12,18 @@ type ExpandingCard = {
 type ExpandingCardsSectionProps = {
   ariaLabel: string;
   cards: ExpandingCard[];
+  variant?: 'default' | 'stack';
 };
 
-export function ExpandingCardsSection({ ariaLabel, cards }: ExpandingCardsSectionProps) {
+export function ExpandingCardsSection({ ariaLabel, cards, variant = 'default' }: ExpandingCardsSectionProps) {
   const [activeIndex, setActiveIndex] = React.useState(0);
+  const isStack = variant === 'stack';
 
   return (
-    <div className="expanding-cards-showcase" aria-label={ariaLabel}>
+    <div
+      className={isStack ? 'expanding-cards-showcase expanding-cards-showcase--stack' : 'expanding-cards-showcase'}
+      aria-label={ariaLabel}
+    >
       {cards.map((card, index) => {
         const active = activeIndex === index;
 
@@ -26,7 +31,7 @@ export function ExpandingCardsSection({ ariaLabel, cards }: ExpandingCardsSectio
           <button
             key={`${card.index}-${card.title}`}
             type="button"
-            className="expanding-feature-card group"
+            className={isStack ? 'expanding-feature-card expanding-feature-card--stack group' : 'expanding-feature-card group'}
             data-active={active ? 'true' : 'false'}
             onClick={() => setActiveIndex(index)}
             onFocus={() => setActiveIndex(index)}

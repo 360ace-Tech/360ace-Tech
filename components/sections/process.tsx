@@ -18,11 +18,21 @@ export function ProcessSection() {
             <p className="chapter-label">Delivery rhythm</p>
             <h2 className="text-3xl font-semibold sm:text-4xl">How we partner with your teams</h2>
             <p className="text-sm text-muted-foreground">
-              Inspired by our original PLAN → DESIGN → BUILD → DEPLOY journey, we now layer research gates, ADRs, and continuous learning loops that keep outcomes front and centre.
+              Inspired by our original{' '}
+              <span className="process-path" aria-label="PLAN to DESIGN to BUILD to DEPLOY">
+                <span>PLAN</span>
+                <span className="process-path__arrow" aria-hidden="true">→</span>
+                <span>DESIGN</span>
+                <span className="process-path__arrow" aria-hidden="true">→</span>
+                <span>BUILD</span>
+                <span className="process-path__arrow" aria-hidden="true">→</span>
+                <span>DEPLOY</span>
+              </span>{' '}
+              journey, we now layer research gates, ADRs, and continuous learning loops that keep outcomes front and centre.
             </p>
           </div>
         </FadeIn>
-        <ExpandingCardsSection ariaLabel="Delivery rhythm" cards={cards} />
+        <ExpandingCardsSection ariaLabel="Delivery rhythm" cards={cards} variant="stack" />
       </div>
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-60">
         <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
