@@ -7,49 +7,43 @@ import Script from 'next/script';
 import Link from 'next/link';
 import { SiteShell } from '@/components/layout/site-shell';
 
-// Minimal types for reCAPTCHA v2
-type GrecaptchaV2 = {
+type TurnstileTheme = 'light' | 'dark';
+
+type Turnstile = {
   render: (
     container: string | HTMLElement,
     params: {
       sitekey: string;
-      size?: 'normal' | 'compact' | 'invisible';
-      theme?: 'light' | 'dark';
+      size?: 'normal' | 'compact' | 'flexible';
+      theme?: TurnstileTheme | 'auto';
+      action?: string;
       callback?: (token: string) => void;
       'expired-callback'?: () => void;
-      'error-callback'?: () => void;
+      'error-callback'?: (errorCode?: string) => void;
+      'timeout-callback'?: () => void;
     },
   ) => number;
-  getResponse: (id?: number) => string;
   reset: (id?: number) => void;
-  execute?: (id?: number) => void;
+  remove: (id?: number) => void;
 };
-type GrecaptchaWindow = Window & { grecaptcha?: GrecaptchaV2 };
+
+type TurnstileWindow = Window & { turnstile?: Turnstile };
 
 export default function ContactPage() {
   const { resolvedTheme } = useTheme();
-  // reCAPTCHA v2 (checkbox by default)
-  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
-  const recaptchaMode = process.env.NEXT_PUBLIC_RECAPTCHA_MODE || 'visible'; // 'visible' | 'invisible'
-  const recaptchaReady = useRef(false);
-  const recaptchaId = useRef<number | null>(null);
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
+  const turnstileId = useRef<number | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [formStart, setFormStart] = useState<string>('');
-  const compactPref = useRef<boolean>(false);
-  const [useAltHost, setUseAltHost] = useState(false); // fallback to recaptcha.net if google.com blocked
-  const [captchaVersion, setCaptchaVersion] = useState(0); // force remount container on theme change
+  const [captchaReady, setCaptchaReady] = useState(false);
+  const [captchaVersion, setCaptchaVersion] = useState(0);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setFormStart(String(Date.now()));
-    if (typeof window !== 'undefined') {
-      try {
-        compactPref.current = window.matchMedia('(max-width: 640px)').matches;
-      } catch {}
-    }
     setMounted(true);
   }, []);
 
@@ -57,48 +51,45 @@ export default function ContactPage() {
 
   const renderCaptcha = useCallback(() => {
     if (typeof window === 'undefined') return;
-    if (!siteKey || recaptchaMode !== 'visible') return;
-    const w = window as GrecaptchaWindow;
-    if (!w.grecaptcha?.render) return;
+    if (!siteKey) return;
+    const w = window as TurnstileWindow;
+    if (!w.turnstile?.render) return;
     const container = containerRef.current;
     if (!container) return;
     try {
-      // Avoid double-render in same node
-      if (container.childElementCount > 0) return;
-      recaptchaId.current = w.grecaptcha.render(container, {
+      if (turnstileId.current !== null) {
+        w.turnstile.remove(turnstileId.current);
+        turnstileId.current = null;
+      }
+      container.replaceChildren();
+      setCaptchaToken(null);
+      turnstileId.current = w.turnstile.render(container, {
         sitekey: siteKey,
-        size: compactPref.current ? 'compact' : 'normal',
+        size: 'normal',
         theme: resolvedTheme === 'dark' ? 'dark' : 'light',
+        action: 'contact',
         callback: (tok: string) => setCaptchaToken(tok),
         'expired-callback': () => setCaptchaToken(null),
-        'error-callback': () => setCaptchaToken(null),
+        'timeout-callback': () => setCaptchaToken(null),
+        'error-callback': () => {
+          setCaptchaToken(null);
+          setStatus('Security check failed to load. Please refresh and try again.');
+        },
       });
-      setCaptchaToken(null);
     } catch (err) {
-      console.error('reCAPTCHA render failed', err);
+      console.error('Turnstile render failed', err);
     }
-  }, [siteKey, recaptchaMode, resolvedTheme]);
+  }, [siteKey, resolvedTheme]);
 
-  // Mark library ready (for invisible/execute path) when grecaptcha loads (v2)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const w = window as GrecaptchaWindow;
-    if (!siteKey || !w.grecaptcha) return;
-    // v2 does not require ready() but some builds expose it; mark ready immediately
-    recaptchaReady.current = true;
-  }, [siteKey]);
-
-  // Initial render and re-render on version change
   useEffect(() => {
     if (!mounted) return;
     if (typeof window === 'undefined') return;
-    if (recaptchaMode !== 'visible') return;
-    const w = window as GrecaptchaWindow;
-    if (w.grecaptcha) renderCaptcha();
-    // Poll briefly in case grecaptcha becomes ready late
+    const w = window as TurnstileWindow;
+    if (w.turnstile) renderCaptcha();
+
     let tries = 0;
     const t = setInterval(() => {
-      if (recaptchaId.current !== null) {
+      if (turnstileId.current !== null) {
         clearInterval(t);
         return;
       }
@@ -107,18 +98,24 @@ export default function ContactPage() {
         clearInterval(t);
         return;
       }
-      if ((window as GrecaptchaWindow).grecaptcha) renderCaptcha();
+      if ((window as TurnstileWindow).turnstile) renderCaptcha();
     }, 300);
     return () => clearInterval(t);
-  }, [mounted, recaptchaMode, captchaVersion, renderCaptcha]);
+  }, [mounted, captchaVersion, renderCaptcha]);
 
-  // Re-render visible widget when theme changes to match light/dark
   useEffect(() => {
-    if (recaptchaMode !== 'visible') return;
-    // Reset id and remount the container; actual render happens in effect above
-    recaptchaId.current = null;
     setCaptchaVersion((v) => v + 1);
-  }, [resolvedTheme, recaptchaMode]);
+  }, [resolvedTheme]);
+
+  useEffect(() => {
+    return () => {
+      if (typeof window === 'undefined') return;
+      const w = window as TurnstileWindow;
+      if (turnstileId.current !== null) {
+        w.turnstile?.remove?.(turnstileId.current);
+      }
+    };
+  }, []);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -150,25 +147,12 @@ export default function ContactPage() {
       setSubmitting(false);
       return;
     }
-    let token: string | undefined;
-    try {
-      const w = window as GrecaptchaWindow;
-      if (recaptchaMode === 'visible') {
-        // Require a token from the visible widget only
-        token = captchaToken || (w.grecaptcha?.getResponse && w.grecaptcha.getResponse(recaptchaId.current ?? undefined)) || undefined;
-        if (!token) {
-          setStatus('Please complete the captcha.');
-          setSubmitting(false);
-          return;
-        }
-      } else if (recaptchaMode === 'invisible') {
-        // Execute invisible v2
-        if (recaptchaReady.current && w.grecaptcha?.execute) {
-          w.grecaptcha.execute(recaptchaId.current ?? undefined);
-          token = w.grecaptcha.getResponse(recaptchaId.current ?? undefined);
-        }
-      }
-    } catch {}
+    const token = captchaToken || undefined;
+    if (siteKey && !token) {
+      setStatus('Please complete the security check.');
+      setSubmitting(false);
+      return;
+    }
 
     const res = await fetch('/api/contact', {
       method: 'POST',
@@ -184,14 +168,14 @@ export default function ContactPage() {
       try {
         formEl.reset();
       } catch {}
-      // Reset captcha in visible mode to allow another submission
-      if (recaptchaMode === 'visible') {
-        const w = window as GrecaptchaWindow;
-        w.grecaptcha?.reset?.(recaptchaId.current ?? undefined);
-        setCaptchaToken(null);
-      }
+      const w = window as TurnstileWindow;
+      w.turnstile?.reset?.(turnstileId.current ?? undefined);
+      setCaptchaToken(null);
     } else {
       setStatus(data?.error || 'Something went wrong. Please try again later.');
+      const w = window as TurnstileWindow;
+      w.turnstile?.reset?.(turnstileId.current ?? undefined);
+      setCaptchaToken(null);
     }
   };
 
@@ -226,24 +210,20 @@ export default function ContactPage() {
         </div>
       )}
         {mounted && siteKey ? (
-          recaptchaMode === 'visible' ? (
-            <Script
-              key={`recaptcha-visible-${useAltHost ? 'alt' : 'pri'}`}
-              src={`${useAltHost ? 'https://www.recaptcha.net' : 'https://www.google.com'}/recaptcha/api.js?render=explicit`}
-              async
-              defer
-              onLoad={renderCaptcha}
-              onError={() => setUseAltHost(true)}
-            />
-          ) : (
-            <Script
-              key={`recaptcha-invisible-${useAltHost ? 'alt' : 'pri'}`}
-              src={`${useAltHost ? 'https://www.recaptcha.net' : 'https://www.google.com'}/recaptcha/api.js`}
-              async
-              defer
-              onError={() => setUseAltHost(true)}
-            />
-          )
+          <Script
+            key="cloudflare-turnstile"
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+            async
+            defer
+            onLoad={() => {
+              setCaptchaReady(true);
+              renderCaptcha();
+            }}
+            onError={() => {
+              setCaptchaReady(false);
+              setStatus('Security check failed to load. Please refresh and try again.');
+            }}
+          />
         ) : null}
         <div className="container-edge">
           <div className="grid items-start gap-10 lg:gap-16 lg:grid-cols-[0.9fr_1.1fr]">
@@ -294,13 +274,12 @@ export default function ContactPage() {
                   .
                 </label>
               </div>
-              {/* Visible widget container (hidden when using invisible mode) */}
               {mounted && siteKey ? (
-                recaptchaMode === 'visible' ? (
-                  <div ref={containerRef} id="recaptcha-container" className="pt-1" key={`rc-${captchaVersion}`} />
-                ) : null
+                <div className="pt-1 sm:max-w-[19rem]">
+                  <div ref={containerRef} id="turnstile-container" key={`turnstile-${captchaVersion}`} />
+                </div>
               ) : (
-                <p className="text-xs text-muted-foreground">Note: reCAPTCHA not configured. Messages may be limited.</p>
+                <p className="text-xs text-muted-foreground">Note: Cloudflare Turnstile is not configured. Messages may be limited.</p>
               )}
               </div>
               <div className="flex items-center gap-3">
@@ -308,7 +287,7 @@ export default function ContactPage() {
                   disabled={
                     Boolean(
                       submitting ||
-                        (siteKey && recaptchaMode === 'visible' && recaptchaReady.current && !captchaToken),
+                        (siteKey && (!captchaReady || !captchaToken)),
                     )
                   }
                   type="submit"
