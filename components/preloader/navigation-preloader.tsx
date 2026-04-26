@@ -1,9 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { useTheme } from 'next-themes';
 
 /**
  * Shows the branded spinner overlay during client-side navigation when the user
@@ -21,7 +19,7 @@ export function NavigationPreloader() {
   const prevRef = useRef<string | null>(null);
   const [visible, setVisible] = useState(false);
   const [fading, setFading] = useState(false);
-  const { resolvedTheme } = useTheme();
+  const text = '360ace.tech'.split('');
 
   useEffect(() => {
     const prev = prevRef.current;
@@ -46,36 +44,35 @@ export function NavigationPreloader() {
 
   if (!visible) return null;
 
-  const isDark = resolvedTheme === 'dark';
-  const logoSrc = isDark ? '/logo-dark.png' : '/logo-light.png';
-  const ringGradient = isDark
-    ? 'conic-gradient(from 0deg, rgba(99,102,241,0.85), rgba(236,72,153,0.75), rgba(99,102,241,0.85))'
-    : 'conic-gradient(from 0deg, rgba(14,165,233,0.85), rgba(59,130,246,0.8), rgba(14,165,233,0.85))';
-
   return (
     <div
-      className={`fixed inset-0 z-[90] flex items-center justify-center transition-opacity duration-500${
-        fading ? ' opacity-0 pointer-events-none' : ' opacity-100'
-      }`}
-      style={{ background: 'hsl(var(--background))' }}
+      className={`preloader-overlay preloader-overlay--navigation${fading ? ' preloader-overlay--fading' : ''}`}
       aria-hidden
     >
-      <div className="relative h-40 w-40 sm:h-48 sm:w-48">
-        {/* Spinning conic ring — reuses preloader-spin from globals.css */}
-        <div
-          className="absolute inset-0 -z-10 rounded-full"
-          style={{
-            background: ringGradient,
-            WebkitMask: 'radial-gradient(farthest-side, transparent 68%, #000 70%)',
-            mask: 'radial-gradient(farthest-side, transparent 68%, #000 70%)',
-            filter: 'drop-shadow(0 0 24px rgba(99,102,241,0.45))',
-            animation: 'preloader-spin 1.2s linear infinite',
-          }}
-          aria-hidden
-        />
-        <div className="relative flex h-full w-full items-center justify-center">
-          <div className="relative h-16 w-16 sm:h-20 sm:w-20">
-            <Image src={logoSrc} alt="" fill sizes="80px" className="object-contain" priority />
+      <div className="preloader-stack">
+        <div className="preloader-inner">
+          <div className="preloader-row">
+            <div className="preloader-logo">
+              <span className="preloader-loading-ring" aria-hidden />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-dark.png" alt="" className="preloader-logo-img hidden h-full w-full object-contain dark:block" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-light.png" alt="" className="preloader-logo-img block h-full w-full object-contain dark:hidden" />
+            </div>
+            <div className="preloader-caption font-priestacy">
+              <span className="preloader-word">
+                {text.map((ch, i) => (
+                  <span
+                    key={`${ch}-${i}`}
+                    className="preloader-letter"
+                    data-ch={ch}
+                    style={{ animationDelay: `${150 + i * 90}ms` }}
+                  >
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            </div>
           </div>
         </div>
       </div>
