@@ -14,6 +14,7 @@ const files = [
   'favicon-16x16.png',
   'favicon-32x32.png',
   'favicon.ico',
+  'icon.png',
   'site.webmanifest',
 ];
 
@@ -42,4 +43,3 @@ async function copyIfExists(name) {
 
 await ensureDir(dstDir);
 await Promise.all(files.map(copyIfExists));
-
