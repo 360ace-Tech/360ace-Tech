@@ -5,7 +5,8 @@ import { DifferentiatorsSection } from '@/components/sections/differentiators';
 import { InsightsSection } from '@/components/sections/insights';
 import { ProcessSection } from '@/components/sections/process';
 import { ServicesSection } from '@/components/sections/services';
-import { VariantTwoHero } from '@/components/variants/v2/hero';
+import { HeroSection } from '@/components/sections/hero';
+import { GlobeBackground } from '@/components/three/globe-background';
 import { SiteShell } from '@/components/layout/site-shell';
 
 export const metadata: Metadata = {
@@ -15,7 +16,8 @@ export const metadata: Metadata = {
 export default function RootPage() {
   return (
     <SiteShell>
-      <VariantTwoHero />
+      <GlobeBackground />
+      <HeroSection />
       <ServicesSection />
       <ProcessSection />
       <DifferentiatorsSection />

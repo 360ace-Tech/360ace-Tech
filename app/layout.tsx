@@ -1,5 +1,4 @@
 import '@/app/globals.css';
-import '@/styles/themes/v2.css';
 
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
@@ -7,6 +6,7 @@ import { Providers } from '@/app/(core)/providers';
 import { ViewTransitions } from 'next-view-transitions';
 import { HashScroll } from '@/components/navigation/hash-scroll';
 import { cn } from '@/lib/utils';
+import { fontVariables } from '@/lib/fonts';
 import { UnderConstruction } from '@/components/templates/under-construction';
 
 export const metadata: Metadata = {
@@ -57,13 +57,14 @@ export const metadata: Metadata = {
 
 import Script from 'next/script';
 import PreloaderServer from '@/components/preloader/preloader-server';
+import { PreloaderController } from '@/components/preloader/preloader-controller';
 import { NavigationPreloader } from '@/components/preloader/navigation-preloader';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const maintenance = process.env.NEXT_PUBLIC_MAINTENANCE === 'true';
   const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-YL349263YB';
   return (
-    <html lang="en" suppressHydrationWarning data-preload-active="1">
+    <html lang="en" suppressHydrationWarning data-preload-active="1" className={fontVariables}>
       <body suppressHydrationWarning className={cn('min-h-screen bg-background font-sans text-foreground antialiased')}>
         {/* Google Analytics */}
         {gaId ? (
@@ -81,27 +82,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         ) : null}
         <Providers>
           <ViewTransitions>
-            {/* Preloader bootstrap: two-phase (glow then text), timed so text fully spells before fade */}
+            {/* Preloader failsafe: if the GSAP controller never runs, unlock the page */}
             <Script id="preloader-init" strategy="beforeInteractive">
               {`
                 try {
-                  var cfg = Number('${process.env.NEXT_PUBLIC_PRELOADER_MS ?? '1800'}');
-                  var total = Number.isFinite(cfg) && cfg > 0 ? cfg : 1800;
-                  // Compute letter phase to fully spell "360ace.Tech"
-                  var chars = 11; // 3 6 0 a c e . T e c h
-                  var base = 220; // initial wait before first letter
-                  var step = 90;  // per-letter stagger
-                  var charAnim = 480; // each letter anim duration
-                  var tail = 150; // small tail after last letter
-                  var letter = base + (chars - 1) * step + charAnim + tail; // ensure full write
-                  var totalHold = Math.max(letter + 150, Number(total));
                   setTimeout(function(){
-                    delete document.documentElement.dataset.preloadActive;
-                  }, totalHold);
+                    if (document.documentElement.dataset.preloadActive === '1') {
+                      delete document.documentElement.dataset.preloadActive;
+                      window.dispatchEvent(new CustomEvent('preloader:done'));
+                    }
+                  }, 3500);
                 } catch {}
               `}
             </Script>
             <PreloaderServer />
+            <PreloaderController />
             {/* Client preloader: fires on blog → home soft navigation */}
             <NavigationPreloader />
             <div className="relative flex min-h-screen flex-col">

@@ -22,7 +22,7 @@ export function NotFoundTemplate({
       <div className="container-edge">
         <div className="glass-panel relative mx-auto max-w-2xl rounded-3xl p-10 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">Error 404</p>
-          <h1 className="mt-3 text-4xl font-semibold sm:text-5xl">{title}</h1>
+          <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-0.02em] sm:text-5xl">{title}</h1>
           <p className="mt-4 text-muted-foreground">{message}</p>
           <div className="mt-8 flex items-center justify-center gap-3">
             {primaryCta && (

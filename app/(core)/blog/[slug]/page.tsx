@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import { getMDXComponent } from 'next-contentlayer2/hooks';
 
 import { mdxComponents } from '@/components/mdx/mdx-components';
-import { FadeIn } from '@/components/motion/fade-in';
+import { Reveal } from '@/components/motion/reveal';
+import { ClipReveal } from '@/components/motion/clip-reveal';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { allPosts, type Post } from 'contentlayer/generated';
@@ -59,36 +60,36 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <div className="container-edge">
         <article className="mx-auto max-w-3xl space-y-10">
           {/* Top back link */}
-          <FadeIn immediate>
+          <Reveal immediate>
             <div className="-mt-4">
               <Link href="/blog" className="inline-flex items-center text-sm font-semibold text-primary hover:text-primary/80">
                 <span aria-hidden>←</span>
                 <span className="ml-2">Back to blog</span>
               </Link>
             </div>
-          </FadeIn>
-          <FadeIn immediate>
+          </Reveal>
+          <Reveal immediate>
             <header className="space-y-4 text-center">
               <Badge variant="subtle" className="mx-auto bg-primary/10 text-primary">
                 {post.formattedDate}
               </Badge>
-              <h1 className="text-4xl font-semibold sm:text-5xl">{post.title}</h1>
+              <h1 className="font-display text-4xl font-semibold tracking-[-0.02em] sm:text-5xl">{post.title}</h1>
               {post.summary && <p className="text-muted-foreground">{post.summary}</p>}
             </header>
-          </FadeIn>
-          <FadeIn immediate>
+          </Reveal>
+          <Reveal immediate>
             <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
               {post.image?.path && (
-                <span className="block overflow-hidden rounded-3xl border border-white/10">
+                <ClipReveal className="rounded-xl border border-border">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={post.image.path} alt={post.image.alt ?? post.title} className="h-auto w-full" loading="eager" />
-                </span>
+                </ClipReveal>
               )}
               <MDXContent components={mdxComponents} />
             </div>
-          </FadeIn>
+          </Reveal>
           {/* Next / Previous navigation */}
-          <FadeIn immediate>
+          <Reveal immediate>
             <nav className="mt-6 grid gap-4 sm:grid-cols-2">
               {prevPost ? (
                 <Link
@@ -119,16 +120,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </Link>
               )}
             </nav>
-          </FadeIn>
+          </Reveal>
           {/* Bottom back link */}
-          <FadeIn immediate>
+          <Reveal immediate>
             <div className="pt-4">
               <Link href="/blog" className="inline-flex items-center text-sm font-semibold text-primary hover:text-primary/80">
                 <span aria-hidden>←</span>
                 <span className="ml-2">Back to blog</span>
               </Link>
             </div>
-          </FadeIn>
+          </Reveal>
         </article>
       </div>
     </section>

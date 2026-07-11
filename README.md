@@ -15,19 +15,19 @@ A modern, high-performance marketing website for 360ace.Tech, showcasing platfor
 ## Features
 
 - 🎨 **Immersive Design**: Modern UI with smooth animations and 3D elements
-- 🌓 **Dark Mode**: Full theme support with system preference detection
+- 🌓 **Theme Toggle**: Dark-first theme support with manual light/dark switching
 - 📱 **Responsive**: Mobile-first design with custom breakpoints
 - ⚡ **Performance**: Edge runtime, SSG, and optimized assets
 - 📝 **Content Management**: MDX-powered blog with syntax highlighting
 - 🔍 **SEO Optimized**: Meta tags, sitemap, and semantic HTML
 - ♿ **Accessible**: WCAG compliant with keyboard navigation
-- 📧 **Contact Forms**: Integrated with MailerSend and reCAPTCHA
+- 📧 **Contact Forms**: Integrated with MailerSend and Cloudflare Turnstile
 - 🎯 **Analytics Ready**: Google Analytics integration
 
 ## Tech Stack
 
 ### Core Framework
-- **Next.js 15.5.4** with App Router
+- **Next.js 15.5.15** with App Router
 - **React 18** with Server Components
 - **TypeScript** for type safety
 - **Edge Runtime** for optimal performance
@@ -35,9 +35,9 @@ A modern, high-performance marketing website for 360ace.Tech, showcasing platfor
 ### Styling & UI
 - **Tailwind CSS** for utility-first styling
 - **shadcn/ui** component primitives
-- **Framer Motion** for animations
-- **React Three Fiber** for 3D graphics
-- **Custom fonts**: Priestacy, Inter
+- **GSAP + ScrollTrigger** for scroll choreography, with **Lenis** smooth scrolling
+- **Three.js / React Three Fiber** for the WebGL particle globe hero
+- **Custom fonts**: Bricolage Grotesque (display), Inter (body), JetBrains Mono (accents), Priestacy (preloader wordmark)
 
 ### Content & Data
 - **Contentlayer2** for type-safe content
@@ -53,8 +53,8 @@ A modern, high-performance marketing website for 360ace.Tech, showcasing platfor
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18.18 or higher (< 25)
-- npm or yarn package manager
+- Node.js 24.9.0 (use `nvm use`)
+- npm 11.x via Node 24.9.0
 
 ### Installation
 
@@ -64,7 +64,7 @@ git clone https://github.com/360ace-Tech/360ace-Tech.git
 cd 360ace-Tech
 
 # Install dependencies
-npm install
+npm install --legacy-peer-deps
 
 # Set up environment variables
 cp .env.example .env.local

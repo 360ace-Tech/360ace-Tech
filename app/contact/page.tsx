@@ -41,6 +41,7 @@ export default function ContactPage() {
   const [captchaReady, setCaptchaReady] = useState(false);
   const [captchaVersion, setCaptchaVersion] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [captchaRequested, setCaptchaRequested] = useState(false);
 
   useEffect(() => {
     setFormStart(String(Date.now()));
@@ -51,7 +52,7 @@ export default function ContactPage() {
 
   const renderCaptcha = useCallback(() => {
     if (typeof window === 'undefined') return;
-    if (!siteKey) return;
+    if (!siteKey || !captchaRequested) return;
     const w = window as TurnstileWindow;
     if (!w.turnstile?.render) return;
     const container = containerRef.current;
@@ -79,10 +80,11 @@ export default function ContactPage() {
     } catch (err) {
       console.error('Turnstile render failed', err);
     }
-  }, [siteKey, resolvedTheme]);
+  }, [siteKey, captchaRequested, resolvedTheme]);
 
   useEffect(() => {
     if (!mounted) return;
+    if (!captchaRequested) return;
     if (typeof window === 'undefined') return;
     const w = window as TurnstileWindow;
     if (w.turnstile) renderCaptcha();
@@ -101,7 +103,7 @@ export default function ContactPage() {
       if ((window as TurnstileWindow).turnstile) renderCaptcha();
     }, 300);
     return () => clearInterval(t);
-  }, [mounted, captchaVersion, renderCaptcha]);
+  }, [mounted, captchaRequested, captchaVersion, renderCaptcha]);
 
   useEffect(() => {
     setCaptchaVersion((v) => v + 1);
@@ -209,7 +211,7 @@ export default function ContactPage() {
           </div>
         </div>
       )}
-        {mounted && siteKey ? (
+        {mounted && siteKey && captchaRequested ? (
           <Script
             key="cloudflare-turnstile"
             src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
@@ -229,10 +231,15 @@ export default function ContactPage() {
           <div className="grid items-start gap-10 lg:gap-16 lg:grid-cols-[0.9fr_1.1fr]">
             <header className="space-y-2">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">Contact</p>
-              <h1 className="text-3xl font-semibold sm:text-4xl">Let’s talk about your project</h1>
+              <h1 className="font-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">Let’s talk about your project</h1>
               <p className="text-sm text-muted-foreground">We usually reply within 1–2 business days.</p>
             </header>
-            <form onSubmit={onSubmit} className="w-full max-w-md sm:max-w-lg lg:max-w-none space-y-5 rounded-3xl border border-white/10 bg-card/60 p-5 lg:p-6 shadow-lg backdrop-blur-xl">
+            <form
+              onSubmit={onSubmit}
+              onFocusCapture={() => setCaptchaRequested(true)}
+              onPointerEnter={() => setCaptchaRequested(true)}
+              className="w-full max-w-md sm:max-w-lg lg:max-w-none space-y-5 rounded-3xl border border-white/10 bg-card/60 p-5 lg:p-6 shadow-lg backdrop-blur-xl"
+            >
               <div className="grid gap-3">
               {/* Honeypot and timing (client-only to avoid hydration mismatch) */}
               {mounted && (

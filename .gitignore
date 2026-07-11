@@ -5,6 +5,9 @@ out/
 .turbo/
 dist/
 .contentlayer/
+.claude
+.agent
+.skills
 
 # Env
 .env*

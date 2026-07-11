@@ -9,7 +9,7 @@ export default function CompatibilityCheckPage() {
         <div className="container-edge max-w-3xl space-y-6">
           <header className="space-y-2">
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">Resources</p>
-            <h1 className="text-3xl font-semibold sm:text-4xl">Compatibility Check</h1>
+            <h1 className="font-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">Compatibility Check</h1>
             <p className="text-sm text-muted-foreground">
               A concise checklist to assess whether our platform engineering and SRE playbooks fit your goals, teams, and constraints.
             </p>

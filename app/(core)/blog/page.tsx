@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { FadeIn } from '@/components/motion/fade-in';
+import { Reveal } from '@/components/motion/reveal';
 import { Badge } from '@/components/ui/badge';
 import { allPosts, type Post } from 'contentlayer/generated';
 
@@ -41,20 +41,20 @@ export default function BlogIndexPage() {
   return (
     <section className="bg-background/20 py-24">
       <div className="container-edge space-y-12">
-        <FadeIn immediate>
+        <Reveal immediate>
           <header className="max-w-3xl space-y-4">
             <Badge variant="subtle" className="bg-primary/10 text-primary">
               Thought leadership
             </Badge>
-            <h1 className="text-4xl font-semibold sm:text-5xl">Insights &amp; engineering field notes</h1>
+            <h1 className="font-display text-4xl font-semibold tracking-[-0.02em] sm:text-5xl">Insights &amp; engineering field notes</h1>
             <p className="text-muted-foreground">
               Deep dives on the practices that move the needle: strategy, platform, automation, SRE, data, AI enablement, and delivery rituals.
             </p>
           </header>
-        </FadeIn>
+        </Reveal>
         <div className="grid gap-8 lg:grid-cols-3">
           {posts.map((post: Post) => (
-            <FadeIn key={post._id} immediate>
+            <Reveal key={post._id} immediate>
               <Link
                 href={`/blog/${post.slug}`}
                 className="group block rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -88,7 +88,7 @@ export default function BlogIndexPage() {
                   </div>
                 </article>
               </Link>
-            </FadeIn>
+            </Reveal>
           ))}
         </div>
       </div>

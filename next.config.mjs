@@ -6,7 +6,7 @@ const nextConfig = {
   poweredByHeader: false,
   typedRoutes: true,
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: ['lucide-react', 'lenis'],
     viewTransition: true,
   },
   async headers() {

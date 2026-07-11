@@ -1,9 +1,9 @@
-import { ServiceScrollCards } from '@/components/sections/service-scroll-cards';
+import { ServicesPinned } from '@/components/sections/services-pinned';
 
 export function ServicesSection() {
   return (
     <section id="services" className="relative bg-background text-foreground">
-      <ServiceScrollCards />
+      <ServicesPinned />
     </section>
   );
 }

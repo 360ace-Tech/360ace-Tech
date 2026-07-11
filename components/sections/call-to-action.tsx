@@ -1,31 +1,55 @@
-import { FadeIn } from '@/components/motion/fade-in';
 import { Button } from '@/components/ui/button';
-import { callToAction } from '@/lib/site-content';
+import { Magnetic } from '@/components/motion/magnetic';
+import { Marquee } from '@/components/motion/marquee';
+import { Reveal } from '@/components/motion/reveal';
+import { SplitHeading } from '@/components/motion/split-heading';
+import { callToAction, services } from '@/lib/site-content';
 
 export function CallToActionSection() {
+  const marqueeItems = services.map((service) => service.name);
+
   return (
-    <section id="contact" className="full-page-section bg-background/30">
-      <div className="container-edge">
-        <FadeIn>
-          <div className="cinematic-panel cta-reveal-card p-8 sm:p-12 lg:p-16">
-            <div className="absolute inset-0 -z-10 opacity-40">
-              <div className="absolute left-[-10%] top-[-30%] h-64 w-64 rounded-full bg-white/20 blur-3xl" />
-              <div className="absolute bottom-[-20%] right-[-20%] h-72 w-72 rounded-full bg-secondary/20 blur-3xl" />
-            </div>
-            <div className="relative space-y-6">
-              <h2 className="cta-reveal-item text-3xl font-semibold sm:text-4xl">{callToAction.headline}</h2>
-              <p className="cta-reveal-item max-w-2xl text-sm text-muted-foreground">{callToAction.copy}</p>
-              <div className="cta-reveal-item flex flex-wrap gap-4">
-                <Button asChild size="lg">
-                  <a href={callToAction.primaryCta.href}>{callToAction.primaryCta.label}</a>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <a href={callToAction.secondaryCta.href}>{callToAction.secondaryCta.label}</a>
-                </Button>
-              </div>
-            </div>
+    <section id="contact" className="relative overflow-hidden bg-primary text-primary-foreground">
+      <div className="border-b border-primary-foreground/15 py-5">
+        <Marquee items={marqueeItems} className="opacity-80" />
+      </div>
+
+      <div className="container-edge py-24 lg:py-36">
+        <SplitHeading
+          as="h2"
+          unit="words"
+          className="max-w-4xl font-display text-[clamp(2.6rem,6.5vw,5.5rem)] font-semibold leading-[1.02] tracking-[-0.03em]"
+        >
+          {callToAction.headline}
+        </SplitHeading>
+        <Reveal delay={0.15}>
+          <p className="mt-8 max-w-2xl text-base leading-relaxed text-primary-foreground/75 lg:text-lg">
+            {callToAction.copy}
+          </p>
+        </Reveal>
+        <Reveal delay={0.25}>
+          <div className="mt-12 flex flex-wrap items-center gap-5">
+            <Magnetic>
+              <Button
+                asChild
+                size="lg"
+                className="bg-background text-foreground hover:bg-background/90"
+              >
+                <a href={callToAction.primaryCta.href}>{callToAction.primaryCta.label}</a>
+              </Button>
+            </Magnetic>
+            <Magnetic>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+              >
+                <a href={callToAction.secondaryCta.href}>{callToAction.secondaryCta.label}</a>
+              </Button>
+            </Magnetic>
           </div>
-        </FadeIn>
+        </Reveal>
       </div>
     </section>
   );

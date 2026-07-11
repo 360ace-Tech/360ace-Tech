@@ -1,13 +1,15 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRef } from 'react';
 import { Mail, Linkedin } from 'lucide-react';
 import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
 
-import { Badge } from '@/components/ui/badge';
-import { FadeIn } from '@/components/motion/fade-in';
+import { Reveal } from '@/components/motion/reveal';
 import { company } from '@/lib/site-content';
+import { gsap, useGSAP } from '@/lib/animation/gsap';
+import { MOTION_OK } from '@/lib/animation/config';
 
 const footerLinks = [
   {
@@ -31,6 +33,31 @@ const footerLinks = [
 
 export function SiteFooter() {
   const pathname = usePathname();
+  const footerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const footer = footerRef.current;
+      if (!footer) return;
+      const wordmark = footer.querySelector('[data-footer-wordmark]');
+      if (!wordmark) return;
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        gsap.from(wordmark, {
+          yPercent: 55,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: footer,
+            start: 'top bottom',
+            end: 'bottom bottom',
+            scrub: true,
+          },
+        });
+      });
+    },
+    { scope: footerRef }
+  );
+
   const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (pathname === '/') {
       e.preventDefault();
@@ -44,78 +71,83 @@ export function SiteFooter() {
       }
     }
   };
+
   return (
-    <footer className="bg-background/40">
-      <div className="container-edge grid gap-10 border-t border-white/10 py-12 md:grid-cols-4">
-        <FadeIn as="div" dir="up" className="space-y-3">
-          <Link href={'/#home' as Route} onClick={handleHomeClick} className="inline-flex items-center gap-1">
+    <footer ref={footerRef} className="relative overflow-hidden border-t border-border">
+      <div className="container-edge grid gap-10 py-14 md:grid-cols-4">
+        <Reveal as="div" dir="up" className="space-y-4">
+          <Link href={'/#home' as Route} onClick={handleHomeClick} className="inline-flex items-center gap-2">
             <span className="relative inline-block h-8 w-8">
               <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="32px" />
               <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="32px" />
             </span>
-            <Badge variant="subtle" className="bg-primary/10 text-primary">
-              {company.name}
-            </Badge>
+            <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary">{company.name}</span>
           </Link>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm leading-relaxed text-muted-foreground">
             {company.summary}
           </p>
           <div className="text-sm">
             <span className="font-medium">Let’s collaborate:</span>
             <div className="mt-2 flex items-center gap-1.5">
-              <Link aria-label="Email" href="/contact" className="group inline-flex items-center justify-center rounded-full p-1 text-foreground transition hover:bg-white/10">
+              <Link aria-label="Email" href="/contact" className="group inline-flex items-center justify-center rounded-full p-1.5 text-foreground transition hover:bg-primary/15 hover:text-primary">
                 <Mail className="h-4 w-4 transition group-hover:scale-110" />
               </Link>
-              <a aria-label="LinkedIn" href="https://www.linkedin.com/company/360ace-net" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center justify-center rounded-full p-1 text-foreground transition hover:bg-white/10">
+              <a aria-label="LinkedIn" href="https://www.linkedin.com/company/360ace-net" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center justify-center rounded-full p-1.5 text-foreground transition hover:bg-primary/15 hover:text-primary">
                 <Linkedin className="h-4 w-4 transition group-hover:scale-110" />
               </a>
             </div>
           </div>
-        </FadeIn>
+        </Reveal>
         {footerLinks.map((column, index) => (
-          <FadeIn key={column.title} as="div" delay={(index + 1) * 0.08} dir="up" className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <Reveal key={column.title} as="div" delay={(index + 1) * 0.08} dir="up" className="space-y-4">
+            <h3 className="font-mono text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
               {column.title}
             </h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
                 {column.links.map((link) => {
+                  const external = link.href.startsWith('/#') || link.href.startsWith('#');
+                  const linkClass = 'underline-sweep pb-0.5 transition-colors hover:text-foreground capitalize';
                   return (
                     <li key={link.label}>
-                      {link.href.startsWith('/#') || link.href.startsWith('#') ? (
-                        <a className={`hover:text-foreground ${link.label === 'privacy' || link.label === 'terms' ? 'relative group' : ''}`} href={link.href}>
+                      {external ? (
+                        <a className={linkClass} href={link.href}>
                           {link.label}
-                          {(link.label === 'privacy' || link.label === 'terms') && (
-                            <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-current transition-all duration-300 group-hover:w-full" />
-                          )}
                         </a>
                       ) : (
-                        <Link className={`hover:text-foreground ${link.label === 'privacy' || link.label === 'terms' ? 'relative group' : ''}`} href={link.href as Route}>
+                        <Link className={linkClass} href={link.href as Route}>
                           {link.label}
-                          {(link.label === 'privacy' || link.label === 'terms') && (
-                            <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-current transition-all duration-300 group-hover:w-full" />
-                          )}
                         </Link>
                       )}
                     </li>
                   );
                 })}
             </ul>
-          </FadeIn>
+          </Reveal>
         ))}
-        <FadeIn as="div" delay={0.24} dir="up" className="space-y-2 text-sm text-muted-foreground">
+        <Reveal as="div" delay={0.24} dir="up" className="space-y-2 text-sm text-muted-foreground">
           <Link href={'/blog' as Route} className="group inline-block">
-            <h3 className="text-sm font-semibold uppercase tracking-wide relative text-foreground">
+            <h3 className="underline-sweep pb-0.5 font-mono text-xs font-medium uppercase tracking-[0.25em] text-foreground">
               Stay informed
-              <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-current transition-all duration-300 group-hover:w-full" />
             </h3>
-            <p className="mt-1">
+            <p className="mt-2 leading-relaxed">
               Insights on DevOps, SRE, AI-ready platforms, and delivery rituals.
             </p>
           </Link>
-        </FadeIn>
+        </Reveal>
       </div>
-      <FadeIn as="div" delay={0.32} dir="up" className="border-t border-white/10 py-6 text-center text-xs text-muted-foreground">
-        <div className="inline-flex items-center gap-1">
+
+      {/* Giant outlined wordmark */}
+      <div className="pointer-events-none select-none overflow-hidden" aria-hidden>
+        <p
+          data-footer-wordmark
+          className="text-outline whitespace-nowrap text-center font-display text-[13.5vw] font-bold leading-[0.9] tracking-[-0.02em]"
+        >
+          360ace.Tech
+        </p>
+      </div>
+
+      <div className="border-t border-border py-6 text-center text-xs text-muted-foreground">
+        <div className="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.15em]">
           © {new Date().getFullYear()}
           <span className="relative inline-block h-5 w-5">
             <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="20px" />
@@ -123,7 +155,7 @@ export function SiteFooter() {
           </span>
           {company.name}. All rights reserved.
         </div>
-      </FadeIn>
+      </div>
     </footer>
   );
 }
