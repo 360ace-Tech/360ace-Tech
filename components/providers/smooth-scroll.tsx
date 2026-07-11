@@ -19,7 +19,12 @@ export function SmoothScroll() {
     const finePointer = window.matchMedia('(pointer: fine)').matches;
     if (!motionOk || !finePointer) return;
 
-    const lenis = new Lenis({ lerp: 0.12, anchors: true });
+    const lenis = new Lenis({
+      anchors: true,
+      lerp: 0.075,
+      wheelMultiplier: 0.82,
+      smoothWheel: true,
+    });
     lenis.on('scroll', ScrollTrigger.update);
 
     const raf = (time: number) => lenis.raf(time * 1000);

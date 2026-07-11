@@ -23,8 +23,9 @@ function usePrimaryColor() {
 
 export default function HeroScene({
   active,
+  onReady,
   ...refs
-}: GlobeRefs & { active: boolean }) {
+}: GlobeRefs & { active: boolean; onReady: () => void }) {
   const { color, dark } = usePrimaryColor();
 
   return (
@@ -36,7 +37,7 @@ export default function HeroScene({
       style={{ pointerEvents: 'none' }}
       aria-hidden
     >
-      <ParticleGlobe color={color} additive={dark} {...refs} />
+      <ParticleGlobe color={color} additive={dark} onReady={onReady} {...refs} />
     </Canvas>
   );
 }

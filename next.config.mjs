@@ -25,6 +25,8 @@ const nextConfig = {
       "frame-src https://challenges.cloudflare.com",
       // Disallow embedding
       "frame-ancestors 'none'",
+      // Disallow legacy plugin/object embedding
+      "object-src 'none'",
       // Form posting
       "form-action 'self'",
       // Others
@@ -42,9 +44,13 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value:
-              'accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), usb=()',
+              'accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), usb=()',
           },
           { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
+          { key: 'X-DNS-Prefetch-Control', value: 'off' },
+          { key: 'X-Permitted-Cross-Domain-Policies', value: 'none' },
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
         ],
       },
     ];

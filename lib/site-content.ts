@@ -154,55 +154,87 @@ export const menuFooter = {
 // Legal page templates (edit text here)
 export const legalPrivacy = {
   title: 'Privacy Policy',
-  lastUpdated: 'September 28, 2025',
+  lastUpdated: 'July 11, 2026',
   intro:
-    'This Privacy Policy explains how 360ace.Tech collects, uses, and safeguards information when you visit our website or interact with us about our cloud, platform engineering, and reliability services.',
+    'This Privacy Policy explains how 360ace.Tech collects, uses, discloses, retains, and protects personal information when you visit our website, contact us, or discuss cloud, platform engineering, DevOps, SRE, AI, and reliability services with us.',
   sections: [
     {
-      heading: 'Information We Collect',
+      heading: 'Who We Are and Scope',
       body: [
-        'Contact data you voluntarily provide (for example, name, email, company, and message) when you submit forms or email us.',
-        'Usage data from our website (for example, pages visited, device and browser details, and approximate location) collected via privacy‑respecting analytics and standard server logs.',
-        'Business correspondence and project information shared during discovery, scoping, or service delivery. Client materials remain confidential per our contracts.',
+        '360ace.Tech is responsible for the personal information it handles through this website and related business communications. This Policy does not replace any privacy, security, confidentiality, data processing, or professional services terms in a signed agreement with a client.',
+        'This website is intended for business visitors, prospects, clients, partners, and job or collaboration inquiries. It is not directed to children, and we do not knowingly collect personal information from children.',
+      ],
+    },
+    {
+      heading: 'Personal Information We Collect',
+      body: [
+        'Information you provide directly, such as your name, business email address, phone number, company, role, message content, project details, and preferences when you submit a form, email us, book a call, or otherwise communicate with us.',
+        'Website and device information, such as IP address, approximate location, browser and device details, referring pages, pages viewed, timestamps, and interaction data collected through server logs, security tools, cookies, and analytics.',
+        'Business and engagement information, such as discovery notes, requirements, architecture context, technical constraints, procurement details, invoices, and support communications shared during scoping or delivery.',
+        'Security and anti-abuse information, including Cloudflare Turnstile signals, form timing, spam-prevention data, and logs used to protect the website and contact channels.',
       ],
     },
     {
       heading: 'How We Use Information',
       body: [
-        'Respond to inquiries and provide proposals for our services.',
-        'Operate, secure, and improve our website and communications.',
-        'Perform and manage client engagements under a governing agreement.',
-        'Comply with legal obligations and enforce our terms.',
+        'To respond to inquiries, schedule calls, prepare proposals, and communicate about services you requested or expressed interest in.',
+        'To operate, secure, debug, measure, and improve the website, forms, analytics, and communications.',
+        'To scope, deliver, manage, invoice, and support client engagements under the applicable agreement.',
+        'To prevent spam, abuse, fraud, security incidents, and unauthorized access.',
+        'To comply with legal, accounting, tax, regulatory, insurance, and dispute-resolution obligations, and to enforce our agreements and website terms.',
       ],
     },
     {
-      heading: 'Cookies and Analytics',
+      heading: 'Legal Bases and Consent',
       body: [
-        'We use only necessary cookies and privacy‑respecting analytics to understand aggregate usage. You can adjust your browser settings to limit cookies.',
+        'Where applicable law requires a legal basis, we rely on one or more of the following: your consent, performance of a contract or steps before entering a contract, our legitimate interests in operating and securing a business website and responding to business inquiries, and compliance with legal obligations.',
+        'Where consent is required, you may withdraw it at any time, subject to legal or contractual limits. Withdrawing consent does not affect processing that occurred before withdrawal.',
       ],
     },
     {
-      heading: 'Data Sharing',
+      heading: 'Cookies, Analytics, and Security Tools',
       body: [
-        'We do not sell your personal information. We may share limited data with trusted providers who help us operate our site and communications, under confidentiality and data processing terms.',
+        'We use cookies, local storage, pixels, server logs, and similar technologies for site operation, security, analytics, and preference management. Your browser or device settings may let you block or delete some of these technologies, but parts of the site may not work as intended.',
+        'Our website may use providers such as Google Analytics for usage measurement, Cloudflare Turnstile for spam and bot prevention, MailerSend for contact-form email delivery, hosting/CDN providers, and other operational vendors. These providers process information for us or as described in their own terms and policies.',
+        'We do not sell personal information. We do not share personal information for cross-context behavioural advertising as that term is commonly used under California privacy law.',
       ],
     },
     {
-      heading: 'Data Retention',
+      heading: 'When We Disclose Information',
       body: [
-        'We retain personal data only as long as necessary for the purposes above or as required by law. Client project data is retained according to contract terms.',
+        'We may disclose information to service providers, professional advisors, payment or accounting providers, security and hosting vendors, analytics providers, and communication tools that help us run our business.',
+        'We may disclose information if required by law, court order, regulatory request, or to protect rights, safety, security, and the integrity of our services.',
+        'If 360ace.Tech is involved in a merger, acquisition, financing, restructuring, or sale of assets, information may be disclosed as part of that transaction subject to appropriate safeguards.',
       ],
     },
     {
-      heading: 'Your Choices',
+      heading: 'Retention and Safeguards',
       body: [
-        'You may request access, correction, or deletion of your personal information, subject to applicable law.',
+        'We retain personal information only as long as reasonably necessary for the purposes described in this Policy, for the period required by an applicable contract, or as needed for legal, tax, accounting, security, backup, or dispute purposes.',
+        'We use administrative, technical, and organizational safeguards designed to protect personal information against unauthorized access, loss, misuse, alteration, and disclosure. No internet or storage system is completely secure, so we cannot guarantee absolute security.',
       ],
     },
     {
-      heading: 'Contact',
+      heading: 'International Processing',
       body: [
-        'For privacy requests or questions, reach us via the contact section of our site.',
+        'We may process and store information in Canada, the United States, and other countries where we or our service providers operate. Those countries may have privacy laws different from those in your jurisdiction.',
+        'When required, we use contractual, technical, and organizational measures intended to protect personal information transferred across borders.',
+      ],
+    },
+    {
+      heading: 'Your Rights and Choices',
+      body: [
+        'Depending on where you live, you may have rights to access, correct, update, delete, restrict, object to, or receive a copy of your personal information. You may also have the right to withdraw consent or complain to a privacy regulator.',
+        'California, Colorado, Connecticut, Virginia, Utah, Oregon, Texas, Montana, Delaware, Iowa, Nebraska, New Hampshire, New Jersey, Tennessee, Minnesota, Maryland, Indiana, Kentucky, Rhode Island, and other U.S. state residents may have specific privacy rights if an applicable state law applies to us. We will respond to verifiable requests as required by applicable law.',
+        'EU, UK, and similar-region visitors may have rights under applicable data protection laws, including rights to information, access, correction, deletion, restriction, objection, portability, and complaint to a supervisory authority.',
+        'To exercise rights, contact us at 360ace@360ace.tech. We may need to verify your identity and may decline or limit a request where permitted or required by law.',
+      ],
+    },
+    {
+      heading: 'Updates and Contact',
+      body: [
+        'We may update this Policy from time to time. Material updates will be reflected by changing the Last updated date and, where appropriate, by providing additional notice.',
+        'For privacy questions or requests, contact 360ace.Tech at 360ace@360ace.tech or through the contact section of our site.',
       ],
     },
   ],
@@ -210,56 +242,89 @@ export const legalPrivacy = {
 
 export const legalTerms = {
   title: 'Terms of Service',
-  lastUpdated: 'September 28, 2025',
+  lastUpdated: 'July 11, 2026',
   intro:
-    'These Terms govern your use of the 360ace.Tech website and outline general conditions that apply when we discuss or provide our cloud, platform engineering, and reliability services.',
+    'These Terms of Service govern your use of the 360ace.Tech website. Separate written agreements, proposals, statements of work, master services agreements, data processing terms, or order forms govern any paid professional services unless they expressly say otherwise.',
   sections: [
     {
-      heading: 'Use of Website',
+      heading: 'Acceptance and Website Use',
       body: [
-        'Content on this site is for general information only and does not constitute professional advice. You agree not to misuse the site or attempt to disrupt its operation.',
+        'By accessing or using this website, you agree to these Terms. If you do not agree, do not use the website.',
+        'You may use the website only for lawful business or informational purposes. You must not interfere with the website, attempt unauthorized access, scrape at unreasonable volume, introduce malware, bypass security controls, or use the site in a way that harms us, other users, or our service providers.',
       ],
     },
     {
-      heading: 'Engagements and Proposals',
+      heading: 'Information Only; No Professional Advice',
       body: [
-        'Any proposal, statement of work, or master services agreement (collectively, “Agreements”) supersedes these Terms with respect to the services described therein.',
+        'Website content is provided for general information about cloud, platform engineering, DevOps, SRE, AI, and reliability services. It is not legal, financial, security, compliance, or other professional advice.',
+        'You are responsible for evaluating whether information on the site is appropriate for your circumstances before relying on it.',
+      ],
+    },
+    {
+      heading: 'Professional Services',
+      body: [
+        'Discussions, discovery calls, proposals, estimates, and website materials do not create a services engagement unless and until the parties sign or otherwise accept a written agreement.',
+        'If there is a conflict between these Terms and a signed agreement for services, the signed agreement controls for the services covered by that agreement.',
       ],
     },
     {
       heading: 'Intellectual Property',
       body: [
-        'All site content, branding, and materials we publish are owned by 360ace.Tech or its licensors. Client IP created under an Agreement is governed by that Agreement.',
+        'The website, branding, copy, graphics, code, design, downloads, and other materials we publish are owned by 360ace.Tech or its licensors and are protected by intellectual property laws.',
+        'You may view and use website content for internal evaluation of our services. You may not copy, modify, distribute, sell, or create derivative works from our site materials except as allowed by law or with our written permission.',
+        'Client deliverables, pre-existing materials, open-source components, feedback, and work product created under a services agreement are governed by that agreement.',
       ],
     },
     {
-      heading: 'Confidentiality',
+      heading: 'Confidentiality and Submitted Materials',
       body: [
-        'We treat client materials as confidential and use them solely to deliver agreed services, in line with applicable Agreements.',
+        'Do not submit confidential, regulated, sensitive, production credentials, secrets, or proprietary technical materials through public website forms. Use approved project channels once an engagement is in place.',
+        'Information submitted through the website is handled under our Privacy Policy. Confidentiality obligations for client materials apply only as stated in a signed agreement or other written commitment.',
       ],
     },
     {
-      heading: 'Disclaimers and Liability',
+      heading: 'Third-Party Services and Links',
       body: [
-        'The site is provided “as is” without warranties. To the maximum extent permitted by law, we disclaim liability for indirect or consequential damages related to site use.',
+        'The website may use or link to third-party services, including analytics, hosting, security, email, scheduling, downloads, and external resources. We are not responsible for third-party websites, services, terms, policies, or content.',
       ],
     },
     {
-      heading: 'Governing Law',
+      heading: 'Availability and Changes',
       body: [
-        'Any dispute relating to this site will be governed by the laws applicable where 360ace.Tech principally operates, unless otherwise required by law.',
+        'We may update, suspend, restrict, or discontinue any part of the website at any time without notice. We do not guarantee that the website will be uninterrupted, error-free, secure, or available in every location.',
+      ],
+    },
+    {
+      heading: 'Disclaimers and Limitation of Liability',
+      body: [
+        'The website is provided on an as-is and as-available basis. To the maximum extent permitted by law, we disclaim all warranties, whether express, implied, statutory, or otherwise, including warranties of merchantability, fitness for a particular purpose, non-infringement, accuracy, and availability.',
+        'To the maximum extent permitted by law, 360ace.Tech will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages, or for lost profits, lost revenue, lost data, business interruption, or loss of goodwill arising from or related to website use.',
+        'Nothing in these Terms limits liability that cannot be limited under applicable law.',
+      ],
+    },
+    {
+      heading: 'Indemnity',
+      body: [
+        'You agree to defend, indemnify, and hold harmless 360ace.Tech from claims, damages, liabilities, costs, and expenses arising from your misuse of the website, violation of these Terms, or violation of applicable law or third-party rights.',
+      ],
+    },
+    {
+      heading: 'Governing Law and Disputes',
+      body: [
+        'Unless a written agreement says otherwise or applicable law requires a different rule, these Terms and disputes relating to the website are governed by the laws of the Province of Alberta and the federal laws of Canada applicable there, without regard to conflict-of-law rules.',
+        'The parties will first try to resolve disputes informally and in good faith. If a dispute cannot be resolved, it may be brought in the courts with jurisdiction under applicable law.',
       ],
     },
     {
       heading: 'Changes',
       body: [
-        'We may update these Terms from time to time. Material changes will be reflected by updating the “Last updated” date.',
+        'We may update these Terms from time to time. Material changes will be reflected by updating the Last updated date. Continued use of the website after an update means you accept the updated Terms.',
       ],
     },
     {
       heading: 'Contact',
       body: [
-        'Questions about these Terms? Reach us via the contact section of our site.',
+        'Questions about these Terms may be sent to 360ace@360ace.tech or through the contact section of our site.',
       ],
     },
   ],

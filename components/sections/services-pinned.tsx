@@ -122,7 +122,7 @@ export function ServicesPinned() {
                   className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-8 sm:p-10 lg:p-12"
                 >
                   <span
-                    className="text-outline pointer-events-none absolute -right-4 -top-10 font-display text-[9rem] font-bold leading-none lg:text-[13rem]"
+                    className="text-outline pointer-events-none absolute -right-4 top-2 font-display text-[9rem] font-bold leading-none lg:top-4 lg:text-[13rem]"
                     aria-hidden
                   >
                     {String(index + 1).padStart(2, '0')}

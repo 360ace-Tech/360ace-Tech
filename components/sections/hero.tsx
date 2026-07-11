@@ -7,21 +7,6 @@ import { heroContent } from '@/lib/site-content';
 import { gsap, SplitText, useGSAP } from '@/lib/animation/gsap';
 import { DUR, EASE, MOTION_OK, PIN_OK, STAGGER } from '@/lib/animation/config';
 
-/** Static globe for mobile and reduced motion (desktop uses GlobeBackground). */
-function GlobePoster() {
-  return (
-    <div className="relative mx-auto aspect-square w-full max-w-[420px]">
-      <div className="absolute inset-[-8%] rounded-full border border-primary/15" aria-hidden />
-      <div className="absolute inset-[4%] rounded-full bg-primary/10 blur-3xl" aria-hidden />
-      <div
-        className="absolute inset-0 rounded-full bg-contain bg-center bg-no-repeat opacity-90"
-        style={{ backgroundImage: 'var(--globe-url)' }}
-        aria-hidden
-      />
-    </div>
-  );
-}
-
 function buildStatTween(el: HTMLElement, tl: gsap.core.Timeline, position: number) {
   const raw = el.dataset.statTarget ?? el.textContent ?? '';
   const match = raw.match(/^([0-9]+(?:\.[0-9]+)?)(.*)$/);
@@ -80,7 +65,7 @@ export function HeroSection() {
         const play = () => tl.play();
         if (document.documentElement.dataset.preloadActive === '1') {
           window.addEventListener('preloader:done', play, { once: true });
-          const failsafe = window.setTimeout(play, 4500);
+          const failsafe = window.setTimeout(play, 3200);
           return () => {
             window.removeEventListener('preloader:done', play);
             window.clearTimeout(failsafe);
@@ -120,7 +105,7 @@ export function HeroSection() {
     <section
       ref={sectionRef}
       id="home"
-      className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pb-40 pt-32"
+      className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pb-40 pt-32 lg:h-[calc(100svh-4rem)] lg:min-h-0 lg:pb-28"
     >
       <div className="container-edge relative z-10">
         <p
@@ -159,16 +144,13 @@ export function HeroSection() {
           </Button>
         </div>
 
-        {/* Mobile poster between copy and stats (desktop globe lives in GlobeBackground) */}
-        <div className="mt-12 lg:hidden">
-          <GlobePoster />
-        </div>
+        <div className="h-72 sm:h-80 lg:hidden" aria-hidden />
       </div>
 
       {/* Stats strip */}
       <div
         data-hero-stats
-        className="absolute inset-x-0 bottom-0 border-t border-border/70 bg-background/50 backdrop-blur-sm"
+        className="absolute inset-x-0 bottom-0 z-20 border-t border-border/70 bg-background/50 backdrop-blur-sm lg:bottom-4"
       >
         <div className="container-edge grid grid-cols-3 divide-x divide-border/70">
           {heroContent.stats.map((stat) => (

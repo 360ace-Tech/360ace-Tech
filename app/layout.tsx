@@ -82,19 +82,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         ) : null}
         <Providers>
           <ViewTransitions>
-            {/* Preloader failsafe: if the GSAP controller never runs, unlock the page */}
-            <Script id="preloader-init" strategy="beforeInteractive">
-              {`
-                try {
-                  setTimeout(function(){
-                    if (document.documentElement.dataset.preloadActive === '1') {
-                      delete document.documentElement.dataset.preloadActive;
-                      window.dispatchEvent(new CustomEvent('preloader:done'));
-                    }
-                  }, 3500);
-                } catch {}
-              `}
-            </Script>
             <PreloaderServer />
             <PreloaderController />
             {/* Client preloader: fires on blog → home soft navigation */}

@@ -25,6 +25,12 @@ export type GlobeRefs = {
   xRef: React.MutableRefObject<number>;
 };
 
+type ParticleGlobeProps = GlobeRefs & {
+  color: string;
+  additive: boolean;
+  onReady: () => void;
+};
+
 const vertexShader = /* glsl */ `
   uniform float uTime;
   uniform float uProgress;
@@ -100,9 +106,11 @@ export function ParticleGlobe({
   opacityRef,
   hoverRef,
   xRef,
-}: GlobeRefs & { color: string; additive: boolean }) {
+  onReady,
+}: ParticleGlobeProps) {
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const readyRef = useRef(false);
   const pointer = useRef({ x: 0, y: 0 });
   const spinSpeed = useRef(ROTATION_SPEED);
   const baseZ = useRef(3.4);
@@ -180,6 +188,12 @@ export function ParticleGlobe({
     },
     [coastline, arcLines]
   );
+
+  useEffect(() => {
+    if (readyRef.current) return;
+    readyRef.current = true;
+    onReady();
+  }, [onReady]);
 
   // Fit camera so even the dispersed field never clips the canvas edges.
   useEffect(() => {
