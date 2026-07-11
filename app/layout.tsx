@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { Providers } from '@/app/(core)/providers';
 import { ViewTransitions } from 'next-view-transitions';
-import { HashScroll } from '@/components/navigation/hash-scroll';
+import { HomeSectionScroller } from '@/components/navigation/home-section-scroller';
 import { cn } from '@/lib/utils';
 import { fontVariables } from '@/lib/fonts';
 import { UnderConstruction } from '@/components/templates/under-construction';
@@ -87,7 +87,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {/* Client preloader: fires on blog → home soft navigation */}
             <NavigationPreloader />
             <div className="relative flex min-h-screen flex-col">
-              <HashScroll />
+              <HomeSectionScroller />
               {maintenance ? <UnderConstruction /> : children}
             </div>
           </ViewTransitions>

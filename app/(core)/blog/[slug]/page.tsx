@@ -6,7 +6,8 @@ import { mdxComponents } from '@/components/mdx/mdx-components';
 import { Reveal } from '@/components/motion/reveal';
 import { ClipReveal } from '@/components/motion/clip-reveal';
 import { Badge } from '@/components/ui/badge';
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
+import type { Route } from 'next';
 import { allPosts, type Post } from 'contentlayer/generated';
 
 interface BlogPostPageProps {
@@ -93,7 +94,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <nav className="mt-6 grid gap-4 sm:grid-cols-2">
               {prevPost ? (
                 <Link
-                  href={`/blog/${prevPost.slug}`}
+                  href={`/blog/${prevPost.slug}` as Route}
                   className="group flex items-start justify-between rounded-2xl border border-white/10 bg-card/60 p-4 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] md:hover:scale-[1.03] hover:shadow-2xl hover:bg-card/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label={`Previous post: ${prevPost.title}`}
                 >
@@ -108,7 +109,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               )}
               {nextPost && (
                 <Link
-                  href={`/blog/${nextPost.slug}`}
+                  href={`/blog/${nextPost.slug}` as Route}
                   className="group flex items-start justify-between rounded-2xl border border-white/10 bg-card/60 p-4 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] md:hover:scale-[1.03] hover:shadow-2xl hover:bg-card/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-right"
                   aria-label={`Next post: ${nextPost.title}`}
                 >

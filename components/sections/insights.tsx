@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
+import type { Route } from 'next';
 
 import { Reveal } from '@/components/motion/reveal';
 import { ClipReveal } from '@/components/motion/clip-reveal';
@@ -68,7 +69,7 @@ export function InsightsSection() {
           {posts.map((post: Post, index: number) => (
             <Reveal key={post._id} delay={index * 0.08}>
               <Link
-                href={`/blog/${post.slug}`}
+                href={`/blog/${post.slug}` as Route}
                 className="group block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <article className="flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors duration-300 group-hover:border-primary/40">

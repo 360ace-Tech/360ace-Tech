@@ -1,25 +1,55 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
+import { startHomeNavigationPreloader } from '@/lib/navigation/home-nav';
 
 /**
- * Shows the branded spinner overlay during client-side navigation when the user
- * moves from any blog page (/blog or /blog/[slug]) to the home page (/).
+ * Shows the branded spinner overlay during client-side navigation whenever
+ * the user returns to the home page (/) from any other route — blog, legal,
+ * contact, etc. — so every home landing starts from the hero behind the
+ * same branded moment.
  *
  * Intentionally skips:
  *  - Initial mount (no preloader double-fire on hard load)
- *  - Blog-to-blog transitions (/blog → /blog/[slug] and vice-versa)
- *  - Any other route change that doesn't end at /
+ *  - Route changes that don't end at /
  *
- * Reuses the `preloader-spin` keyframe already defined in globals.css.
+ * Dispatches `navpreloader:done` as the fade begins so the arrival scroller
+ * (home-section-scroller.tsx) can ease to a queued section in sync.
  */
 export function NavigationPreloader() {
   const pathname = usePathname();
   const prevRef = useRef<string | null>(null);
-  const [visible, setVisible] = useState(false);
-  const [fading, setFading] = useState(false);
+  const failsafeRef = useRef<number | null>(null);
   const text = '360ace.tech'.split('');
+
+  const beginFade = () => {
+    const root = document.documentElement;
+    root.dataset.navPreloadFading = '1';
+    window.dispatchEvent(new CustomEvent('navpreloader:done'));
+    window.setTimeout(() => {
+      delete root.dataset.navPreloadActive;
+      delete root.dataset.navPreloadFading;
+    }, 520);
+  };
+
+  // Takeover starts at click time (`homenav:start` from useAppNavigate), so
+  // the overlay already covers the page when the route swaps underneath —
+  // no view-transition snapshot can half-composite it. The failsafe clears
+  // the overlay if the navigation never lands.
+  useEffect(() => {
+    const onStart = () => {
+      startHomeNavigationPreloader();
+      if (failsafeRef.current) window.clearTimeout(failsafeRef.current);
+      failsafeRef.current = window.setTimeout(beginFade, 4000);
+    };
+    window.addEventListener('homenav:start', onStart);
+    return () => {
+      window.removeEventListener('homenav:start', onStart);
+      if (failsafeRef.current) window.clearTimeout(failsafeRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const prev = prevRef.current;
@@ -28,25 +58,24 @@ export function NavigationPreloader() {
     // Skip the initial mount — no previous path yet
     if (prev === null) return;
 
-    // Only fire when going FROM a blog page TO the home page
-    if (pathname !== '/' || !prev.startsWith('/blog')) return;
+    // Arrival at home from any other route (covers back/forward too, where
+    // no homenav:start was dispatched)
+    if (pathname !== '/' || prev === '/') return;
 
-    setFading(false);
-    setVisible(true);
+    startHomeNavigationPreloader();
 
     const fadeTimer = window.setTimeout(() => {
-      setFading(true);
-      window.setTimeout(() => setVisible(false), 500);
+      if (failsafeRef.current) window.clearTimeout(failsafeRef.current);
+      beginFade();
     }, 900);
 
     return () => window.clearTimeout(fadeTimer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
-
-  if (!visible) return null;
 
   return (
     <div
-      className={`preloader-overlay preloader-overlay--navigation${fading ? ' preloader-overlay--fading' : ''}`}
+      className="preloader-overlay preloader-overlay--navigation"
       aria-hidden
     >
       <div className="preloader-stack">

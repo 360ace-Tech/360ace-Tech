@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
+import type { Route } from 'next';
 
 import { Reveal } from '@/components/motion/reveal';
 import { Badge } from '@/components/ui/badge';
@@ -56,7 +57,7 @@ export default function BlogIndexPage() {
           {posts.map((post: Post) => (
             <Reveal key={post._id} immediate>
               <Link
-                href={`/blog/${post.slug}`}
+                href={`/blog/${post.slug}` as Route}
                 className="group block rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <article className="h-full rounded-3xl border border-white/10 bg-card/60 p-6 shadow-lg transition-all duration-300 ease-out hover:-translate-y-0.5 group-hover:scale-[1.01] md:group-hover:scale-[1.03] group-hover:shadow-2xl">

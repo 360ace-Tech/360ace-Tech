@@ -1,15 +1,15 @@
 "use client";
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import Image from 'next/image';
 import { useRef } from 'react';
 import { Mail, Linkedin } from 'lucide-react';
 import type { Route } from 'next';
-import { usePathname } from 'next/navigation';
 
 import { Reveal } from '@/components/motion/reveal';
 import { company } from '@/lib/site-content';
 import { gsap, useGSAP } from '@/lib/animation/gsap';
 import { MOTION_OK } from '@/lib/animation/config';
+import { isModifiedClick, parseHomeTarget, useAppNavigate } from '@/lib/navigation/home-nav';
 
 const footerLinks = [
   {
@@ -24,7 +24,7 @@ const footerLinks = [
     title: 'Resources',
     links: [
       { label: 'Blog', href: '/blog' },
-      { label: 'Case studies', href: '#insights' },
+      { label: 'Case studies', href: '/#insights' },
       { label: 'privacy', href: '/legal/privacy' },
       { label: 'terms', href: '/legal/terms' },
     ],
@@ -32,8 +32,19 @@ const footerLinks = [
 ];
 
 export function SiteFooter() {
-  const pathname = usePathname();
+  const navigate = useAppNavigate();
   const footerRef = useRef<HTMLElement>(null);
+
+  /** Intercepts primary clicks on home-targeting links; plain routes keep
+   *  the view-transition Link behaviour. */
+  const homeNav = (href: string) =>
+    parseHomeTarget(href).type === 'home'
+      ? (e: React.MouseEvent<HTMLAnchorElement>) => {
+          if (isModifiedClick(e)) return;
+          e.preventDefault();
+          navigate(href);
+        }
+      : undefined;
 
   useGSAP(
     () => {
@@ -58,25 +69,11 @@ export function SiteFooter() {
     { scope: footerRef }
   );
 
-  const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (pathname === '/') {
-      e.preventDefault();
-      const el = document.getElementById('home');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.replaceState(null, '', '/#home');
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        history.replaceState(null, '', '/');
-      }
-    }
-  };
-
   return (
     <footer ref={footerRef} className="relative overflow-hidden border-t border-border">
       <div className="container-edge grid gap-10 py-14 md:grid-cols-4">
         <Reveal as="div" dir="up" className="space-y-4">
-          <Link href={'/#home' as Route} onClick={handleHomeClick} className="inline-flex items-center gap-2">
+          <Link href={'/' as Route} onClick={homeNav('/')} className="inline-flex items-center gap-2">
             <span className="relative inline-block h-8 w-8">
               <Image src="/logo-dark.png" alt="360ace.Tech logo" fill className="hidden dark:block object-contain" sizes="32px" />
               <Image src="/logo-light.png" alt="360ace.Tech logo" fill className="block dark:hidden object-contain" sizes="32px" />
@@ -104,23 +101,17 @@ export function SiteFooter() {
               {column.title}
             </h3>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
-                {column.links.map((link) => {
-                  const external = link.href.startsWith('/#') || link.href.startsWith('#');
-                  const linkClass = 'underline-sweep pb-0.5 transition-colors hover:text-foreground capitalize';
-                  return (
-                    <li key={link.label}>
-                      {external ? (
-                        <a className={linkClass} href={link.href}>
-                          {link.label}
-                        </a>
-                      ) : (
-                        <Link className={linkClass} href={link.href as Route}>
-                          {link.label}
-                        </Link>
-                      )}
-                    </li>
-                  );
-                })}
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      className="underline-sweep pb-0.5 capitalize transition-colors hover:text-foreground"
+                      href={link.href as Route}
+                      onClick={homeNav(link.href)}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </Reveal>
         ))}

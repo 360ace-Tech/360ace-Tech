@@ -1,7 +1,8 @@
-import Link from 'next/link';
+'use client';
 
-import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { Link } from 'next-view-transitions';
 import type { Route } from 'next';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Magnetic } from '@/components/motion/magnetic';
@@ -9,6 +10,7 @@ import { MobileMenu } from '@/components/navigation/mobile-menu';
 import { DesktopNav } from '@/components/navigation/desktop-nav';
 import { HeaderLogo } from '@/components/navigation/header-logo';
 import { HeaderBehavior } from '@/components/navigation/header-behavior';
+import { isModifiedClick, useAppNavigate } from '@/lib/navigation/home-nav';
 
 export const navigation = [
   { href: '/#services', label: 'What we do' },
@@ -19,6 +21,8 @@ export const navigation = [
 ];
 
 export function SiteHeader() {
+  const navigate = useAppNavigate();
+
   return (
     <header
       data-site-header
@@ -36,7 +40,16 @@ export function SiteHeader() {
           <ThemeToggle />
           <Magnetic strength={0.25}>
             <Button asChild size="sm">
-              <Link href={'/#contact' as Route}>Talk to us</Link>
+              <Link
+                href={'/#contact' as Route}
+                onClick={(e) => {
+                  if (isModifiedClick(e)) return;
+                  e.preventDefault();
+                  navigate('/#contact');
+                }}
+              >
+                Talk to us
+              </Link>
             </Button>
           </Magnetic>
           <div className="nav:hidden">

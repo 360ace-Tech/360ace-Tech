@@ -1,9 +1,10 @@
 "use client";
 
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import type { Route } from 'next';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { isModifiedClick, parseHomeTarget, useAppNavigate } from '@/lib/navigation/home-nav';
 
 export type NavItem = { href: string; label: string };
 
@@ -19,18 +20,11 @@ export function DesktopNav({ items }: { items: NavItem[] }) {
     return () => window.removeEventListener('section:active', onActive);
   }, []);
 
-  const handleAnchorClick = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const navigate = useAppNavigate();
+  const handleHomeTarget = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(e)) return;
     e.preventDefault();
-    const id = href.replace('/#', '');
-    if (window.location.pathname !== '/') {
-      window.location.assign(`/#${id}`);
-      return;
-    }
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      history.replaceState(null, '', `/#${id}`);
-    }
+    navigate(href);
   };
 
   return (
@@ -56,16 +50,16 @@ export function DesktopNav({ items }: { items: NavItem[] }) {
             </span>
           </span>
         );
-        const isAnchor = item.href.startsWith('/#');
+        const isHomeTarget = parseHomeTarget(item.href).type === 'home';
         return (
           <div key={item.href} className="group" onMouseEnter={() => setHoverIndex(i)}>
-            {isAnchor ? (
-              <a href={item.href} onClick={handleAnchorClick(item.href)} aria-current={isActive ? 'true' : undefined}>
-                {content}
-              </a>
-            ) : (
-              <Link href={item.href as Route}>{content}</Link>
-            )}
+            <Link
+              href={item.href as Route}
+              onClick={isHomeTarget ? handleHomeTarget(item.href) : undefined}
+              aria-current={isActive ? 'true' : undefined}
+            >
+              {content}
+            </Link>
           </div>
         );
       })}

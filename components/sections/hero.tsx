@@ -64,10 +64,21 @@ export function HeroSection() {
 
         const play = () => tl.play();
         if (document.documentElement.dataset.preloadActive === '1') {
+          // Hard load: wait for the boot preloader wipe.
           window.addEventListener('preloader:done', play, { once: true });
           const failsafe = window.setTimeout(play, 3200);
           return () => {
             window.removeEventListener('preloader:done', play);
+            window.clearTimeout(failsafe);
+          };
+        }
+        if (document.querySelector('.preloader-overlay--navigation')) {
+          // Soft nav home: the navigation preloader is covering — start the
+          // entrance as its fade begins so the reveal feels continuous.
+          window.addEventListener('navpreloader:done', play, { once: true });
+          const failsafe = window.setTimeout(play, 3200);
+          return () => {
+            window.removeEventListener('navpreloader:done', play);
             window.clearTimeout(failsafe);
           };
         }

@@ -8,6 +8,7 @@ import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { menuFooter } from '@/lib/site-content';
 import { gsap, useGSAP } from '@/lib/animation/gsap';
+import { isModifiedClick, useAppNavigate } from '@/lib/navigation/home-nav';
 import { EASE } from '@/lib/animation/config';
 
 export interface NavItem {
@@ -21,6 +22,7 @@ export interface NavItem {
  */
 export function MobileMenu({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
+  const navigate = useAppNavigate();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -97,30 +99,14 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
     else tl.timeScale(1.4).reverse();
   }, [open]);
 
-  const handleItemClick = (item: NavItem) => (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const isAnchor = item.href.startsWith('/#');
-    if (!isAnchor) {
-      setOpen(false);
-      return;
-    }
+  // All destinations flow through the shared helper: on-home targets ease
+  // with Lenis, off-home targets queue + transition back with the preloader,
+  // plain routes get a view transition. Close the overlay first.
+  const handleItemClick = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(e)) return;
     e.preventDefault();
-    const hash = item.href.replace('/#', '');
-    if (window.location.pathname !== '/') {
-      setOpen(false);
-      window.location.assign(`/#${hash}`);
-      return;
-    }
     setOpen(false);
-    window.setTimeout(
-      () => {
-        const el = document.getElementById(hash);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          history.replaceState(null, '', `/#${hash}`);
-        }
-      },
-      touchModeRef.current ? 120 : 30
-    );
+    window.setTimeout(() => navigate(href), touchModeRef.current ? 120 : 30);
   };
 
   return (
@@ -165,7 +151,7 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                       onPointerDown={(e) => {
                         touchModeRef.current = e.pointerType === 'touch';
                       }}
-                      onClick={handleItemClick(item)}
+                      onClick={handleItemClick(item.href)}
                     >
                       <span className="flex items-baseline gap-4">
                         <span className="font-mono text-xs text-primary">0{i + 1}</span>
@@ -184,7 +170,12 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <span className="font-mono uppercase tracking-[0.2em] text-foreground/80">Resources</span>
                   {menuFooter.resources?.map((r) => (
-                    <a key={r.label} href={r.href} className="capitalize underline-offset-4 hover:underline">
+                    <a
+                      key={r.label}
+                      href={r.href}
+                      onClick={handleItemClick(r.href)}
+                      className="capitalize underline-offset-4 hover:underline"
+                    >
                       {r.label}
                     </a>
                   ))}
@@ -206,7 +197,9 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                         if (l.label.toLowerCase() === 'close') {
                           e.preventDefault();
                           setOpen(false);
+                          return;
                         }
+                        handleItemClick(l.href)(e);
                       }}
                       className="capitalize underline-offset-4 hover:underline"
                     >

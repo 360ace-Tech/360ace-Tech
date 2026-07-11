@@ -1,20 +1,20 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { company } from '@/lib/site-content';
+import { isModifiedClick, useAppNavigate } from '@/lib/navigation/home-nav';
 
 export function HeaderLogo() {
-  const pathname = usePathname();
+  const navigate = useAppNavigate();
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (pathname === '/') {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      history.replaceState(null, '', '/');
-    }
+    if (isModifiedClick(e)) return;
+    e.preventDefault();
+    // On home: Lenis ease to the top. Off home: queue the hero landing and
+    // transition back with the navigation preloader.
+    navigate('/');
   };
 
   return (

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
 import { gsap, ScrollTrigger } from '@/lib/animation/gsap';
 import { MOTION_OK } from '@/lib/animation/config';
+import { setLenis } from '@/lib/animation/lenis-store';
 
 /**
  * Lenis smooth scrolling driven by the GSAP ticker, so ScrollTrigger and the
@@ -26,12 +27,14 @@ export function SmoothScroll() {
       smoothWheel: true,
     });
     lenis.on('scroll', ScrollTrigger.update);
+    setLenis(lenis);
 
     const raf = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      setLenis(null);
       gsap.ticker.remove(raf);
       lenis.destroy();
     };
