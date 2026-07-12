@@ -1,6 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import { Link } from 'next-view-transitions';
+import type { Route } from 'next';
 import { services } from '@/lib/site-content';
 import { gsap, useGSAP } from '@/lib/animation/gsap';
 import { DUR, EASE, MOTION_OK, PIN_OK_LG } from '@/lib/animation/config';
@@ -119,8 +122,13 @@ export function ServicesPinned() {
                 <article
                   key={service.name}
                   data-service-panel
-                  className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-8 sm:p-10 lg:p-12"
+                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-8 transition-colors duration-500 hover:border-primary/60 sm:p-10 lg:p-12"
                 >
+                  <Link
+                    href={`/services#${service.slug}` as Route}
+                    aria-label={`Find out more about ${service.name}`}
+                    className="absolute inset-0 z-20 rounded-xl"
+                  />
                   <span
                     className="text-outline pointer-events-none absolute -right-4 top-2 font-display text-[9rem] font-bold leading-none lg:top-4 lg:text-[13rem]"
                     aria-hidden
@@ -146,6 +154,10 @@ export function ServicesPinned() {
                       </li>
                     ))}
                   </ul>
+                  <span className="relative mt-8 inline-flex items-center gap-2 self-start font-mono text-xs uppercase text-primary">
+                    <span className="underline-sweep pb-1">Find out more</span>
+                    <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </span>
                 </article>
             ))}
           </div>

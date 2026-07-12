@@ -15,9 +15,10 @@ const footerLinks = [
   {
     title: 'Services',
     links: [
-      { label: 'Cloud Strategy', href: '/#services' },
-      { label: 'Platform Engineering', href: '/#services' },
-      { label: 'Site Reliability', href: '/#services' },
+      { label: 'Cloud Strategy', href: '/services#cloud-strategy' },
+      { label: 'Platform Engineering', href: '/services#platform-engineering' },
+      { label: 'Site Reliability', href: '/services#site-reliability' },
+      { label: 'AI & Data Platforms', href: '/services#ai-data-platform' },
     ],
   },
   {

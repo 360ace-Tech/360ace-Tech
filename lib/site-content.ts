@@ -20,46 +20,130 @@ export const heroContent = {
   ],
 };
 
-export const services = [
+export type Service = {
+  slug: string;
+  shortName: string;
+  name: string;
+  summary: string;
+  problem: string;
+  activities: string[];
+  deliverables: string[];
+  outcomes: string[];
+  technologies: string[];
+};
+
+export const services: Service[] = [
   {
+    slug: 'cloud-strategy',
+    shortName: 'Cloud strategy',
     name: 'Cloud Strategy & Architecture',
     summary:
       'Assess, design, and optimise cloud foundations that unlock innovation without sacrificing governance.',
+    problem:
+      'Cloud programmes stall when business priorities, workload requirements, security controls, and operating responsibilities are designed separately. We turn those moving parts into one practical adoption path.',
+    activities: [
+      'Cloud readiness, maturity, workload, dependency, and stakeholder discovery',
+      'Business-case, total-cost, platform-option, and migration-wave analysis',
+      'Multi-cloud and hybrid target architecture across identity, network, security, data, and operations',
+      'Landing-zone, governance, policy, resilience, and FinOps guardrail design',
+      'Migration, modernisation, and application disposition planning',
+    ],
+    deliverables: [
+      'Current-state assessment and prioritised transformation roadmap',
+      'Target architecture, decision records, and workload migration plan',
+      'Landing-zone blueprint with security and governance baselines',
+      'Cost model, optimisation backlog, and measurable success criteria',
+    ],
     outcomes: [
       'Platform assessments, roadmaps, and ROI modelling',
       'Landing zones, security baselines, and network architectures',
       'FinOps guardrails with right-sized infrastructure blueprints',
     ],
+    technologies: ['AWS', 'Azure', 'Google Cloud', 'Terraform', 'Pulumi', 'FinOps'],
   },
   {
+    slug: 'platform-engineering',
+    shortName: 'Platform engineering',
     name: 'Platform Engineering & DevOps',
     summary:
       'Modernise delivery with golden paths, GitOps, and automated quality gates tuned to your stack.',
+    problem:
+      'Delivery slows when every team must assemble infrastructure, pipelines, controls, and observability from scratch. We build reusable platform capabilities that make the secure path the easiest path.',
+    activities: [
+      'Developer-experience assessment and platform product discovery',
+      'Infrastructure as code, environment provisioning, CI/CD, and GitOps automation',
+      'Kubernetes, container, serverless, and application-modernisation enablement',
+      'Golden paths, service templates, developer portals, and self-service workflows',
+      'Automated testing, policy, secrets, software-supply-chain, and observability controls',
+    ],
+    deliverables: [
+      'Platform strategy, capability map, and adoption roadmap',
+      'Reference platform and reusable infrastructure modules',
+      'Pipeline, service-template, and environment blueprints',
+      'Operating documentation, enablement sessions, and adoption measures',
+    ],
     outcomes: [
       'CI/CD pipelines, IaC modules, and compliance-as-code',
       'Developer portals, templates, and paved paths',
       'Observability, chaos testing, and SLO-driven operations',
     ],
+    technologies: ['Kubernetes', 'GitHub Actions', 'GitLab', 'Terraform', 'Helm', 'Argo CD'],
   },
   {
+    slug: 'site-reliability',
+    shortName: 'Site reliability',
     name: 'Site Reliability & Managed Ops',
     summary:
-      'Operate critical workloads with proactive reliability engineering and shared on-call ownership.',
+      'Operate critical workloads with proactive reliability engineering and support models tailored to your team.',
+    problem:
+      'Teams cannot improve reliability when service health, ownership, and recovery expectations are unclear. We make reliability measurable and give operators the telemetry and playbooks to act before customers are affected.',
+    activities: [
+      'Reliability assessments, service inventories, SLIs, SLOs, and error budgets',
+      'Metrics, logs, traces, alerting, dashboards, and telemetry-pipeline design',
+      'Incident response, runbooks, post-incident reviews, and operational readiness',
+      'Capacity, performance, cost, disaster-recovery, and resilience engineering',
+      'Day-two cloud, Kubernetes, and service-mesh operations with engagement-defined support models',
+    ],
+    deliverables: [
+      'Reliability scorecard, SLO catalogue, and improvement backlog',
+      'Observability architecture, dashboards, and actionable alert policies',
+      'Incident playbooks, recovery procedures, and resilience test plan',
+      'Operational handover, ownership model, and recurring health review',
+    ],
     outcomes: [
       'SRE onboarding, playbooks, and platform health dashboards',
-      '24/7 monitoring, incident response, and blameless reviews',
+      'Monitoring, incident response, and blameless review practices',
       'Cost, performance, and resilience optimisation sprints',
     ],
+    technologies: ['OpenTelemetry', 'Prometheus', 'Grafana', 'Datadog', 'PagerDuty', 'Istio'],
   },
   {
+    slug: 'ai-data-platform',
+    shortName: 'AI & data',
     name: 'AI & Data Platform Enablement',
     summary:
       'Prepare your teams for intelligent products with secure data pipelines, feature stores, and ML operations.',
+    problem:
+      'AI initiatives fail to reach production when use cases, data quality, evaluation, security, and operating cost are considered too late. We establish the platform and delivery controls needed to move from idea to a governed production capability.',
+    activities: [
+      'AI and data readiness, use-case discovery, value/risk mapping, and architecture selection',
+      'Batch, streaming, lakehouse, event-driven, and governed data-pipeline design',
+      'RAG, enterprise knowledge assistants, model access, and proof-of-value delivery',
+      'Evaluation, deployment automation, observability, rollback, and cost controls',
+      'Data access, lineage, privacy, human oversight, and AI lifecycle governance',
+    ],
+    deliverables: [
+      'Prioritised use-case portfolio and production-readiness roadmap',
+      'Data and AI reference architecture with governance boundaries',
+      'Working proof of value and reusable ingestion or retrieval pipeline',
+      'Evaluation framework, deployment workflow, and operating controls',
+    ],
     outcomes: [
       'Modern data lakehouse and governance architectures',
       'Real-time streaming and event-driven integrations',
       'MLOps workflows with automated evaluation and rollout',
     ],
+    technologies: ['AWS Bedrock', 'Azure AI', 'Vertex AI', 'Python', 'Vector databases', 'OpenTelemetry'],
   },
 ];
 

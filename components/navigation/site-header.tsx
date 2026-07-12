@@ -42,6 +42,7 @@ export function SiteHeader() {
             <Button asChild size="sm">
               <Link
                 href={'/#contact' as Route}
+                className="hidden sm:inline-flex"
                 onClick={(e) => {
                   if (isModifiedClick(e)) return;
                   e.preventDefault();

@@ -43,7 +43,7 @@ async function main() {
     process.exit(1);
   }
 
-  const checks = ['/', '/contact', '/api/health'];
+  const checks = ['/', '/services', '/contact', '/api/health'];
   const results = await Promise.all(checks.map((p) => get(p)));
   let ok = true;
   for (const r of results) {
@@ -60,4 +60,3 @@ main().catch((e) => {
   console.error(e);
   process.exit(1);
 });
-

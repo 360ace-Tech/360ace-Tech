@@ -1,30 +1,46 @@
-"use client";
+import type { Metadata } from 'next';
+import { ServicesPageExperience } from '@/components/services/services-page-experience';
+import { SiteShell } from '@/components/layout/site-shell';
+import { services } from '@/lib/site-content';
 
-import Link from 'next/link';
-import { useEffect } from 'react';
-import { isModifiedClick, useAppNavigate } from '@/lib/navigation/home-nav';
+export const metadata: Metadata = {
+  title: 'Cloud, Platform, SRE, AI & Data Services',
+  description:
+    'Explore 360ace.Tech services for cloud strategy, platform engineering, DevOps, site reliability, managed operations, and AI-ready data platforms.',
+  alternates: { canonical: '/services' },
+  openGraph: {
+    title: 'What we do | 360ace.Tech',
+    description:
+      'Practical cloud, platform, reliability, and AI data engineering services built around measurable outcomes.',
+    url: '/services',
+  },
+};
 
-export default function ServicesAliasPage() {
-  const navigate = useAppNavigate();
-  useEffect(() => {
-    navigate('/#services');
-  }, [navigate]);
+export default function ServicesPage() {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: '360ace.Tech services',
+    itemListElement: services.map((service, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Service',
+        name: service.name,
+        description: service.summary,
+        url: `https://360ace.tech/services#${service.slug}`,
+        provider: { '@type': 'Organization', name: '360ace.Tech' },
+      },
+    })),
+  };
+
   return (
-    <div className="container-edge py-20">
-      <p>
-        Redirecting to the services section… If you are not redirected,
-        <Link
-          className="underline-offset-4 hover:underline"
-          href="/#services"
-          onClick={(e) => {
-            if (isModifiedClick(e)) return;
-            e.preventDefault();
-            navigate('/#services');
-          }}
-        >
-          click here
-        </Link>.
-      </p>
-    </div>
+    <SiteShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <ServicesPageExperience />
+    </SiteShell>
   );
 }
