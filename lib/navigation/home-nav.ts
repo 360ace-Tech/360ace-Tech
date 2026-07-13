@@ -4,12 +4,13 @@ import { useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTransitionRouter } from 'next-view-transitions';
 import { getLenis } from '@/lib/animation/lenis-store';
+import type { PreloadTarget } from '@/lib/navigation/preloader-config';
+
+export type { PreloadTarget } from '@/lib/navigation/preloader-config';
 
 /** Sticky-header offset used when easing to a section. */
 const HEADER_OFFSET = -96;
 const QUEUE_KEY = 'home:scroll-target';
-
-export type PreloadTarget = 'home' | 'services';
 
 export function startNavigationPreloader(target: PreloadTarget) {
   const root = document.documentElement;

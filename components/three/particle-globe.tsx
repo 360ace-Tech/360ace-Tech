@@ -111,6 +111,7 @@ export function ParticleGlobe({
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const readyRef = useRef(false);
+  const readyFrameRef = useRef<number | null>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const spinSpeed = useRef(ROTATION_SPEED);
   const baseZ = useRef(3.4);
@@ -189,11 +190,12 @@ export function ParticleGlobe({
     [coastline, arcLines]
   );
 
-  useEffect(() => {
-    if (readyRef.current) return;
-    readyRef.current = true;
-    onReady();
-  }, [onReady]);
+  useEffect(
+    () => () => {
+      if (readyFrameRef.current !== null) cancelAnimationFrame(readyFrameRef.current);
+    },
+    []
+  );
 
   // Fit camera so even the dispersed field never clips the canvas edges.
   useEffect(() => {
@@ -220,6 +222,13 @@ export function ParticleGlobe({
     const group = groupRef.current;
     const material = materialRef.current;
     if (!group || !material) return;
+
+    // useFrame runs before R3F renders. A nested RAF therefore reports ready
+    // only after this complete scene has reached the browser's first paint.
+    if (!readyRef.current) {
+      readyRef.current = true;
+      readyFrameRef.current = requestAnimationFrame(onReady);
+    }
     const progress = progressRef.current;
     const opacity = opacityRef.current;
 

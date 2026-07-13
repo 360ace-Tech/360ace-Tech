@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button';
 import { heroContent } from '@/lib/site-content';
 import { gsap, SplitText, useGSAP } from '@/lib/animation/gsap';
 import { DUR, EASE, MOTION_OK, PIN_OK, STAGGER } from '@/lib/animation/config';
+import { PRELOADER_TIMING } from '@/lib/navigation/preloader-config';
+
+const PRELOADER_HANDOFF_FAILSAFE_MS =
+  PRELOADER_TIMING.readyTimeoutMs + PRELOADER_TIMING.exitMs + 500;
 
 function buildStatTween(el: HTMLElement, tl: gsap.core.Timeline, position: number) {
   const raw = el.dataset.statTarget ?? el.textContent ?? '';
@@ -66,7 +70,7 @@ export function HeroSection() {
         if (document.documentElement.dataset.preloadActive === '1') {
           // Hard load: wait for the boot preloader wipe.
           window.addEventListener('preloader:done', play, { once: true });
-          const failsafe = window.setTimeout(play, 3200);
+          const failsafe = window.setTimeout(play, PRELOADER_HANDOFF_FAILSAFE_MS);
           return () => {
             window.removeEventListener('preloader:done', play);
             window.clearTimeout(failsafe);
@@ -76,7 +80,7 @@ export function HeroSection() {
           // Soft nav home: the navigation preloader is covering — start the
           // entrance as its fade begins so the reveal feels continuous.
           window.addEventListener('navpreloader:done', play, { once: true });
-          const failsafe = window.setTimeout(play, 3200);
+          const failsafe = window.setTimeout(play, PRELOADER_HANDOFF_FAILSAFE_MS);
           return () => {
             window.removeEventListener('navpreloader:done', play);
             window.clearTimeout(failsafe);

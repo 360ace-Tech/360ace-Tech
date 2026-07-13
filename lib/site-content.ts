@@ -87,7 +87,7 @@ export const services: Service[] = [
       'Developer portals, templates, and paved paths',
       'Observability, chaos testing, and SLO-driven operations',
     ],
-    technologies: ['Kubernetes', 'GitHub Actions', 'GitLab', 'Terraform', 'Helm', 'Argo CD'],
+    technologies: ['Kubernetes', 'GitHub Actions', 'GitLab', 'Terraform', 'Helm', 'Argo CD', 'Pulumi', 'Crossplane'],
   },
   {
     slug: 'site-reliability',
@@ -113,9 +113,9 @@ export const services: Service[] = [
     outcomes: [
       'SRE onboarding, playbooks, and platform health dashboards',
       'Monitoring, incident response, and blameless review practices',
-      'Cost, performance, and resilience optimisation sprints',
+      'Cost, performance, and resilience optimization sprints',
     ],
-    technologies: ['OpenTelemetry', 'Prometheus', 'Grafana', 'Datadog', 'PagerDuty', 'Istio'],
+    technologies: ['OpenTelemetry', 'Prometheus', 'Grafana', 'Datadog', 'PagerDuty', 'Elastic Stack'],
   },
   {
     slug: 'ai-data-platform',
@@ -143,7 +143,7 @@ export const services: Service[] = [
       'Real-time streaming and event-driven integrations',
       'MLOps workflows with automated evaluation and rollout',
     ],
-    technologies: ['AWS Bedrock', 'Azure AI', 'Vertex AI', 'Python', 'Vector databases', 'OpenTelemetry'],
+    technologies: ['AWS Bedrock', 'Azure AI', 'Vertex AI', 'Python', 'Vector databases', 'Generative AI', 'MLflow', 'Langchain'],
   },
 ];
 

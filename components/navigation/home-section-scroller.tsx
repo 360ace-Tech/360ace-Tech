@@ -4,6 +4,10 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { ScrollTrigger } from '@/lib/animation/gsap';
 import { clearHomeTarget, peekHomeTarget, scrollToSection } from '@/lib/navigation/home-nav';
+import { PRELOADER_TIMING } from '@/lib/navigation/preloader-config';
+
+const HANDOFF_FAILSAFE_MS =
+  PRELOADER_TIMING.readyTimeoutMs + PRELOADER_TIMING.exitMs + 500;
 
 /**
  * Arrival choreography for the home page. Resolves the requested section —
@@ -48,14 +52,14 @@ export function HomeSectionScroller() {
       const onDone = () => go();
       window.addEventListener('preloader:done', onDone, { once: true });
       cleanupEvent = () => window.removeEventListener('preloader:done', onDone);
-      timeouts.push(window.setTimeout(go, 5000));
+      timeouts.push(window.setTimeout(go, HANDOFF_FAILSAFE_MS));
     } else {
       // Soft nav: the navigation preloader fires on every route → / change
       // and announces its fade; failsafe covers the no-overlay edge.
       const onDone = () => go();
       window.addEventListener('navpreloader:done', onDone, { once: true });
       cleanupEvent = () => window.removeEventListener('navpreloader:done', onDone);
-      timeouts.push(window.setTimeout(go, 1800));
+      timeouts.push(window.setTimeout(go, HANDOFF_FAILSAFE_MS));
     }
 
     return () => {

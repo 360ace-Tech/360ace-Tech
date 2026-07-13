@@ -2,14 +2,13 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  startNavigationPreloader,
-  type PreloadTarget,
-} from '@/lib/navigation/home-nav';
+import { startNavigationPreloader } from '@/lib/navigation/home-nav';
 import { MOTION_OK } from '@/lib/animation/config';
-
-const MIN_DISPLAY_MS = 900;
-const MAX_WAIT_MS = 4000;
+import {
+  PRELOADER_TIMING,
+  preloadTargetForPath,
+  type PreloadTarget,
+} from '@/lib/navigation/preloader-config';
 
 function supportsWebGL() {
   try {
@@ -18,12 +17,6 @@ function supportsWebGL() {
   } catch {
     return false;
   }
-}
-
-function targetForPath(pathname: string): PreloadTarget | null {
-  if (pathname === '/') return 'home';
-  if (pathname === '/services') return 'services';
-  return null;
 }
 
 /**
@@ -35,27 +28,49 @@ export function NavigationPreloader() {
   const pathname = usePathname();
   const router = useRouter();
   const prevRef = useRef<string | null>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const failsafeRef = useRef<number | null>(null);
+  const exitFallbackRef = useRef<number | null>(null);
   const waitCleanupRef = useRef<(() => void) | null>(null);
   const text = '360ace.tech'.split('');
+
+  const finishFade = useCallback(() => {
+    const root = document.documentElement;
+    if (root.dataset.navPreloadActive !== '1') return;
+    if (exitFallbackRef.current) window.clearTimeout(exitFallbackRef.current);
+    delete root.dataset.navPreloadActive;
+    delete root.dataset.navPreloadFading;
+    delete root.dataset.navPreloadTarget;
+    window.dispatchEvent(new CustomEvent('navpreloader:done'));
+  }, []);
 
   const beginFade = useCallback(() => {
     const root = document.documentElement;
     if (root.dataset.navPreloadActive !== '1') return;
+    if (root.dataset.navPreloadFading === '1') return;
     waitCleanupRef.current?.();
     waitCleanupRef.current = null;
+    if (failsafeRef.current) window.clearTimeout(failsafeRef.current);
     root.dataset.navPreloadFading = '1';
-    window.dispatchEvent(new CustomEvent('navpreloader:done'));
-    window.setTimeout(() => {
-      delete root.dataset.navPreloadActive;
-      delete root.dataset.navPreloadFading;
-      delete root.dataset.navPreloadTarget;
-    }, 520);
-  }, []);
+    const overlay = overlayRef.current;
+    const onTransitionEnd = (event: TransitionEvent) => {
+      if (event.propertyName !== 'clip-path') return;
+      overlay?.removeEventListener('transitionend', onTransitionEnd);
+      finishFade();
+    };
+    overlay?.addEventListener('transitionend', onTransitionEnd);
+    exitFallbackRef.current = window.setTimeout(
+      finishFade,
+      PRELOADER_TIMING.exitMs + 200
+    );
+  }, [finishFade]);
 
   const armFailsafe = useCallback(() => {
     if (failsafeRef.current) window.clearTimeout(failsafeRef.current);
-    failsafeRef.current = window.setTimeout(beginFade, MAX_WAIT_MS);
+    failsafeRef.current = window.setTimeout(
+      beginFade,
+      PRELOADER_TIMING.readyTimeoutMs
+    );
   }, [beginFade]);
 
   const waitForTarget = useCallback(
@@ -78,7 +93,7 @@ export function NavigationPreloader() {
       const minTimer = window.setTimeout(() => {
         minElapsed = true;
         tryFinish();
-      }, MIN_DISPLAY_MS);
+      }, PRELOADER_TIMING.navigationMinMs);
 
       window.addEventListener('globe:ready', onReady);
       armFailsafe();
@@ -135,7 +150,7 @@ export function NavigationPreloader() {
     prevRef.current = pathname;
     if (prev === null || prev === pathname) return;
 
-    const target = targetForPath(pathname);
+    const target = preloadTargetForPath(pathname);
     if (!target) return;
     const root = document.documentElement;
     if (
@@ -150,13 +165,14 @@ export function NavigationPreloader() {
   useEffect(
     () => () => {
       if (failsafeRef.current) window.clearTimeout(failsafeRef.current);
+      if (exitFallbackRef.current) window.clearTimeout(exitFallbackRef.current);
       waitCleanupRef.current?.();
     },
     []
   );
 
   return (
-    <div className="preloader-overlay preloader-overlay--navigation" aria-hidden>
+    <div ref={overlayRef} className="preloader-overlay preloader-overlay--navigation" aria-hidden>
       <div className="preloader-stack">
         <div className="preloader-inner">
           <div className="preloader-row">

@@ -2,11 +2,10 @@
 
 import { gsap, useGSAP } from '@/lib/animation/gsap';
 import { MOTION_OK } from '@/lib/animation/config';
-
-const LETTER_BASE_MS = 150;
-const LETTER_STEP_MS = 90;
-const LETTER_ANIM_MS = 480;
-const MAX_WAIT_MS = 4000;
+import {
+  PRELOADER_TIMING,
+  preloadTargetForPath,
+} from '@/lib/navigation/preloader-config';
 
 function supportsWebGL() {
   try {
@@ -29,16 +28,22 @@ export function PreloaderController() {
     const root = document.documentElement;
     if (root.dataset.preloadActive !== '1') return;
     const motionOk = window.matchMedia(MOTION_OK).matches;
+    const target = preloadTargetForPath(window.location.pathname);
     const state = {
-      minElapsed: false,
-      globeReady: document.documentElement.dataset.globeReady === '1',
-      globeRequired: motionOk && supportsWebGL(),
+      brandComplete: false,
+      globeReady:
+        target === null ||
+        (root.dataset.globeReady === '1' && root.dataset.globeRoute === target),
+      globeRequired: target !== null && motionOk && supportsWebGL(),
+      exitStarted: false,
     };
 
     const overlay = document.querySelector<HTMLElement>(
       '.preloader-overlay:not(.preloader-overlay--navigation)'
     );
     if (!overlay) return;
+
+    let exitTimeline: gsap.core.Timeline | null = null;
 
     const finish = () => {
       if (root.dataset.preloadActive === '1') {
@@ -47,59 +52,60 @@ export function PreloaderController() {
       }
     };
 
-    const tryFinish = () => {
-      if (!state.minElapsed) return;
+    const tryExit = () => {
+      if (state.exitStarted || !state.brandComplete) return;
       if (state.globeRequired && !state.globeReady) return;
-      finish();
+      state.exitStarted = true;
+      exitTimeline = gsap.timeline({ onComplete: finish });
+      exitTimeline
+        .to(overlay.querySelector('.preloader-row'), {
+          autoAlpha: 0,
+          y: -28,
+          duration: 0.25,
+          ease: 'power2.in',
+        })
+        .to(
+          overlay,
+          {
+            clipPath: 'inset(0% 0% 100% 0%)',
+            duration: PRELOADER_TIMING.exitMs / 1000,
+            ease: 'power3.inOut',
+          },
+          0.08
+        );
     };
 
     const onGlobeReady = () => {
-      state.globeReady = true;
-      document.documentElement.dataset.globeReady = '1';
-      tryFinish();
+      state.globeReady =
+        target === null || root.dataset.globeRoute === target;
+      tryExit();
     };
 
-    const timer = window.setTimeout(() => {
-      state.minElapsed = true;
-      tryFinish();
-    }, 2500);
+    const brandTimer = window.setTimeout(() => {
+      state.brandComplete = true;
+      tryExit();
+    }, PRELOADER_TIMING.brandMs);
 
     const hardUnlock = window.setTimeout(() => {
-      finish();
-    }, MAX_WAIT_MS);
+      state.globeReady = true;
+      tryExit();
+    }, PRELOADER_TIMING.readyTimeoutMs);
 
     window.addEventListener('globe:ready', onGlobeReady, { once: true });
-
-    const letters = overlay.querySelectorAll('.preloader-letter');
-    const writeOnMs = LETTER_BASE_MS + (letters.length - 1) * LETTER_STEP_MS + LETTER_ANIM_MS;
 
     if (!motionOk) {
       const timeout = window.setTimeout(finish, 400);
       return () => {
         window.clearTimeout(timeout);
-        window.clearTimeout(timer);
+        window.clearTimeout(brandTimer);
         window.clearTimeout(hardUnlock);
         window.removeEventListener('globe:ready', onGlobeReady);
       };
     }
 
-    const tl = gsap.timeline({ delay: (writeOnMs + 100) / 1000 });
-    tl.to(overlay.querySelector('.preloader-row'), {
-      autoAlpha: 0,
-      y: -28,
-      duration: 0.35,
-      ease: 'power2.in',
-    })
-      .set(overlay, { clipPath: 'inset(0% 0% 0% 0%)' }, '<')
-      .to(overlay, {
-      clipPath: 'inset(0% 0% 100% 0%)',
-      duration: 0.55,
-      ease: 'power3.inOut',
-      onComplete: finish,
-    });
-
     return () => {
-      window.clearTimeout(timer);
+      exitTimeline?.kill();
+      window.clearTimeout(brandTimer);
       window.clearTimeout(hardUnlock);
       window.removeEventListener('globe:ready', onGlobeReady);
     };
