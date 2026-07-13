@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap, useGSAP } from '@/lib/animation/gsap';
 import { MOTION_OK } from '@/lib/animation/config';
-import { services } from '@/lib/site-content';
 
 const HeroScene = dynamic(() => import('@/components/three/hero-scene'), { ssr: false });
 
@@ -22,14 +21,15 @@ function supportsWebGL() {
  * its own low-opacity scroll state so homepage section selectors never leak
  * into this route.
  */
-export function ServicesGlobeBackground() {
+export function ServicesGlobeBackground({ sectionSlugs }: { sectionSlugs: string[] }) {
   const [render3D, setRender3D] = useState(false);
   const [active, setActive] = useState(true);
   const progressRef = useRef(0.05);
-  const opacityRef = useRef(0.24);
+  const opacityRef = useRef(0.9);
   const hoverRef = useRef(false);
-  const xRef = useRef(0.78);
+  const xRef = useRef(1.28);
   const activeRef = useRef(true);
+  const sectionKey = sectionSlugs.join('|');
 
   useEffect(() => {
     const motion = window.matchMedia(MOTION_OK);
@@ -44,8 +44,8 @@ export function ServicesGlobeBackground() {
       if (!render3D) return;
       const state = {
         progress: 0.05,
-        opacity: window.innerWidth >= 1024 ? 0.24 : 0.18,
-        x: window.innerWidth >= 1024 ? 0.78 : 0,
+        opacity: 0.9,
+        x: window.innerWidth >= 1024 ? 1.28 : 0,
       };
       const apply = () => {
         progressRef.current = state.progress;
@@ -60,7 +60,7 @@ export function ServicesGlobeBackground() {
       apply();
 
       const contexts: gsap.core.Tween[] = [];
-      services.forEach((service, index) => {
+      sectionSlugs.forEach((slug, index) => {
         contexts.push(
           gsap.to(state, {
             progress: 0.38 + index * 0.14,
@@ -69,7 +69,7 @@ export function ServicesGlobeBackground() {
             ease: 'power1.inOut',
             onUpdate: apply,
             scrollTrigger: {
-              trigger: `#${service.slug}`,
+              trigger: `#${slug}`,
               start: 'top 85%',
               end: 'center 42%',
               scrub: 1.35,
@@ -94,27 +94,30 @@ export function ServicesGlobeBackground() {
 
       return () => contexts.forEach((tween) => tween.kill());
     },
-    { dependencies: [render3D] }
+    { dependencies: [render3D, sectionKey] }
   );
 
   const handleReady = useCallback(() => {
     document.documentElement.dataset.globeReady = '1';
+    document.documentElement.dataset.globeRoute = 'services';
     window.dispatchEvent(new CustomEvent('globe:ready'));
     window.dispatchEvent(new CustomEvent('services-globe:ready'));
   }, []);
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0" aria-hidden>
-      {render3D ? (
-        <HeroScene
-          active={active}
-          progressRef={progressRef}
-          opacityRef={opacityRef}
-          hoverRef={hoverRef}
-          xRef={xRef}
-          onReady={handleReady}
-        />
-      ) : null}
+      <div className="h-full w-full -translate-y-[24%] lg:translate-y-0">
+        {render3D ? (
+          <HeroScene
+            active={active}
+            progressRef={progressRef}
+            opacityRef={opacityRef}
+            hoverRef={hoverRef}
+            xRef={xRef}
+            onReady={handleReady}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }

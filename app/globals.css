@@ -293,7 +293,7 @@ html:not([data-preload-active='1']) .preloader-overlay {
 }
 /* CSS-only failsafe: never trap the page if every script fails */
 .preloader-overlay {
-  animation: preloader-failsafe 500ms ease 2800ms forwards;
+  animation: preloader-failsafe 500ms ease 4200ms forwards;
 }
 @keyframes preloader-failsafe {
   to {
@@ -313,6 +313,23 @@ html:not([data-preload-active='1']) .preloader-overlay {
 
 html[data-nav-preload-active='1'] body {
   overflow: hidden;
+}
+
+html[data-preload-active='1'] [data-site-header],
+html[data-nav-preload-active='1'] [data-site-header] {
+  visibility: hidden;
+  opacity: 0;
+}
+
+html[data-preload-active='1'] [data-site-header] {
+  animation: preloader-header-failsafe 0s linear 4200ms forwards;
+}
+
+@keyframes preloader-header-failsafe {
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
 }
 
 html[data-nav-preload-active='1'] .preloader-overlay--navigation {

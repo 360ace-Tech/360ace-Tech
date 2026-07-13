@@ -49,7 +49,6 @@ export function PreloaderController() {
 
     const tryFinish = () => {
       if (!state.minElapsed) return;
-      if (motionOk && !state.globeReady) return;
       if (state.globeRequired && !state.globeReady) return;
       finish();
     };
@@ -96,7 +95,7 @@ export function PreloaderController() {
       clipPath: 'inset(0% 0% 100% 0%)',
       duration: 0.55,
       ease: 'power3.inOut',
-      onStart: finish,
+      onComplete: finish,
     });
 
     return () => {

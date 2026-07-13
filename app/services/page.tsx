@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { ServicesPageExperience } from '@/components/services/services-page-experience';
+import { ServicesPageTemplate } from '@/components/templates/services-page';
 import { SiteShell } from '@/components/layout/site-shell';
 import { services } from '@/lib/site-content';
 
@@ -40,7 +40,7 @@ export default function ServicesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <ServicesPageExperience />
+      <ServicesPageTemplate services={services} />
     </SiteShell>
   );
 }

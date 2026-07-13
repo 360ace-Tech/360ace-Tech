@@ -182,6 +182,7 @@ export function GlobeBackground() {
 
   const handleSceneReady = () => {
     document.documentElement.dataset.globeReady = '1';
+    document.documentElement.dataset.globeRoute = 'home';
     window.dispatchEvent(new CustomEvent('globe:ready'));
   };
 

@@ -11,7 +11,7 @@ import { ServicesGlobeBackground } from '@/components/three/services-globe-backg
 import { gsap, useGSAP } from '@/lib/animation/gsap';
 import { EASE, MOTION_OK } from '@/lib/animation/config';
 import { getLenis } from '@/lib/animation/lenis-store';
-import { services } from '@/lib/site-content';
+import type { Service } from '@/lib/site-content';
 import { cn } from '@/lib/utils';
 
 const HEADER_OFFSET = -132;
@@ -47,7 +47,7 @@ function goToService(slug: string) {
   else target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-export function ServicesPageExperience() {
+export function ServicesPageTemplate({ services }: { services: Service[] }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [activeService, setActiveService] = useState(services[0].slug);
 
@@ -67,14 +67,14 @@ export function ServicesPageExperience() {
     );
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [services]);
 
   useEffect(() => {
     const slug = decodeURIComponent(window.location.hash.slice(1));
     if (!services.some((service) => service.slug === slug)) return;
     const timer = window.setTimeout(() => goToService(slug), 450);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [services]);
 
   useGSAP(
     () => {
@@ -100,7 +100,7 @@ export function ServicesPageExperience() {
 
   return (
     <div ref={rootRef} className="relative w-full max-w-[100vw] overflow-x-clip">
-      <ServicesGlobeBackground />
+      <ServicesGlobeBackground sectionSlugs={services.map((service) => service.slug)} />
 
       <section className="relative z-10 flex min-h-[82svh] items-center overflow-hidden border-b border-border/70 py-24 lg:min-h-[88svh]">
         <div className="container-edge min-w-0 max-w-full pt-10">
@@ -111,7 +111,7 @@ export function ServicesPageExperience() {
             as="h1"
             unit="words"
             start="top 95%"
-            className="mt-6 max-w-5xl break-words font-display text-[2.45rem] font-semibold leading-[0.98] sm:text-6xl lg:text-[clamp(4rem,8vw,7.5rem)] lg:leading-[0.94]"
+            className="mt-6 max-w-3xl break-words font-display text-[2.45rem] font-semibold leading-[0.98] sm:text-6xl lg:text-[clamp(4rem,7vw,6.5rem)] lg:leading-[0.94]"
           >
             Engineering clarity into every layer.
           </SplitHeading>

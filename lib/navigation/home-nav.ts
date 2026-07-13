@@ -9,10 +9,19 @@ import { getLenis } from '@/lib/animation/lenis-store';
 const HEADER_OFFSET = -96;
 const QUEUE_KEY = 'home:scroll-target';
 
-export function startHomeNavigationPreloader() {
+export type PreloadTarget = 'home' | 'services';
+
+export function startNavigationPreloader(target: PreloadTarget) {
   const root = document.documentElement;
   root.dataset.navPreloadActive = '1';
+  root.dataset.navPreloadTarget = target;
   delete root.dataset.navPreloadFading;
+  delete root.dataset.globeReady;
+  delete root.dataset.globeRoute;
+}
+
+export function startHomeNavigationPreloader() {
+  startNavigationPreloader('home');
 }
 
 export type NavTarget =
